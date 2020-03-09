@@ -1,0 +1,29 @@
+body {
+    font-family: 'Lucida Sans Unicode', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Verdana, sans-serif !important;
+    line-height: 2 !important;
+}
+
+p {
+    text-transform: capitalize !;
+}
+
+/* Mobile */
+@media (max-width:767.98px){
+    
+}
+
+/* Desktop */
+@media (min-width:768px){
+    .nav-link {
+        padding:.5rem 2rem !important;
+    }
+
+    .icon {
+        display: flex;
+        align-items: right;
+    }
+}
+
+.nav-link {
+    font-size: large;
+}
