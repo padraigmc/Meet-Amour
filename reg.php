@@ -229,7 +229,7 @@
 
 							<div class="text-center p-t-136">
 								<a class="txt2" href="#">
-									<a href="index.html">Login</a>
+									<a href="index.php">Login</a>
 									<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
 								</a>
 							</div>
