@@ -1,6 +1,6 @@
 
 
-html,
+
 
 body{
     width:100%;
@@ -22,9 +22,7 @@ hr{
    border-width:1px;
    border-color:rgba(34,34,34,.1)
 }
-hr.light{
-   border-color:#fff
-}
+
 h1,h2,h3,h4,h5,h6{
    font-family:Catamaran,Helvetica,Arial,sans-serif;
    font-weight:200;
@@ -43,25 +41,26 @@ section h2{
 }
 #mainNav{
    border-color:rgba(34,34,34,.05);
-   background-color:#fff;
    transition:all .35s;
    font-family:Catamaran,Helvetica,Arial,sans-serif;
    font-weight:200;
-   letter-spacing:1px
+   letter-spacing:1px;
+   margin-bottom: 50px;
 }
 #mainNav .navbar-brand{
    color:#fff;
    font-family:Catamaran,Helvetica,Arial,sans-serif;
    font-weight:200;
-   letter-spacing:1px
+   letter-spacing:1px;
 }
 #mainNav .navbar-brand:focus,#mainNav .navbar-brand:hover{
    color:#ff70db
 }
+
 #mainNav .navbar-toggler{
    font-size:12px;
    padding:8px 10px;
-   color:#222
+   color:#222;
 }
 #mainNav .navbar-nav>li>a{
    font-size:11px;
@@ -73,9 +72,7 @@ section h2{
    color:#fff!important;
    background-color:transparent
 }
-#mainNav .navbar-nav>li>a.active:hover{
-   background-color:transparent
-}
+
 #mainNav .navbar-nav>li>a,#mainNav .navbar-nav>li>a:focus{
    color:#222
 }
@@ -116,8 +113,7 @@ header.masthead{
     padding:250px 0;
     background-image:url(../img/background.jpg);
     background-position:center;
-    background-size:cover
-    
+    background-size:cover;
  }
 
 
@@ -136,11 +132,12 @@ header.masthead .header-content h1{
 header.masthead .device-container{
    max-width:325px;
    margin-right:auto;
-   margin-left:auto
+   margin-left:auto;
+   margin-top: 65px;
    
 }
 header.masthead .device-container .screen img{
-   border-radius:3px
+   border-radius:3px;
 }
 @media (min-width:992px){
    header.masthead{
@@ -150,7 +147,6 @@ header.masthead .device-container .screen img{
        padding-bottom:0
    }
    header.masthead .header-content{
-       margin-bottom:0;
        text-align:left
    }
    header.masthead .header-content h1{
