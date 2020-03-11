@@ -1,13 +1,10 @@
-DROP DATABASE MeetAmour;
+USE dbgroup13;
 
-CREATE DATABASE MeetAmour;
-USE MeetAmour;
-
-CREATE TABLE `MeetAmour`.`User` ( 
+CREATE TABLE `dbgroup13`.`User` ( 
     `userID` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-    `email` VARCHAR(60) NOT NULL,
-    `username` VARCHAR(30) NOT NULL,
-    `password` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(60) NOT NULL UNIQUE,
+    `username` VARCHAR(30) NOT NULL UNIQUE,
+    `passwordHash` VARCHAR(255) NOT NULL,
     `dateCreated` DATETIME NOT NULL,
     `lastLogin` DATETIME NOT NULL,
     `isAdmin` TINYINT(1) NOT NULL DEFAULT 0,
@@ -16,7 +13,7 @@ CREATE TABLE `MeetAmour`.`User` (
     `isVerified` TINYINT(1) NOT NULL DEFAULT 0
 );
 
-CREATE TABLE `MeetAmour`.`Photo` (
+CREATE TABLE `dbgroup13`.`Photo` (
     `photoID` INT(11) NOT NULL AUTO_INCREMENT,
     `userID` INT(11) NOT NULL,
     `filePath` VARCHAR(60) NOT NULL,
@@ -24,22 +21,22 @@ CREATE TABLE `MeetAmour`.`Photo` (
     PRIMARY KEY (`photoID`, `userID`)
 );
 
-CREATE TABLE `MeetAmour`.`Gender` (
+CREATE TABLE `dbgroup13`.`Gender` (
     `genderID` INT(1) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `gender` VARCHAR(8) NOT NULL
 );
 
-CREATE TABLE `MeetAmour`.`Location` (
+CREATE TABLE `dbgroup13`.`Location` (
     `locationID` INT(2) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `location` VARCHAR(10) NOT NULL
 );
 
-CREATE TABLE `MeetAmour`.`Hobby` (
+CREATE TABLE `dbgroup13`.`Hobby` (
     `hobbyID` INT(4) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `hobby` VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE `MeetAmour`.`UserHobby` (
+CREATE TABLE `dbgroup13`.`UserHobby` (
     `hobbyID` INT(4) NOT NULL PRIMARY KEY,
     `userID` VARCHAR(11) NOT NULL,
     FOREIGN KEY (`hobbyID`)
@@ -48,7 +45,7 @@ CREATE TABLE `MeetAmour`.`UserHobby` (
         ON DELETE CASCADE
 );
 
-CREATE TABLE `MeetAmour`.`Notification` (
+CREATE TABLE `dbgroup13`.`Notification` (
     `notificationID` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `fromUserID` INT(11) NOT NULL,
     `toUserID` INT(11) NOT NULL,
@@ -65,7 +62,7 @@ CREATE TABLE `MeetAmour`.`Notification` (
         ON DELETE CASCADE
 );
 
-CREATE TABLE `MeetAmour`.`Like` (
+CREATE TABLE `dbgroup13`.`Like` (
     `likeID` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `fromUserID` INT(11) NOT NULL,
     `toUserID` INT(11) NOT NULL,
@@ -80,7 +77,7 @@ CREATE TABLE `MeetAmour`.`Like` (
         ON DELETE CASCADE
 );
 
-CREATE TABLE `MeetAmour`.`Message` (
+CREATE TABLE `dbgroup13`.`Message` (
     `messageID` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `fromUserID` INT(11) NOT NULL,
     `toUserID` INT(11) NOT NULL,
@@ -98,7 +95,7 @@ CREATE TABLE `MeetAmour`.`Message` (
         ON DELETE CASCADE
 );
 
-CREATE TABLE `MeetAmour`.`Profile` ( 
+CREATE TABLE `dbgroup13`.`Profile` ( 
     `userID` INT(11) NOT NULL PRIMARY KEY,
     `fname` VARCHAR(30) NOT NULL,
     `lname` VARCHAR(30) NOT NULL,
