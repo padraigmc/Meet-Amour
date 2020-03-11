@@ -15,7 +15,7 @@
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.css">
 	<!-- Csutom CSS -->
-	<link rel="stylesheet" type="text/css" href="custom.css">
+	<link rel="stylesheet" type="text/css" href="css/custom.css">
 
 	<script>
 		// variable used to highlight navbar link on current page

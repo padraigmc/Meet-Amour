@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Sign Up</title>
+	<title>Login V1</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
-<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.css">
 <!--===============================================================================================-->
@@ -16,6 +16,57 @@
 <!--===============================================================================================-->
 </head>
 <body>
+
+	<?php
+
+		if (isset($_POST["submit"])) {
+			
+			// set db connection variables
+			$dbServerName = "localhost";
+			$dbUsername = "root";
+			$dbPassword = "";
+			$dbName = "meetamour";
+		
+			// Create connection
+			$conn = new mysqli($dbServerName, $dbUsername, $dbPassword, $dbName);
+		
+			// Check connection
+			if ($conn->connect_error) {
+				die("Connection failed: " . $conn->connect_error);
+			}
+
+			$userCred = $_POST["userCred"];
+			$inputPassword = $_POST["password"];
+
+			// test if user entered email or username
+			if (filter_var($userCred, FILTER_VALIDATE_EMAIL)) {
+
+				// prepare and bind
+				$selectPassword = $conn->prepare("SELECT `password` FROM User WHERE `username` = ?;");
+				$selectPassword->bind_param("s", $username);
+			
+				// execute prepared statement
+				$selectPassword->execute();
+
+			} elseif (preg_match($username_regex, $userCred)) {
+				// prepare and bind
+				$insertUser = $conn->prepare("INSERT INTO User (`email`, `username`, `password`, `dateCreated`, `lastLogin` ) VALUES (?, ?, ?, ?, ?);");
+				$insertUser->bind_param("sssss", $email, $username, $password_hash, $date, $date);
+			
+				// execute prepared statement
+				$insertUser->execute();
+			} else {
+				$error[] = "Invalid username/email.";
+			}
+
+			// set session variables
+			$_SESSION["username"] = $username;
+			$_SESSION["email"] = $email;
+			$_SESSION["loggedIn"] = 1;
+			
+		}
+
+	?>
 	
 	<div class="limiter">
 		<div class="container-login100">
@@ -24,21 +75,14 @@
 					<img src="images/img-01.png" alt="IMG">
 				</div>
 
-				<form class="login100-form validate-form" method="POST" action="registerUser.php">
+				<form class="login100-form validate-form">
 					<span class="login100-form-title">
-						Sign Up
+						Member Login
 					</span>
-					
-					<div class="wrap-input100 validate-input" data-validate = "Username is required">
-						<input class="input100" type="text" name="username" placeholder="Username">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
-							<i class="fa fa-user" aria-hidden="true"></i>
-						</span>
-					</div>
 
 					<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-						<input class="input100" type="text" name="email" placeholder="Email">
+						<!-- email form field -->
+						<input class="input100" type="text" name="userCred" placeholder="Username / Email">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-envelope" aria-hidden="true"></i>
@@ -46,6 +90,7 @@
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate = "Password is required">
+						<!-- password form field -->
 						<input class="input100" type="password" name="password" placeholder="Password">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
@@ -53,21 +98,25 @@
 						</span>
 					</div>
 					
-					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="password" name="passwordConfirm" placeholder="Re-enter Password">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
-							<i class="fa fa-lock" aria-hidden="true"></i>
-						</span>
-					</div>
-					
 					<div class="container-login100-form-btn">
-						<input class="login100-form-btn" type="submit" value="Register">
+						<!-- login button -->
+						<button class="login100-form-btn">
+							Login
+						</button>
+					</div>
+
+					<div class="text-center p-t-12">
+						<span class="txt1">
+							Forgot
+						</span>
+						<a class="txt2" href="#">
+							Username / Password?
+						</a>
 					</div>
 
 					<div class="text-center p-t-136">
 						<a class="txt2" href="#">
-							<a href="index.html">Login</a>
+							<a href="reg.php">Create Your Account</a>
 							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
 						</a>
 					</div>
@@ -80,7 +129,7 @@
 
 	
 <!--===============================================================================================-->	
-<script src="vendor/jquery/jquery.slim.min.js"></script>
+	<script src="vendor/jquery/jquery.slim.min.js"></script>
 <!--===============================================================================================-->
 	<script src="vendor/bootstrap/js/bootstrap.bundle.js"></script>
 <!--===============================================================================================-->
@@ -90,8 +139,6 @@
 			scale: 1.1
 		})
 	</script>
-	<!--===============================================================================================-->
-	<script src="js/main.js"></script>
 
 </body>
 </html>
