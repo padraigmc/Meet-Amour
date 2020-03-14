@@ -1,3 +1,4 @@
+CREATE DATABASE dbgroup13;
 USE dbgroup13;
 
 CREATE TABLE `dbgroup13`.`User` ( 
@@ -14,11 +15,14 @@ CREATE TABLE `dbgroup13`.`User` (
 );
 
 CREATE TABLE `dbgroup13`.`Photo` (
-    `photoID` INT(11) NOT NULL AUTO_INCREMENT,
+    `photoID` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `userID` INT(11) NOT NULL,
     `filePath` VARCHAR(60) NOT NULL,
     `dateUploaded` DATETIME NOT NULL,
-    PRIMARY KEY (`photoID`, `userID`)
+    FOREIGN KEY (`userID`)
+    REFERENCES `User`(`userID`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 CREATE TABLE `dbgroup13`.`Gender` (
@@ -38,9 +42,13 @@ CREATE TABLE `dbgroup13`.`Hobby` (
 
 CREATE TABLE `dbgroup13`.`UserHobby` (
     `hobbyID` INT(4) NOT NULL PRIMARY KEY,
-    `userID` VARCHAR(11) NOT NULL,
+    `userID` INT(11) NOT NULL,
     FOREIGN KEY (`hobbyID`)
     REFERENCES `Hobby`(`hobbyID`)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (`userID`)
+    REFERENCES `User`(`userID`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
@@ -99,12 +107,11 @@ CREATE TABLE `dbgroup13`.`Profile` (
     `userID` INT(11) NOT NULL PRIMARY KEY,
     `fname` VARCHAR(30) NOT NULL,
     `lname` VARCHAR(30) NOT NULL,
-    `age` INT(3) NOT NULL,
+    `dob` DATETIME NOT NULL,
     `genderID` INT(1) NOT NULL,
     `seekingID` INT(1) NOT NULL,
     `description` VARCHAR(280) NOT NULL,
     `locationID` INT(2) NULL DEFAULT NULL,
-    `photoID` INT(11) NULL DEFAULT NULL,
     FOREIGN KEY (`userID`)
     REFERENCES `User`(`userID`)
         ON UPDATE CASCADE
@@ -119,10 +126,6 @@ CREATE TABLE `dbgroup13`.`Profile` (
         ON DELETE CASCADE,
     FOREIGN KEY (`locationID`)
     REFERENCES `Location`(`locationID`)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    FOREIGN KEY (`photoID`)
-    REFERENCES `Photo`(`photoID`)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
