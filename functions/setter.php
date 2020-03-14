@@ -1,7 +1,7 @@
 <?php
 
-    include('database.php');
-    include('getter.php');
+    require_once('database.php');
+    require_once('getter.php');
 
 
     /*
@@ -16,7 +16,7 @@
     function update_user_attribute($username, $attribute, $newValue) {
 
         // connect to database, terminate script on failure
-        if (!$conn = dbConnect())
+        if (!$conn = db_connect())
             die(__FUNCTION__ . "(): DB connection failed (Line " . __LINE__ . " in " . $_SERVER['PHP_SELF'] . ")");
 
         // prepare and bind statement

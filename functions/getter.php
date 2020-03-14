@@ -1,6 +1,6 @@
 <?php
 
-    include('database.php');
+    require_once('database.php');
 
 
     /*
@@ -17,7 +17,7 @@
             session_start();
 
         // connect to database, terminate script on failure
-        if (!$conn = dbConnect())
+        if (!$conn = db_connect())
             return 0;
 
         // prepare and bind statement
@@ -26,8 +26,7 @@
                 WHERE `username` = ?;";
 
         $selectAttribute = $conn->prepare($sql);
-        $selectAttribute->bind_param("ssssssssss", $userID, $email, $username, $password, $dateCreated, 
-                            $lastLogin, $isAdmin, $isBanned, $isDeactivated, $isVerified);
+        $selectAttribute->bind_param("s", $username);
         
         // execute statement, terminate script on failure
         if (!$selectAttribute->execute())
@@ -65,7 +64,7 @@
     function get_user_attribute($username, $attribute) {
 
         // connect to database, terminate script on failure
-        if (!$conn = dbConnect())
+        if (!$conn = db_connect())
             die(__FUNCTION__ . "(): DB connection failed (Line " . __LINE__ . " in " . $_SERVER['PHP_SELF'] . ")");
 
         // prepare and bind statement
@@ -101,10 +100,10 @@
     *
     *   return      -   array of values if values found, otherwise empty array
     */  
-    function get_attributes_equal_to($attribute, $value) {
+    function get_user_attributes_equal_to($attribute, $value) {
         
         // connect to database, terminate script on failure
-        if (!$conn = dbConnect())
+        if (!$conn = db_connect())
             die(__FUNCTION__ . "(): DB connection failed (Line " . __LINE__ . " in " . $_SERVER['PHP_SELF'] . ")");
 
         // prepare and bind statement
@@ -125,7 +124,11 @@
         }
 
         // return array
-        if ($res) { return $res; } else { return 0; }
+        if ($res) { 
+            return $res; 
+        } else { 
+            return 0; 
+        }
     }
 
 ?>

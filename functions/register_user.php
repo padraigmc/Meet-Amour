@@ -1,8 +1,8 @@
 <?php
 
-    include('database.php');
-    include('database.php');
-    include('getter.php');
+    require_once('database.php');
+    require_once('database.php');
+    require_once('getter.php');
 
 
 
@@ -16,7 +16,7 @@
     *
     *   return          -   userID on success, zero on failure
     */
-    function registerUser($email, $username, $password, $password_conf) {
+    function register_user($email, $username, $password, $password_conf) {
 
         $error = array();
         $date = date("Y-m-d H:i:s");
@@ -28,7 +28,7 @@
         }
 
         // connect to database, terminate script on failure
-        if (!$conn = dbConnect()) {
+        if (!$conn = db_connect()) {
             die(__FUNCTION__ . "(): DB connection failed (Line " . __LINE__ . " in " . $_SERVER['PHP_SELF'] . ")");
         }
 

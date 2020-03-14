@@ -19,84 +19,21 @@
 
 
 	<?php
-
-		/*
-		*	Query User table for username where username is equal to supplied username
-		*	Checks if a username already exists in the database
-		*
-		*	$dbConnection 	-	database connection object used to prepare an SQL statement
-		*	$username	 	-	username to test
-		*/
-		function doesUsernameExist($dbConnection, $username) {
-
-			$selectUsername = $dbConnection->prepare("SELECT `username` FROM `User` WHERE `username` = ?;");
-			$selectUsername->bind_param("s", $username);
-
-			// execute prepared statement
-			$selectUsername->execute();
-
-			// get results
-			$result = $selectUsername->get_result();
-			
-			// if the query returned a result i.e. if the username is taken
-			if ($result->fetch_assoc()) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-
-
-		/*
-		*	Query User table for email where email is equal to supplied email
-		*	Checks if a email already exists in the database
-		*
-		*	$dbConnection 	-	database connection object used to prepare an SQL statement
-		*	$email	 		-	email to test
-		*/
-		function doesEmailExist($dbConnection, $email) {
-
-			$selectEmail = $dbConnection->prepare("SELECT `email` FROM `User` WHERE `email` = ?;");
-			$selectEmail->bind_param("s", $email);
-
-			// execute prepared statement
-			$selectEmail->execute();
-
-			// get results
-			$result = $selectEmail->get_result();
-			
-			// if the query returned a result i.e. if the username is taken
-			if ($result->fetch_assoc()) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
 	
 		if (isset($_POST["submit_user"])) {
 
 			session_start();
 
-			// set db connection variables
-			$dbServerName = "localhost";
-			$dbUsername = "root";
-			$dbPassword = "";
-			$dbName = "meetamour";
-		
-			// Create connection
-			$conn = new mysqli($dbServerName, $dbUsername, $dbPassword, $dbName);
+			include('functions/verify.php');
+
 		
 			// Check connection
-			if ($conn->connect_error) {
+			if (!$conn = db_connect()) {
 				die("Connection failed: " . $conn->connect_error);
 			}
 
 			$error = array();
 			$email = $username = $password = $passwordConfirm = $password_hash = $date = "";
-
-			// regex variables
-			$username_regex = "/^[a-zA-Z0-9_\-]{8,30}$/"; // a-z, A-Z, 0-9, '-', '_' (8-30 chars)
-			$password_regex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/"; // one upper and lowercase letter, one num, one special char
 
 			$email = $_POST["email"];
 			$username = $_POST["username"];
@@ -105,39 +42,38 @@
 			$date = date("Y-m-d H:i:s");
 
 
-			// validate user inputted email
-			if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			// verify user inputted email
+			if (!filter_var($email, FILTER_VALIDATE_EMAIL))
 				$error[] = "Invalid email.";
-			}
 
-			if (doesEmailExist($conn, $email)) {
-				$error[] = "Email already taken";
-			}
+			// check if email exists i db
+			if (get_user_attributes_equal_to("email", $email))
+				$error[] = "This email already exists! Click forgot password to reset your password.";
 
-			// validate user inputted username
-			if (!preg_match($username_regex, $username)) {
+			// verify user inputted username
+			if (!verify_username($username))
 				$error[] = "Invalid username.";
-			}
 
-			if (doesUsernameExist($conn, $username)) {
+
+			if (get_user_attributes_equal_to("username", $username)) {
 				$error[] = "Username already taken";
 			}
 
-			// validate user inputted password
-			if (!preg_match($password_regex, $password)) {
-				// if the password doesn't match the regex, add error to error array
+			// verify user inputted password
+			if (!verify_password_form($password)) // if the password doesn't match the regex, add error to error array
 				$error[] = "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.";
-			} elseif ($password != $passwordConfirm) {
-				// if the password doesn't match the confirm password, add error to error array
+			
+			if ($password != $passwordConfirm) // if the password doesn't match the confirm password, add error to error array
 				$error[] = "Passwords do not match.";
-			} else {
-				// if password entered is valid and matches confirm password, hash and store it
-				$password_hash = password_hash($password, PASSWORD_DEFAULT);
-			}
+
 
 			var_dump($error);
 
+			// if no errors were found
 			if (!$error) {
+
+				// hash password
+				$password_hash = password_hash($password, PASSWORD_DEFAULT);
 			
 				// prepare and bind
 				$insertUser = $conn->prepare("INSERT INTO User (`email`, `username`, `password`, `dateCreated`, `lastLogin` ) VALUES (?, ?, ?, ?, ?);");
@@ -147,17 +83,14 @@
 				$insertUser->execute();
 
 				// set session variables
-				$_SESSION["username"] = $username;
-				$_SESSION["email"] = $email;
+				if (!get_all_user_attribute($username))
+					die("Error: User attributes could not be retireved at this time");
+
 				$_SESSION["loggedIn"] = 1;
 
 				echo "output from part 1";
 				echo "<br>";
-				var_dump($_SESSION["username"]);
-				echo "<br>";
-				var_dump($_SESSION["email"]);
-				echo "<br>";
-				var_dump($_SESSION["loggedIn"]);
+				var_dump($_SESSION);
 				echo "<br>";
 			}
 
@@ -171,9 +104,6 @@
 				*	Front end for profile set up goes here!
 				*/
 
-				echo "This is the profile set up part";
-
-
 			}
 
 
@@ -186,7 +116,7 @@
 							<img src="img/img-01.png" alt="IMG">
 						</div>
 
-						<form class="login100-form validate-form" method="POST" action="reg.php">
+						<form class="login100-form validate-form" method="POST" action="registerUser.php">
 							<span class="login100-form-title">
 								Sign Up
 							</span>

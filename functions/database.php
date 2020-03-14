@@ -5,7 +5,7 @@
     *
     *   return  -   mySQLi object on success, 0 on failure
     */
-    function dbConnect() {
+    function db_connect() {
         // set db connection variables
         $dbServerName = "localhost";
         $dbUsername = "root";

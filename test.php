@@ -1,6 +1,6 @@
 <?php
 
-    $tst = array("hello");
+    $tst = "d";
 
     if ($tst)
         echo "1";
