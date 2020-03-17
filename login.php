@@ -15,6 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 <!--===============================================================================================-->
 </head>
+  
 <body><?php
 
 		session_start();
@@ -32,6 +33,10 @@
 			$username = $_POST["username"];
 			$password = $_POST["password"];
 
+
+			if (get_user_attribute($username, "isBanned"))
+				$error[] = "Account banned! If you think this was a mistake, contact us on admin@meetamour.ie!";
+      
 			// verify username form
 			if (!verify_username($username)) {
             	$error[] = "Invalid username: alphanumeric characters, underscores (_) and hyphens (-) only.";
@@ -55,15 +60,16 @@
 				update_user_attribute($username, "lastLogin", date("Y-m-d H:i:s"));
 				$_SESSION["loggedIn"] = 1;
 
+        // if the user previously deactivated their account, activate on login
+			  if (get_user_attribute($username, "isDeactivated") == 1)
+				  update_user_attribute($username, "isDeactivated", 0);
+
 				header('Location: user_profile.php');
 				exit();
-			} else {
-				var_dump($error);
 			}
-
 		} else {
 
-	?>
+	  ?>
 		
 		<div class="limiter">
 			<div class="container-login100">
@@ -73,6 +79,7 @@
 					</div>
 
 					<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+
 						<span class="login100-form-title">
 							Member Login
 						</span>

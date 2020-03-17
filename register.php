@@ -19,15 +19,15 @@
 
 
 	<?php
+
 		// handle form data of register user
 		if (isset($_POST["submit_user"])) {
 
 			session_start();
-
+      
 			include_once('functions/verify.php');
 			include_once('functions/getter.php');
 
-		
 			// Check connection
 			if (!$conn = db_connect()) {
 				die("Connection failed: " . $conn->connect_error);
@@ -38,6 +38,7 @@
 
 			$email = htmlspecialchars($_POST["email"]);
 			$username = htmlspecialchars($_POST["username"]);
+
 			$password = $_POST["password"];
 			$passwordConfirm = $_POST["passwordConfirm"];
 			$date = date("Y-m-d H:i:s");
@@ -66,7 +67,7 @@
 			
 			if ($password != $passwordConfirm) // if the password doesn't match the confirm password, add error to error array
 				$error[] = "Passwords do not match.";
-
+      
 			// if no errors were found
 			if (!$error) {
 
@@ -88,15 +89,17 @@
 
 				header("Location: setup_profile.php");
 				exit();
-
+        
 				echo "output from part 1";
 				echo "<br>";
 				var_dump($_SESSION);
 				echo "<br>";
+
 			} else {
 				var_dump($error);
 			}
 		} else { // register user form ?>
+
 
 			<div class="limiter">
 				<div class="container-login100">
@@ -106,6 +109,7 @@
 						</div>
 
 						<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+
 							<span class="login100-form-title">
 								Sign Up
 							</span>
@@ -156,11 +160,12 @@
 					</div>
 				</div>
 			</div>
+
 		<?php
 		}
 		?>
 
-		
+
 <!--===============================================================================================-->	
 <script src="vendor/jquery/jquery.slim.min.js"></script>
 <!--===============================================================================================-->
