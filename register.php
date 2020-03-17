@@ -89,11 +89,6 @@
 
 				header("Location: setup_profile.php");
 				exit();
-        
-				echo "output from part 1";
-				echo "<br>";
-				var_dump($_SESSION);
-				echo "<br>";
 
 			} else {
 				var_dump($error);

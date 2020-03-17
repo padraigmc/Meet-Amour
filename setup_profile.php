@@ -61,29 +61,15 @@
             $description = htmlspecialchars($_POST["description"]);
             $locationID = "1";
 
-            echo $userID;echo "<BR>";
-			echo $fname;echo "<BR>";
-			echo $lname;echo "<BR>";
-			echo $dob;echo "<BR>";
-			echo $genderID;echo "<BR>";
-			echo $seekingID;echo "<BR>";
-            echo $description;echo "<BR>";
-            echo $locationID;echo "<BR>";
-
-            echo "<BR>";
-
             try {
                 // execute prepared statement
                 if (!($res = $insert->execute()))
                     throw new Exception($insert->error);
-                    var_dump($res);
                     die("Failed to save profile details.");
             } catch (\Throwable $th) {
                 die($th);
             }
         
-            
-
             // set session variables
 			$_SESSION['fname'] = $fname;
 			$_SESSION['lname'] = $lname;
@@ -91,11 +77,6 @@
 			$_SESSION['gender'] = $gender;
 			$_SESSION['seeking'] = $seeking;
 			$_SESSION['description'] = $description;
-
-            echo "session vars after profile set up";
-            echo "<br>";
-            var_dump($_SESSION);
-            echo "<br>";
 			
         } else { // setup profile form ?>
 
