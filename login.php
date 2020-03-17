@@ -15,9 +15,7 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 <!--===============================================================================================-->
 </head>
-<body>
-
-	<?php
+<body><?php
 
 		session_start();
 
@@ -56,8 +54,13 @@
 				get_all_user_attribute($username);
 				update_user_attribute($username, "lastLogin", date("Y-m-d H:i:s"));
 				$_SESSION["loggedIn"] = 1;
+
+				header('Location: user_profile.php');
+				exit();
+			} else {
+				var_dump($error);
 			}
-			
+
 		} else {
 
 	?>
@@ -69,7 +72,7 @@
 						<img src="img/img-01.png" alt="IMG">
 					</div>
 
-					<form class="login100-form validate-form" method="POST" action="index.php">
+					<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 						<span class="login100-form-title">
 							Member Login
 						</span>
@@ -96,7 +99,7 @@
 							<!-- login button -->
 							<div class="container-login100-form-btn">
 									<input class="login100-form-btn" type="submit" name="submit" value="Login">
-								</div>
+							</div>
 						</div>
 
 						<div class="text-center p-t-12">

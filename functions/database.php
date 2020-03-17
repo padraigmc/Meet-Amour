@@ -7,10 +7,10 @@
     */
     function db_connect() {
         // set db connection variables
-        $dbServerName = "localhost";
-        $dbUsername = "root";
-        $dbPassword = "";
-        $dbName = "meetamour";
+        $dbServerName = "hive.csis.ul.ie";
+        $dbUsername = "group13";
+        $dbPassword = "X2KU>WN7b=aM]-&$";
+        $dbName = "dbgroup13"; 
 
         // Create connection
         $conn = new mysqli($dbServerName, $dbUsername, $dbPassword, $dbName);

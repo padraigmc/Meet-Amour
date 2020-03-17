@@ -1,4 +1,3 @@
-CREATE DATABASE dbgroup13;
 USE dbgroup13;
 
 CREATE TABLE `dbgroup13`.`User` ( 
@@ -15,7 +14,7 @@ CREATE TABLE `dbgroup13`.`User` (
 );
 
 CREATE TABLE `dbgroup13`.`Photo` (
-    `photoID` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `photoID` INT(55) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `userID` INT(11) NOT NULL,
     `filePath` VARCHAR(60) NOT NULL,
     `dateUploaded` DATETIME NOT NULL,
@@ -32,7 +31,7 @@ CREATE TABLE `dbgroup13`.`Gender` (
 
 CREATE TABLE `dbgroup13`.`Location` (
     `locationID` INT(2) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `location` VARCHAR(10) NOT NULL
+    `location` VARCHAR(16) NOT NULL
 );
 
 CREATE TABLE `dbgroup13`.`Hobby` (
@@ -54,10 +53,10 @@ CREATE TABLE `dbgroup13`.`UserHobby` (
 );
 
 CREATE TABLE `dbgroup13`.`Notification` (
-    `notificationID` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `notificationID` INT(55) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `fromUserID` INT(11) NOT NULL,
     `toUserID` INT(11) NOT NULL,
-    `message` VARCHAR(200) NOT NULL,
+    `message` VARCHAR(255) NOT NULL,
     `dateSent` DATETIME NOT NULL,
     `seen` TINYINT(1) NOT NULL DEFAULT 0,
     FOREIGN KEY (`fromUserID`)
@@ -86,13 +85,14 @@ CREATE TABLE `dbgroup13`.`Like` (
 );
 
 CREATE TABLE `dbgroup13`.`Message` (
-    `messageID` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `messageID` INT(11) NOT NULL AUTO_INCREMENT,
     `fromUserID` INT(11) NOT NULL,
     `toUserID` INT(11) NOT NULL,
-    `message` VARCHAR(200) NOT NULL,
+    `message` VARCHAR(255) NOT NULL,
     `dateSent` DATETIME NOT NULL,
     `nextBlock` INT(11) NOT NULL,
     `seen` TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (`messageID`, `fromUserID`, `toUserID`),
     FOREIGN KEY (`fromUserID`)
     REFERENCES `User`(`userID`)
         ON UPDATE CASCADE
@@ -111,7 +111,7 @@ CREATE TABLE `dbgroup13`.`Profile` (
     `genderID` INT(1) NOT NULL,
     `seekingID` INT(1) NOT NULL,
     `description` VARCHAR(280) NOT NULL,
-    `locationID` INT(2) NULL DEFAULT NULL,
+    `locationID` INT(2) NOT NULL,
     FOREIGN KEY (`userID`)
     REFERENCES `User`(`userID`)
         ON UPDATE CASCADE
