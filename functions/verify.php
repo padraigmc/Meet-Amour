@@ -33,7 +33,7 @@
     *   return          -   1 on success, 0 (zero) on failure
     */
     function verify_password_hash($username, $password) {
-        $password_hash = get_user_attribute($username, "password");
+        $password_hash = get_user_attribute($username, "passwordHash");
 
         if (password_verify($password, $password_hash)) {
             return 1;

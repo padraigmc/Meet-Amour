@@ -19,14 +19,15 @@
 
 
 	<?php
-	
+
+		// handle form data of register user
 		if (isset($_POST["submit_user"])) {
 
 			session_start();
+      
+			include_once('functions/verify.php');
+			include_once('functions/getter.php');
 
-			include('functions/verify.php');
-
-		
 			// Check connection
 			if (!$conn = db_connect()) {
 				die("Connection failed: " . $conn->connect_error);
@@ -35,8 +36,9 @@
 			$error = array();
 			$email = $username = $password = $passwordConfirm = $password_hash = $date = "";
 
-			$email = $_POST["email"];
-			$username = $_POST["username"];
+			$email = htmlspecialchars($_POST["email"]);
+			$username = htmlspecialchars($_POST["username"]);
+
 			$password = $_POST["password"];
 			$passwordConfirm = $_POST["passwordConfirm"];
 			$date = date("Y-m-d H:i:s");
@@ -65,10 +67,7 @@
 			
 			if ($password != $passwordConfirm) // if the password doesn't match the confirm password, add error to error array
 				$error[] = "Passwords do not match.";
-
-
-			var_dump($error);
-
+      
 			// if no errors were found
 			if (!$error) {
 
@@ -76,7 +75,7 @@
 				$password_hash = password_hash($password, PASSWORD_DEFAULT);
 			
 				// prepare and bind
-				$insertUser = $conn->prepare("INSERT INTO User (`email`, `username`, `password`, `dateCreated`, `lastLogin` ) VALUES (?, ?, ?, ?, ?);");
+				$insertUser = $conn->prepare("INSERT INTO `User` (`email`, `username`, `passwordHash`, `dateCreated`, `lastLogin` ) VALUES (?, ?, ?, ?, ?);");
 				$insertUser->bind_param("sssss", $email, $username, $password_hash, $date, $date);
 			
 				// execute prepared statement
@@ -88,26 +87,19 @@
 
 				$_SESSION["loggedIn"] = 1;
 
+				header("Location: setup_profile.php");
+				exit();
+        
 				echo "output from part 1";
 				echo "<br>";
 				var_dump($_SESSION);
 				echo "<br>";
-			}
 
-
-			if (isset($_POST["submit_profile"])) {
-				# code...
 			} else {
-
-				
-				/*
-				*	Front end for profile set up goes here!
-				*/
-
+				var_dump($error);
 			}
+		} else { // register user form ?>
 
-
-		} else { ?>
 
 			<div class="limiter">
 				<div class="container-login100">
@@ -116,7 +108,8 @@
 							<img src="img/img-01.png" alt="IMG">
 						</div>
 
-						<form class="login100-form validate-form" method="POST" action="registerUser.php">
+						<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+
 							<span class="login100-form-title">
 								Sign Up
 							</span>
@@ -159,7 +152,7 @@
 
 							<div class="text-center p-t-136">
 								<a class="txt2" href="#">
-									<a href="index.php">Login</a>
+									<a href="login.php">Login</a>
 									<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
 								</a>
 							</div>
@@ -167,15 +160,12 @@
 					</div>
 				</div>
 			</div>
-	
+
 		<?php
-
 		}
-
-
 		?>
 
-	
+
 <!--===============================================================================================-->	
 <script src="vendor/jquery/jquery.slim.min.js"></script>
 <!--===============================================================================================-->
