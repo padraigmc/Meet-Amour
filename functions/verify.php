@@ -5,11 +5,11 @@
 
 
     /*
-    *   verify that an inputted password is well formed. e.g. it has an uppercase letter, number, special char etc
-    *
-    *   $password   -   password to check
-    *
-    *   return      -   1 on success, 0 (zero) on failure
+        *   verify that an inputted password is well formed. e.g. it has an uppercase letter, number, special char etc
+        *
+        *   $password   -   password to check
+        *
+        *   return      -   1 on success, 0 (zero) on failure
     */
     function verify_password_form($password) {
         // one upper and lowercase letter, one num, one special char
@@ -25,12 +25,12 @@
 
 
     /*
-    *   Verify that a user's password hash matches the stored password hash
-    *
-    *   $password       -   password to verify
-    *   $password_conf  -   
-    *
-    *   return          -   1 on success, 0 (zero) on failure
+        *   Verify that a user's password hash matches the stored password hash
+        *
+        *   $password       -   password to verify
+        *   $password_conf  -   
+        *
+        *   return          -   1 on success, 0 (zero) on failure
     */
     function verify_password_hash($username, $password) {
         $password_hash = get_user_attribute($username, "passwordHash");
