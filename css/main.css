@@ -189,18 +189,10 @@ body{
   margin-bottom: 180px;
   border-radius: 8px;
   background: #fff;
-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-text-align: center;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
 }
 
-.profile-head h5{
-  color: #cc0099;
-}
-
-.profile-tab p{
-  font-weight: 600;
-  color: #cc0099;
-}
 #picture {
 border-radius: 8px;
 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -210,8 +202,6 @@ box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 margin-right: 15%;
 margin-top: 5%;
 }
-
-
 
 .vl {
 border-left: 1px solid #b5b5b5;
@@ -224,7 +214,6 @@ font-size: 16px;
 line-height: 1;
 margin-left: 20%;
 margin: auto;
-align: center;
 }
 #about {
 padding-top: 30px;
@@ -236,8 +225,20 @@ font-weight: 500;
 padding-left: 2px;
 }
 
-#about {
+.button a{
+  background-color: #ff70db;
+  color: white;
+  padding: 1em 1.5em;
+  text-decoration: none;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
+.button a:hover{
+  background-color: #c926a0;
+}
+/*------------------------------------------------------------------
+[  ]*/
 
 .wrap-login100 {
   width: 960px;
