@@ -1,12 +1,12 @@
 <?php
 
     /*
-    *    Function to calculate the age of a user given their date of birth.
-    *    Supported date formats are ones supported by the strtotime() function. (incl. MySQL's DATETIME data type)
-    *
-    *    $dateOfBirth    -   User's date of birth
-    * 
-    *    return          -   User's age in years on success, zero on failure
+        *    Function to calculate the age of a user given their date of birth.
+        *    Supported date formats are ones supported by the strtotime() function. (incl. MySQL's DATETIME data type)
+        *
+        *    $dateOfBirth    -   User's date of birth
+        * 
+        *    return          -   User's age in years on success, zero on failure
     */
     function calc_age($dateOfBirth) {
 
