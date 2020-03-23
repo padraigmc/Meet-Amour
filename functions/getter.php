@@ -4,11 +4,11 @@
 
 
     /*
-    *   Query database for all attributes from User table relating to the supplied username and sets all resulting fields as session variables
-    *
-    *   $username   -   username of user account to be queried
-    *
-    *   return      -   zero on failure
+        *   Query database for all attributes from User table relating to the supplied username and sets all resulting fields as session variables
+        *
+        *   $username   -   username of user account to be queried
+        *
+        *   return      -   zero on failure
     */
     function get_all_user_attribute($username) {
 
@@ -68,7 +68,7 @@
             session_start();
 
         // connect to database, terminate script on failure
-        if (!$conn = db_connect())
+        if (!$conn = Database::connect())
             return 0;
 
         // prepare and bind statement
@@ -84,31 +84,33 @@
             return 0;
 
         // bind variables to prepared statement
-        if (!$selectAttribute->bind_result($userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID))
+        if (!$selectAttribute->bind_result(
+                                            $_SESSION["userID"], 
+                                            $_SESSION["fname"], 
+                                            $_SESSION["lname"],
+                                            $_SESSION["dob"], 
+                                            $_SESSION["genderID"], 
+                                            $_SESSION["seekingID"], 
+                                            $_SESSION["description"], 
+                                            $_SESSION["locationID"]
+                                        )) {
             return 0;    
+        }
 
         // fetch value(s) and save to array
-        $selectAttribute->fetch();
-        
-        // set all results to session variables
-        $_SESSION["userID"] = $userID;
-        $_SESSION["fname"] = $fname;
-        $_SESSION["lname"] = $lname;
-        $_SESSION["dob"] = $dob;
-        $_SESSION["genderID"] = $genderID;
-        $_SESSION["seekingID"] = $seekingID;
-        $_SESSION["description"] = $description;
-        $_SESSION["locationID"] = $locationID;
-        
-        return 1;
+        if (!$selectAttribute->fetch()) {
+            return 0;
+        } else {        
+            return 1;
+        }
     }
 
     /*
-    *   Query database for an attribute relating to the supplied username
-    *
-    *   $username   -   username of user account to be queried
-    *   $attribute  -   name of attribute (table column) to query
-    *   return      -   (string) a single attribute value on success, zero on failure
+        *   Query database for an attribute relating to the supplied username
+        *
+        *   $username   -   username of user account to be queried
+        *   $attribute  -   name of attribute (table column) to query
+        *   return      -   (string) a single attribute value on success, zero on failure
     */
     function get_user_attribute($username, $attribute) {
 
@@ -142,12 +144,12 @@
     }
 
     /*
-    *   Query the db for a list of specified user attributes with value equal to $value
-    *
-    *   $attribute  -   name of attribute (table column) to query
-    *   $value      -   value of attribute
-    *
-    *   return      -   array of values if values found, otherwise empty array
+        *   Query the db for a list of specified user attributes with value equal to $value
+        *
+        *   $attribute  -   name of attribute (table column) to query
+        *   $value      -   value of attribute
+        *
+        *   return      -   array of values if values found, otherwise empty array
     */  
     function get_user_attributes_equal_to($attribute, $value) {
         

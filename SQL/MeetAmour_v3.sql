@@ -110,7 +110,7 @@ CREATE TABLE `dbgroup13`.`Profile` (
     `dob` DATETIME NOT NULL,
     `genderID` INT(1) NOT NULL,
     `seekingID` INT(1) NOT NULL,
-    `description` VARCHAR(280) NOT NULL,
+    `description` VARCHAR(255) NOT NULL,
     `locationID` INT(2) NOT NULL,
     FOREIGN KEY (`userID`)
     REFERENCES `User`(`userID`)

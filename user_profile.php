@@ -2,14 +2,17 @@
 
     session_start();
 
-    echo "User session var: <br><br>";
-    
-    
-    var_dump($_SESSION);
+    include_once("classes/User.php");
 
-    echo "<br><br>Accessing individual session vars: <br><br>";
-    echo $_SESSION['username'] . "<br>";
-    echo $_SESSION['email'] . "<br>";
-    echo $_SESSION['loggedIn'] . "<br>";
+    echo "Get profile attributes: <br><br>";
+
+    $arr = User::get_all_profile_attributes($_SESSION[User::USER_ID]);
+
+    foreach ($arr as $key => $value) {
+        echo $key . ": " . $value . "<BR>";
+    }
+    
+    
+    
 
 ?>

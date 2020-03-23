@@ -19,6 +19,8 @@
 <body><?php
 
 		session_start();
+		$_SESSION[User::ERROR] = array();
+
 
 		if (isset($_POST["submit"])) {
 
