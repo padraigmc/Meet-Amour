@@ -177,6 +177,68 @@ iframe {
   background: linear-gradient(-135deg, #c92acb, #fc02ff);
 }
 
+  /*//////////////////////////////////////////////////////////////////
+[ user profile ]*/
+
+body{
+  background:linear-gradient(to right,#ff70db,#ffb7ed)
+}
+.main{
+  padding: 50px;
+  margin-top: 0px;
+  margin-bottom: 180px;
+  border-radius: 8px;
+  background: #fff;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+text-align: center;
+}
+
+.profile-head h5{
+  color: #cc0099;
+}
+
+.profile-tab p{
+  font-weight: 600;
+  color: #cc0099;
+}
+#picture {
+border-radius: 8px;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}	
+
+#interests h5 {
+margin-right: 15%;
+margin-top: 5%;
+}
+
+
+
+.vl {
+border-left: 1px solid #b5b5b5;
+height: 300px;
+}
+
+#interests-table {
+margin-top: 5%;
+font-size: 16px;
+line-height: 1;
+margin-left: 20%;
+margin: auto;
+align: center;
+}
+#about {
+padding-top: 30px;
+}
+
+#bio {
+font-size: 16px;
+font-weight: 500;
+padding-left: 2px;
+}
+
+#about {
+}
+
 .wrap-login100 {
   width: 960px;
   background: #fff;
