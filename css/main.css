@@ -168,13 +168,9 @@ iframe {
   justify-content: center;
   align-items: center;
   padding: 15px;
-  background: #9053c7;
   /*//////////////////////////////////////////////////////////////////
 [ change background ]*/
-  background: -webkit-linear-gradient(-135deg, #c92acb, #fc02ff);
-  background: -o-linear-gradient(-135deg, #c92acb, #fc02ff);
-  background: -moz-linear-gradient(-135deg, #c92acb, #fc02ff);
-  background: linear-gradient(-135deg, #c92acb, #fc02ff);
+  background: radial-gradient(#ff70db,#ffb7ed);
 }
 
 .wrap-login100 {
@@ -192,6 +188,56 @@ iframe {
   justify-content: space-between;
   padding: 177px 130px 33px 95px;
 }
+
+  /*//////////////////////////////////////////////////////////////////
+[ user profile ]*/
+
+body{
+    background:linear-gradient(to right,#ff70db,#ffb7ed)
+}
+.emp-profile{
+    padding: 50px;
+    margin-top: 0px;
+    margin-bottom: 180px;
+    border-radius: 8px;
+    background: #fff;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	text-align: center;
+}
+
+.profile-head h5{
+    color: #cc0099;
+}
+
+.profile-tab p{
+    font-weight: 600;
+    color: #cc0099;
+}
+#picture {
+	border-radius: 8px;
+}	
+
+#interests hr {
+	margin-top: 10px;
+	border: 0.5px solid #b5b5b5;
+}
+
+.vl {
+  border-left: 1px solid #b5b5b5;
+  height: 300px;
+}
+
+#interests-table {
+	margin-top: 10px;
+	font-size: 16px;
+	line-height: 1;
+}
+#bio {
+	padding-top: 30px;
+}
+
+
+	
 
 /*------------------------------------------------------------------
 [  ]*/
@@ -396,6 +442,7 @@ iframe {
     padding: 100px 15px 33px 15px;
   }
 }
+
 
 
 /*------------------------------------------------------------------

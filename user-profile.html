@@ -25,6 +25,7 @@
 
   <!-- Custom styles for this template -->
   <link href="css/new-age.min.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
 
 </head>
 
@@ -45,7 +46,7 @@
             <a class="nav-link js-scroll-trigger" href="register.php">Sign up</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#features">About us</a>
+            <a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
           </li>
 		  <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="user-profile.html">Profile</a>
@@ -65,71 +66,92 @@
     <div class="container">
       <div class="row">
         <div class="col-md-8 mx-auto">
-          <h2 class="section-heading">Meet our team! <br> <h3><font color="white"></font></h3></h2>
+          <h2 class="section-heading">Your Profile<br> <h3><font color="white"></font></h3></h2>
           
           <div class="badges">
-            <a class="badge-link" href="#"><img src="img/logo.png" alt=""></a>
+            <img src="img/logo.png" alt="">
             
           </div>
         </div>
       </div>
     </div>
   </section>
-
-  <section class="features" id="features">
-    <div class="container">
-      <div class="section-heading text-center">
-        <h2>MeetAmour Development Team</b></h2>
-        
-        <hr>
-      </div>
-      
-        <div class="col-lg-11.1 my-auto">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="feature-item">
-				<img src="img/damian.png" alt="Damian Larkin" height="200" width="200">
-                  <i class="text-primary"></i>
-                  <h3>Damian Larkin</h3>
-                  <p class="text-muted">Front-end developer (HTML)</p>
+  
+<div class="container-fluid w-75 emp-profile">
+<div class="row">
+	<div class="col-lg-3">
+			<li><img id="picture" src="img/blank-profile.png" alt="" height="300" width="300">
+    </div>	
+    <div class="col-lg-4">
+        <div class="profile-head text-left">
+            <h4 class="font-weight-bold">John Doe</h4>
+            <h5 class="font-weight-bold">22</h5>
+			</br>
+			</br>
+                <div class="tab-content profile-tab">
+                    <div class="row">
+                    <div class="col-md-6">
+						<label>Name</label>
+                    </div>
+                    <div class="col-md-6">
+                        <p>John Doe</p>
+                    </div>
                 </div>
-              </div>	
-              <div class="col-lg-6">
-                <div class="feature-item">
-				<img src="img/padraig.png" alt="Padraig McCarthy" height="200" width="200">
-                  <i class="text-primary"></i>
-                  <h3>Padraig McCarthy</h3>
-                  <p class="text-muted">Back-end developer (MySQL)</p>
+                <div class="row">
+                <div class="col-md-6">
+                    <label>Location</label>
                 </div>
-              </div>
+                <div class="col-md-6">
+                    <p>Limerick</p>
+                </div>
             </div>
             <div class="row">
-              <div class="col-lg-6">
-                <div class="feature-item">
-				<img src="img/ash.png" alt="Ashutosh Yadav" height="200" width="200">
-                  <i class="text-primary"></i>
-                  <h3>Ashutosh Yadav</h3>
-                  <p class="text-muted">Front-end developer (CSS, Bootstrap)</p>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="feature-item">
-				<img src="img/wasim.png" alt="Wasim Ghazal" height="200" width="200">
-                  <i class="text-primary"></i>
-                  <h3>Wasim Ghazal</h3>
-                  <p class="text-muted">Back-end developer (PHP, Database)</p>
-                </div>
-              </div>
+            <div class="col-md-6">
+                <label>Profession</label>
             </div>
-          </div>
+            <div class="col-md-6">
+                <p>Web Developer and Designer</p>
+            </div>
         </div>
-        
-      </div>
-    </div>
-  </section>
+	</div>
+</div>
+</div>
+<div class="vl" col-lg-1> </div>
+<div class="col-lg-4 text-right" id="interests">
+	<h5 class="font-weight-bold">Your Interests</h5>
+	<hr align="right">
+	<table class="table table-sm table-borderless text-right" id="interests-table">
+		<tbody>
+		<tr>
+			<th scope="row"></th>
+			<td>Pop Music</td>
+			<td>Cycling</td>
+		</tr>
+		<tr>
+			<th scope="row"></th>
+			<td>Thriller Movies</td>
+			<td>JavaScript</td>
+		</tr>
+		<tr>
+			<th scope="row"></th>
+			<td>Baking</td>
+			<td>Running</td>
+		</tr>
+		</tbody>
+	</table>
+	
+</div>
+</div>
 
-  <footer>
+	
+<div class="row">
+	<div class="col-lg-2 text-left" id="bio">
+	<h4 class="font-weight-bold">About Me</h4>
+	</div>
+</div>
+</div>
+		
+<footer>
     <div class="container">
       <p>&copy; MeetAmour 2020. All Rights Reserved.</p>
       <ul class="list-inline">
@@ -144,9 +166,9 @@
         </li>
       </ul>
     </div>
-  </footer>
-
-  <!-- Bootstrap core JavaScript -->
+</footer>
+  
+    <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -155,7 +177,7 @@
 
   <!-- Custom scripts for this template -->
   <script src="js/new-age.min.js"></script>
-
-</body>
-
-</html>
+  
+ </body>
+ 
+ </html>
