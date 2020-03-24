@@ -5,6 +5,7 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" href="img/logoalt.png">
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -51,7 +52,7 @@
             <a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
           </li>
 		  <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="user-profile.html">Profile</a>
+            <a class="nav-link js-scroll-trigger" href="#">Profile</a>
           </li>
         </ul>
       </div>
@@ -68,7 +69,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-8 mx-auto">
-          <h2 class="section-heading">Edit Your Profile<br> <h3><font color="white"></font></h3></h2>
+          <h2 class="section-heading">Your Profile<br> <h3><font color="white"></font></h3></h2>
           
           <div class="badges">
             <img src="img/logo.png" alt="">
@@ -80,74 +81,91 @@
   </section>
   
 <div class="container-fluid w-75 main">
-    <div class="row">
-      <div class="col-lg-6">
-        <form id="info">
-            <div class="form-row">
-              <div class="col">
-                <input type="text" class="form-control" id="email" placeholder="First Name" name="fname">
-              </div>
-              <div class="col">
-                <input type="text" class="form-control" placeholder="Last Name" name="lname">
-              </div>
-            </div>
-        </br>
-            <div class="form-row">
-                <div class="col text-left font-weight-bold">
-                    <label for="dob">Date of Birth</label>
-                    <input type="date" class="form-control" name="dob" id="dob">
-                </div>
-                <div class="col text-left font-weight-bold">
-                    <label for="location">Location</label>
-                    <select class="form-control" id="location">
-                        <option value="limerick">Limerick</option>
-                        <option value="cork">Cork</option>
-                        <option value="dublin">Dublin</option>
-                        <option value="galway">Galway</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                
-            <div class="col text-left font-weight-bold">
-                <label for="gender">Gender</label>
-                <select class="form-control" id="gender">
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
-            </div>
-            <div class="col text-left font-weight-bold bottom-div">
-                <label for="seeking">Seeking</label>
-                <select class="form-control" id="seeking">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <textarea class="form-control" rows="4" cols="50" name="bio">Your Bio</textarea>
-            </div>
-          </div>
-            <div class="row">
-              <div class="col submit">
-                <!--Link using JavaScript to act as submit button-->
-                  <a href="javascript:{}" onclick="document.getElementById('info').submit(); return false;">Save</a>
-              </div>
-            </div>
-			</form>
-		</div>
-
-  <div class="col-lg-6">
-    <!--JavaScript upload system to show an image preview-->
-    <form id="upload"></form>
-    <img id="image" alt="" width="300" height="300" />
-    <input type="file" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
-    <a href="javascript:{}" onclick="document.getElementById('upload').submit(); return false;">Upload</a>
-  </form>
+<div class="row">
+	<div class="col-lg-3">
+		<img id="picture" src="img/blank-profile.png" alt="" class="img-fluid" height="300" width="300">
+    </div>	
+    <div class="col-lg-4">
+        <div class="profile-head text-left font-weight-bold">
+            <h4 class="font-weight-bold">John Doe, <span class="text-weight-bold text-primary">22</span></h4>
+			</br>
+			</br>
+                <div class="tab-content profile-tab">
+                  <table class="table table-sm w-75 table-borderless text-left" id="interests-table mx-auto">
+                    <tbody>
+                    <tr>
+                      <th scope="row"></th>
+                      <td class="text-primary">Location</td>
+                      <td>Limerick</td>
+                    </tr>
+                    <tr>
+                      <th scope="row"></th>
+                      <td class="text-primary">Profession</td>
+                      <td>Web Developer & Designer</td>
+                    </tr>
+                    <tr>
+                      <th scope="row"></th>
+                        <td class="text-primary">Looking For</td>
+                        <td>Women</td>
+                    </tr>
+                    <tr>
+                      <th scope="row"></th>
+                      <td colspan="2"></td>
+                      
+                    </tr>
+                    </tbody>
+                  </table>
   </div>
+</div>
+</div>
+<div class="col-lg-1 vl d-none d-sm-block"> </div>
+<div class="col-lg-3 justify-content-center" id="interests">
+	<h5 class="font-weight-bold mx-auto">Your Interests</h5>
+	<table class="table table-sm w-75" id="interests-table">
+		<tbody>
+		<tr>
+			<th scope="row"></th>
+			<td>Pop Music</td>
+			<td>Thriller Movies</td>
+		</tr>
+		<tr>
+			<th scope="row"></th>
+			<td>Cycling</td>
+			<td>JavaScript</td>
+		</tr>
+		<tr>
+			<th scope="row"></th>
+			<td>Baking</td>
+			<td>Running</td>
+		</tr>
+		<tr>
+			<th scope="row"></th>
+			<td colspan="2"></td>
+			
+		</tr>
+		</tbody>
+	</table>
+	
+</div>
+</div>
+
+	
+<div class="row">
+	<div class="col-lg-2 text-left" id="about">
+	<h4 class="font-weight-bold">About Me</h4>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-7">
+		<p class="text-left" id="bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris efficitur posuere purus nec convallis. 
+		Nulla facilisis tempus massa viverra varius. Nunc nulla erat, viverra a leo ut, pulvinar vehicula arcu. 
+		Suspendisse ex tortor, volutpat sit amet lorem nec, porta tempor. </p>
+	</div>
+	<div class="col-lg-2  "></div>
+	<div class="col-lg-3 button align-self-end text-right">
+		<a href="profile-edit.html">Edit Profile</a>
+	</div>
+</div>
 </div>
 </div>
 		
