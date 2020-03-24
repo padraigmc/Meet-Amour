@@ -18,58 +18,22 @@
   
 <body><?php
 
-		session_start();
-
 		if (isset($_POST["submit"])) {
 
-			require_once('functions/setter.php');
-			require_once('functions/getter.php');
-			require_once('functions/verify.php');
-
-			$error = array();
-			$username = $password = "";
-
+			session_start();
+			require_once("classes/User.php");
+			$_SESSION[User::ERROR] = array();
 			
 			$username = $_POST["username"];
 			$password = $_POST["password"];
 
-
-			if (get_user_attribute($username, "isBanned"))
-				$error[] = "Account banned! If you think this was a mistake, contact us on admin@meetamour.ie!";
-      
-			// verify username form
-			if (!verify_username($username)) {
-            	$error[] = "Invalid username: alphanumeric characters, underscores (_) and hyphens (-) only.";
-			}
-
-			// check if username exists in db
-			if (!get_user_attributes_equal_to("username", $username))
-				$error[] = "Username does not exist!";
-
-			// validate password, and get all user attributes as session variables
-			if (!verify_password_form($password))
-				$error[] = "Invalid password: alphanumeric characters, underscores (_) and hyphens (-) only.";
-
-			if (!verify_password_hash($username, $password))
-				$error[] = "Incorrect password!";
-
 			// if error array is empty i.e. no errors
-			if (!$error) {
-				// set user attributes as session variables and set loggedIn session flag, update lastLogin user attribute
-				get_all_user_attribute($username);
-				update_user_attribute($username, "lastLogin", date("Y-m-d H:i:s"));
-				$_SESSION["loggedIn"] = 1;
-
-        // if the user previously deactivated their account, activate on login
-			  if (get_user_attribute($username, "isDeactivated") == 1)
-				  update_user_attribute($username, "isDeactivated", 0);
-
+			if (User::login($username, $password)) {
 				header('Location: user_profile.php');
 				exit();
 			}
 		} else {
-
-	  ?>
+	  	?>
 		
 		<div class="limiter">
 			<div class="container-login100">
@@ -84,7 +48,7 @@
 							Member Login
 						</span>
 
-						<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+						<div class="wrap-input100 validate-input" data-validate = "Valid email is required.">
 							<!-- email form field -->
 							<input class="input100" type="text" name="username" placeholder="Username">
 							<span class="focus-input100"></span>
@@ -120,7 +84,7 @@
 
 						<div class="text-center p-t-136">
 							<a class="txt2" href="#">
-								<a href="reg.php">Create Your Account</a>
+								<a href="register.php">Create Your Account</a>
 								<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
 							</a>
 						</div>
