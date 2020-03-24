@@ -90,7 +90,7 @@
             <h4 class="font-weight-bold">John Doe, <span class="text-weight-bold text-primary">22</span></h4>
 			</br>
 			</br>
-                <div class="tab-content profile-tab">
+                <div class="tab-content profile">
                   <table class="table table-sm w-75 table-borderless text-left" id="interests-table mx-auto">
                     <tbody>
                     <tr>
