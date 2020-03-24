@@ -10,4 +10,9 @@
       echo "0";
   }
 
+    $tst = "d";
+
+    if ($tst)
+        echo "1";
+ 
 ?>
