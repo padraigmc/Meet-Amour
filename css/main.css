@@ -177,6 +177,100 @@ iframe {
   background: linear-gradient(-135deg, #c92acb, #fc02ff);
 }
 
+  /*//////////////////////////////////////////////////////////////////
+[ user profile ]*/
+
+body{
+  background:linear-gradient(to right,#ff70db,#ffb7ed)
+}
+.main{
+  padding: 50px;
+  margin-top: 0px;
+  margin-bottom: 180px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+}
+
+#picture {
+border-radius: 8px;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}	
+
+#interests h5 {
+margin-right: 15%;
+margin-top: 5%;
+}
+
+.vl {
+border-left: 1px solid #b5b5b5;
+height: 300px;
+}
+
+#interests-table {
+margin-top: 5%;
+font-size: 16px;
+line-height: 1;
+margin-left: 20%;
+margin: auto;
+}
+#about {
+padding-top: 30px;
+}
+
+#bio {
+font-size: 16px;
+font-weight: 500;
+padding-left: 2px;
+}
+
+/*user-profile & profile-edit buttons*/
+.main a {
+  background-color: #ff70db;
+  color: white;
+  padding: 1em 1.5em;
+  text-decoration: none;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.main a:hover {
+  background-color: #c926a0;
+}
+
+  /*//////////////////////////////////////////////////////////////////
+[ edit user profile ]*/
+
+.main label {
+  padding-top: 20px;
+  margin-bottom: -10px;
+}
+
+.bottom-div {
+  margin-bottom: 25px;
+}
+
+.main input[type=file] {
+  margin-top: 20px;
+}
+
+#image {
+  border-radius: 4px;
+  border: 1px solid #ff70db;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.main textarea {
+  margin-bottom: 25px;
+}
+
+
+
+
+/*------------------------------------------------------------------
+[  ]*/
+
 .wrap-login100 {
   width: 960px;
   background: #fff;

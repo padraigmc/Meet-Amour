@@ -1,35 +1,18 @@
 <?php
+   
+   session_start();
+   $_SESSION = array();
 
-    // set db connection variables
-    $dbServerName = "localhost";
-    $dbUsername = "root";
-    $dbPassword = "";
-    $dbName = "meetamour";
 
-    // Create connection
-    $conn = new mysqli($dbServerName, $dbUsername, $dbPassword, $dbName);
+   if (isset($_SESSION["test"]) && $_SESSION["test"] == 1) {
+      echo "1";
+  } else {
+      echo "0";
+  }
 
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    $tst = "d";
 
-    $username = "padraiga";
-
-    $selectUsername = $conn->prepare("SELECT `username` FROM `User` WHERE `username` = ?;");
-    $selectUsername->bind_param("s", $username);
-
-    // execute prepared statement
-    $selectUsername->execute();
-
-    // get results
-    $result = $selectUsername->get_result();
-
-    if ($result->fetch_assoc()) {
+    if ($tst)
         echo "1";
-    } else {
-        echo "0";
-    }
-
-
+ 
 ?>
