@@ -99,7 +99,7 @@
                 </div>
                 <div class="col text-left font-weight-bold">
                     <label for="location">Location</label>
-                    <select class="form-control" id="location">
+                    <select class="form-control" id="location" name="location">
                         <option value="limerick">Limerick</option>
                         <option value="cork">Cork</option>
                         <option value="dublin">Dublin</option>
@@ -111,7 +111,7 @@
                 
             <div class="col text-left font-weight-bold">
                 <label for="gender">Gender</label>
-                <select class="form-control" id="gender">
+                <select class="form-control" id="gender" name="gender">
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                   <option value="other">Other</option>
@@ -119,7 +119,7 @@
             </div>
             <div class="col text-left font-weight-bold bottom-div">
                 <label for="seeking">Seeking</label>
-                <select class="form-control" id="seeking">
+                <select class="form-control" id="seeking" name="seeking">
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>
@@ -128,7 +128,7 @@
           </div>
           <div class="row">
             <div class="col">
-              <textarea class="form-control" rows="4" cols="50" name="bio">Your Bio</textarea>
+              <textarea class="form-control" rows="4" cols="50" name="bio" placeholder="About You"></textarea>
             </div>
           </div>
             <div class="row">
