@@ -22,11 +22,10 @@
 
 		// handle form data of register user
 		if (isset($_POST["submit_user"])) {
+			include_once("classes/User.php");
 
 			session_start();
 			$_SESSION[User::ERROR] = array();
-
-			include_once("classes/User.php");
 			
 			$email = $username = $password = $passwordConfirm = $password_hash = "";
 
@@ -37,7 +36,6 @@
 			
 			// Try to register user, if successful redirect to profile set up page
 			if (User::register($email, $username, $password, $passwordConfirm)) {
-				User::get_session_vars($username);
 				header("Location: setup_profile.php");
 				exit();
 			} else {
@@ -67,7 +65,7 @@
 						</div>
 
 						<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-							<input class="input100" type="text" name="email" <?php echo (isset($email)) ? ("value=\"" . $email . "\"") : "placeholder=\"Username\""; ?>>
+							<input class="input100" type="text" name="email" <?php echo (isset($email)) ? ("value=\"" . $email . "\"") : "placeholder=\"Email\""; ?>>
 							<span class="focus-input100"></span>
 							<span class="symbol-input100">
 								<i class="fa fa-envelope" aria-hidden="true"></i>
