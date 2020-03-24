@@ -34,52 +34,6 @@
         //  ======================================================================================================
 
         /*
-            *   Query database for values to be set as session vars
-            *   The values queried should be user attributes that are highly unlikely to change.
-            *   
-            *
-            *   $username   -   username of user account to be queried
-            *
-            *   return      -   zero on failure, one on success
-            */
-        public static function get_session_vars($username) {
-            $sql = "SELECT `userID`, `isAdmin`, `isBanned`, `isDeactivated`, `isVerified`
-                    FROM `User` 
-                    WHERE `username` = ?;";
-
-            try {
-
-                // connect to database, terminate script on failure
-                $conn = Database::connect();
-
-                // prepare, bind and execute sql statement
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $username);
-                if (!$stmt->execute()) return 0;
-                
-                // if sql statement is successful, bind parameters
-                if (!$stmt->bind_result($_SESSION[Self::USER_ID],
-                                        $_SESSION[Self::IS_ADMIN],
-                                        $_SESSION[Self::IS_BANNED],
-                                        $_SESSION[Self::IS_DEACTIVATED],
-                                        $_SESSION[Self::IS_VERIFIED]
-                )) 
-                    return 0; 
-
-                // fetch value(s) and save to array
-                // only one row is returned, so we don't need to iterate throw this to get column values
-                if ($stmt->fetch()) { return 1; } else { return 0; }
-
-            } catch (Throwable $t) {
-                echo $t->getMessage();
-                return 0;
-            } finally {
-                $stmt->close();
-                $conn->close();
-            }
-        }
-
-        /*
             *   Query database for all attributes from User table relating to the supplied username.
             *   Sets qeury results as session variables
             *
@@ -299,6 +253,73 @@
 
 
         /*
+            *   Query database for values to be set as session vars
+            *   The values queried should be user attributes that are highly unlikely to change.
+            *   
+            *
+            *   $username   -   username of user account to be queried
+            *
+            *   return      -   zero on failure, one on success
+            */
+        public static function set_session_vars($username) {
+            $sql = "SELECT `userID`, `isAdmin`, `isBanned`, `isDeactivated`, `isVerified`
+                    FROM `User` 
+                    WHERE `username` = ?;";
+
+            try {
+
+                // connect to database, terminate script on failure
+                $conn = Database::connect();
+
+                // prepare, bind and execute sql statement
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("s", $username);
+                if (!$stmt->execute()) return 0;
+                
+                // if sql statement is successful, bind parameters
+                if (!$stmt->bind_result($_SESSION[Self::USER_ID],
+                                        $_SESSION[Self::IS_ADMIN],
+                                        $_SESSION[Self::IS_BANNED],
+                                        $_SESSION[Self::IS_DEACTIVATED],
+                                        $_SESSION[Self::IS_VERIFIED]
+                )) 
+                    return 0; 
+
+                // fetch value(s) and save to array
+                // only one row is returned, so we don't need to iterate throw this to get column values
+                if ($stmt->fetch()) {
+                    return 1; 
+                } else { 
+                    return 0; 
+                }
+
+            } catch (Throwable $t) {
+                echo $t->getMessage();
+                return 0;
+            } finally {
+                $stmt->close();
+                $conn->close();
+            }
+        }
+
+        /*
+            *   Chcecks if the loggedIn session variable is set and equal to 1
+            *   
+            *
+            *   $username   -   username of user account to be queried
+            *
+            *   return      -   zero on failure, one on success
+            */
+        public static function isLoggedIn() {
+            if (isset($_SESSION[Self::LOGGED_IN]) && $_SESSION[Self::LOGGED_IN] == 1) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+
+        /*
             *   Update an attribute relating to the supplied username
             *
             *   $username   -   username of user account to be queried
@@ -368,6 +389,7 @@
                     // if sql query is true, return userID else 0
                     if ($stmt->execute()) {
                         // set session variable logged in
+                        User::set_session_vars($username);
                         $_SESSION[self::LOGGED_IN] = 1;
                         return 1;
                     } else {
@@ -429,7 +451,25 @@
             }
         }
 
-        public static function login() {
+        public static function login($username, $password) {
+
+            // test login, if successful set session variables
+            if (Verify::verify_login($username, $password)) {
+                User::set_session_vars($username);
+
+                // add error to list if user account is banned
+                if ($_SESSION[User::IS_BANNED]) {
+                    $_SESSION[User::ERROR][] = UserError::ACCOUNT_BANNED;
+                }
+            }
+            
+            // if no errors found, set loggedIn session var and return 1, else return 0
+            if (empty($_SESSION[Self::ERROR])) {
+                $_SESSION[User::LOGGED_IN] = 1;
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 ?>
