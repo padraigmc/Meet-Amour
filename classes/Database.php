@@ -2,6 +2,9 @@
 
     class Database
     {
+        const INDEX = "index.html";
+
+
         /*
         *   Connect to the MySQL database.
         *

@@ -74,15 +74,20 @@ class Verify
         *
         *   return      -   1 on success, 0 (zero) on failure
         */
-    public static function verify_username_login($username) {
-        // test username format
-        if (!Verify::verify_username_form($username))
-            $_SESSION[User::ERROR][] = UserError::USERNAME_INVALID_FORMAT;
+    public static function verify_login($username, $password) {
 
+        // test username
+        if (!Verify::verify_username_form($username) || !User::get_user_attributes_equal_to("username", $username)) {
+            $_SESSION[User::ERROR][] = UserError::LOGIN_ERROR;
+            return 0;
 
-        // test if username exists
-        if (!User::get_user_attributes_equal_to("username", $username))
-            $_SESSION[User::ERROR][] = UserError::ACCOUNT_NOT_FOUND;
+        } else if (!Self::verify_password_form($password) || !Self::verify_password_hash($username, $password)) {
+            $_SESSION[User::ERROR][] =  UserError::PASSWORD_INCORRECT;
+            return 0;
+
+        } else { // credentials verified successfully
+            return 1;
+        }
     }
 
 
@@ -103,26 +108,6 @@ class Verify
         
         if ($password != $password_conf) // if the password doesn't match the confirm password, add error to error array
             $_SESSION[User::ERROR][] = UserError::PASSWORD_MISMATCH;
-    }
-
-    /*
-        *   Verify an inputted password for login.
-        *   Adds an error message to session var when error found
-        *   Session must be active and variable 'error' must be declares as an array to function properly.
-        *   Session var does not have to be empty.
-        *
-        *   $password   -   password to check
-        *
-        *   return      -   1 on success, 0 (zero) on failure
-        */
-    public static function verify_password_login($username, $password) {
-        // validate password, and get all user attributes as session variables
-        if (!Self::verify_password_form($password))
-            $_SESSION[User::ERROR][] =  UserError::PASSWORD_INVALID_FORMAT;
-
-        // compare hashed user inputted password with stored password hash
-        if (!Self::verify_password_hash($username, $password))
-            $_SESSION[User::ERROR][] = UserError::PASSWORD_INCORRECT;
     }
 
 
@@ -153,7 +138,7 @@ class Verify
         *   return          -   1 on success, 0 (zero) on failure
         */
     public static function verify_password_hash($username, $password) {
-        $password_hash = get_user_attribute($username, "passwordHash");
+        $password_hash = User::get_user_attribute($username, "passwordHash");
 
         if (password_verify($password, $password_hash)) {
             return 1;

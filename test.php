@@ -1,15 +1,13 @@
 <?php
    
    session_start();
+   $_SESSION = array();
 
-   $_SESSION["error"] = array();
 
-   $_SESSION["error"][] = "1";
-   $_SESSION["error"][] = "2";
-   $_SESSION["error"][] = "3";
-   $_SESSION["error"][] = "4";
-   $_SESSION["error"][] = "5";
-
-   var_dump($_SESSION["error"]);
+   if (isset($_SESSION["test"]) && $_SESSION["test"] == 1) {
+      echo "1";
+  } else {
+      echo "0";
+  }
 
 ?>
