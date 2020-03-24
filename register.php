@@ -36,7 +36,7 @@
 			
 			// Try to register user, if successful redirect to profile set up page
 			if (User::register($email, $username, $password, $passwordConfirm)) {
-				header("Location: setup_profile.php");
+				header("Location: profile_edit.php");
 				exit();
 			} else {
 				var_dump($_SESSION);

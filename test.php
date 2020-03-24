@@ -1,18 +1,17 @@
 <?php
    
    session_start();
-   $_SESSION = array();
+   $_SESSION["error"] = array();
+
+   require_once("classes/User.php");
 
 
-   if (isset($_SESSION["test"]) && $_SESSION["test"] == 1) {
-      echo "1";
-  } else {
-      echo "0";
-  }
+   $test = null;
 
-    $tst = "d";
+   function test($var) {
+       echo (!isset($var)) ? "1" : "0";
+   }
 
-    if ($tst)
-        echo "1";
+   test($test);
  
 ?>
