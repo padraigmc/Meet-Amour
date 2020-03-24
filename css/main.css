@@ -225,7 +225,8 @@ font-weight: 500;
 padding-left: 2px;
 }
 
-.button a{
+/*user-profile & profile-edit buttons*/
+.main a {
   background-color: #ff70db;
   color: white;
   padding: 1em 1.5em;
@@ -234,9 +235,24 @@ padding-left: 2px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.button a:hover{
+.main a:hover {
   background-color: #c926a0;
 }
+
+  /*//////////////////////////////////////////////////////////////////
+[ edit user profile ]*/
+
+.main label {
+  padding-top: 20px;
+  margin-bottom: -10px;
+}
+
+.bottom-div {
+  margin-bottom: 25px;
+}
+
+
+
 /*------------------------------------------------------------------
 [  ]*/
 
