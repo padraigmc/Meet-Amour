@@ -129,15 +129,21 @@
             <div class="row">
               <div class="col submit">
                 <!--Link using JavaScript to act as submit button-->
-                  <a href="javascript:{}" onclick="document.getElementById('info').submit(); return false;">Submit</a>
+                  <a href="javascript:{}" onclick="document.getElementById('info').submit(); return false;">Save</a>
               </div>
             </div>
-        </div>
-        </form>
-    </div>
+			</form>
+		</div>
 
   <div class="col-lg-6">
+    <!--JavaScript upload system to show an image preview-->
+    <form id="upload"></form>
+    <img id="image" alt="" width="300" height="300" />
+    <input type="file" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
+    <a href="javascript:{}" onclick="document.getElementById('upload').submit(); return false;">Upload</a>
+  </form>
   </div>
+</div>
 </div>
 		
 <footer>
