@@ -51,7 +51,7 @@
             <a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
           </li>
 		  <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="user-profile.html">Profile</a>
+            <a class="nav-link js-scroll-trigger" href="user_profile.php">Profile</a>
           </li>
         </ul>
       </div>
