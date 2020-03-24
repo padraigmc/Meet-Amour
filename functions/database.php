@@ -1,9 +1,9 @@
 <?php
 
     /*
-    *   Connect to the MySQL database.
-    *
-    *   return  -   mySQLi object on success, 0 on failure
+        *   Connect to the MySQL database.
+        *
+        *   return  -   mySQLi object on success, 0 on failure
     */
     function db_connect() {
         // set db connection variables
