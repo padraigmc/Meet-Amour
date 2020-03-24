@@ -90,7 +90,7 @@
             <h4 class="font-weight-bold">John Doe, <span class="text-weight-bold text-primary">22</span></h4>
 			</br>
 			</br>
-                <div class="tab-content profile-tab">
+                <div class="tab-content profile">
                   <table class="table table-sm w-75 table-borderless text-left" id="interests-table mx-auto">
                     <tbody>
                     <tr>
@@ -118,35 +118,42 @@
   </div>
 </div>
 </div>
-<div class="col-lg-1 vl d-none d-sm-block"> </div>
-<div class="col-lg-3 justify-content-center" id="interests">
+<div class="vl d-none d-sm-block"> </div>
+<div class="col-lg-2 justify-content-center" id="interests">
 	<h5 class="font-weight-bold mx-auto">Your Interests</h5>
-	<table class="table table-sm w-75" id="interests-table">
+  <table class="table table-sm w-75 table-borderless" id="interests-table">
 		<tbody>
 		<tr>
 			<th scope="row"></th>
 			<td>Pop Music</td>
-			<td>Thriller Movies</td>
 		</tr>
 		<tr>
 			<th scope="row"></th>
 			<td>Cycling</td>
-			<td>JavaScript</td>
 		</tr>
 		<tr>
 			<th scope="row"></th>
 			<td>Baking</td>
-			<td>Running</td>
 		</tr>
-		<tr>
+      <tr>
 			<th scope="row"></th>
-			<td colspan="2"></td>
-			
+			<td>Thriller Movies</td>
+    </tr>
+    <tr>
+			<th scope="row"></th>
+			<td>JavaScript</td>
+    </tr>
+    <tr>
+			<th scope="row"></th>
+			<td>Running</td>
 		</tr>
 		</tbody>
 	</table>
 	
 </div>
+  <div class="col-lg-2 button align-self-start text-right">
+		<a href="profile-edit.php">Edit Profile</a>
+	</div>
 </div>
 
 	
@@ -160,10 +167,6 @@
 		<p class="text-left" id="bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris efficitur posuere purus nec convallis. 
 		Nulla facilisis tempus massa viverra varius. Nunc nulla erat, viverra a leo ut, pulvinar vehicula arcu. 
 		Suspendisse ex tortor, volutpat sit amet lorem nec, porta tempor. </p>
-	</div>
-	<div class="col-lg-2  "></div>
-	<div class="col-lg-3 button align-self-end text-right">
-		<a href="profile-edit.html">Edit Profile</a>
 	</div>
 </div>
 </div>

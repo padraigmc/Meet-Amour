@@ -188,7 +188,8 @@ body{
   margin-top: 0px;
   margin-bottom: 180px;
   border-radius: 8px;
-  background: #fff;
+  background: rgb(51, 51, 51);
+  color: #f1f1f1;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-align: center;
 }
@@ -198,9 +199,14 @@ border-radius: 8px;
 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }	
 
+.main table {
+  color: #f1f1f1;
+}
+
 #interests h5 {
 margin-right: 15%;
 margin-top: 5%;
+color: #f1f1f1;
 }
 
 .vl {
@@ -214,6 +220,8 @@ font-size: 16px;
 line-height: 1;
 margin-left: 20%;
 margin: auto;
+padding: 0px;
+color: #f1f1f1;
 }
 #about {
 padding-top: 30px;
@@ -223,13 +231,16 @@ padding-top: 30px;
 font-size: 16px;
 font-weight: 500;
 padding-left: 2px;
+color: #f1f1f1;
 }
 
 /*user-profile & profile-edit buttons*/
 .main a {
+  display: inline-block;
   background-color: #ff70db;
   color: white;
-  padding: 1em 1.5em;
+  margin-top: 0px;
+  padding: 13px 20px;
   text-decoration: none;
   border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -264,11 +275,18 @@ padding-left: 2px;
 .main textarea {
   margin-bottom: 25px;
 }
-
-.main upload {
-  margin-top: 20px
+input[type=submit] {
+  background-color: #ff70db;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+input[type=submit]:hover {
+  background-color: #c926a0;
+}
 
 
 
