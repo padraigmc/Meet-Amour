@@ -5,6 +5,7 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" href="img/logoalt.png">
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -135,6 +136,7 @@
               <div class="col submit">
                 <!--Link using JavaScript to act as submit button-->
                   <a href="javascript:{}" onclick="document.getElementById('info').submit(); return false;">Save</a>
+                <!--end-->
               </div>
             </div>
 			</form>
@@ -145,7 +147,10 @@
     <form id="upload"></form>
     <img id="image" alt="" width="300" height="300" />
     <input type="file" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
+    <!--end-->
+    <!--Link using JS for submit button-->
     <a href="javascript:{}" onclick="document.getElementById('upload').submit(); return false;">Upload</a>
+    <!--end-->
   </form>
   </div>
 </div>
