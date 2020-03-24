@@ -132,10 +132,8 @@
             </div>
           </div>
             <div class="row">
-              <div class="col submit">
-                <!--Link using JavaScript to act as submit button-->
-                  <a href="javascript:{}" onclick="document.getElementById('info').submit(); return false;">Save</a>
-                <!--end-->
+              <div class="col">
+                  <input type="submit" value="Save">
               </div>
             </div>
 			</form>
@@ -147,9 +145,7 @@
     <img id="image" alt="" width="300" height="300" />
     <input type="file" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
     <!--end-->
-    <!--Link using JS for submit button-->
-    <a href="javascript:{}" onclick="document.getElementById('upload').submit(); return false;">Upload</a>
-    <!--end-->
+    <input type="submit" value="Upload">
   </form>
   </div>
 </div>
