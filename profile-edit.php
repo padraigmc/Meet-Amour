@@ -29,7 +29,6 @@
   <link href="css/main.css" rel="stylesheet">
 
 </head>
-
 <body id="page-top">
 
   <!-- Navigation -->
