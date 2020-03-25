@@ -233,18 +233,21 @@
 				
 		<footer>
 			<div class="container">
-			<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
-			<ul class="list-inline">
-				<li class="list-inline-item">
-				<a href="#">Privacy</a>
-				</li>
-				<li class="list-inline-item">
-				<a href="#">Terms</a>
-				</li>
-				<li class="list-inline-item">
-				<a href="#">FAQ</a>
-				</li>
-			</ul>
+				<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
+				<ul class="list-inline">
+					<li class="list-inline-item">
+						<a href="#">Privacy</a>
+					</li>
+					<li class="list-inline-item">
+						<a href="#">Terms</a>
+					</li>
+					<li class="list-inline-item">
+						<a href="#">FAQ</a>
+					</li>
+        			<li class="list-inline-item">
+          				<a href="admin.php">Admin</a>
+        			</li>
+				</ul>
 			</div>
 		</footer>
   
