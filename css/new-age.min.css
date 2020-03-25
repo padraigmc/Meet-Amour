@@ -1475,6 +1475,16 @@ section.features .feature-item i{
    -webkit-background-clip:text;
    -webkit-text-fill-color:transparent
 }
+section.profile {
+  background: none !important;
+  background-image: url('img/landing.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+body, html {
+  background: none !important;
+}
 section.cta{
    position:relative;
    padding:250px 0;
@@ -1600,6 +1610,10 @@ footer ul li a.active,footer ul li a:active,footer ul li a:focus,footer ul li a:
 .btn-xl{
    font-size:11px;
    padding:15px 45px
+}
+
+.main {
+  background: red;
 }
 
 

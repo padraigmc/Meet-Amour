@@ -78,7 +78,8 @@
       </div>
     </div>
   </section>
-  
+
+<section class="profile text-center" id="profile">
 <div class="container-fluid w-75 main">
     <div class="row">
       <div class="col-lg-6">
@@ -150,6 +151,7 @@
   </div>
 </div>
 </div>
+</section>
 		
 <footer>
     <div class="container">
