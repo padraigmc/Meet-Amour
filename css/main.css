@@ -133,6 +133,17 @@ iframe {
 /*//////////////////////////////////////////////////////////////////
 [ admin  ]*/
 
+.admin-main{
+  padding: 50px;
+  margin-top: 0px;
+  margin-bottom: 180px;
+  border-radius: 8px;
+  background: #121212;
+  color: #f1f1f1;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+}
+
 #admin-top {
   margin-left: 20px;
   margin-right: 20px;
@@ -140,11 +151,19 @@ iframe {
 
 #top-1, #top-2 {
   color: grey;
-  background-color: white;
+  background-color: #1f1b24;
   border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin-bottom: 20px;
 }
 
+#top-1 #user-table {
+  color: white;
+}
+
+#top-1 h3 {
+  margin: 10px;
+}
 
 
 /*//////////////////////////////////////////////////////////////////
