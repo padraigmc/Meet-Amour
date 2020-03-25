@@ -67,7 +67,22 @@
 
 <section class="admin-top bg-primary" id="admin-top">
     <div class="container-fluid w-100 main">
-        <div class="row">
+    <div class="form-row">
+    <div class="col-lg-1 main mx-auto" id="button-col">
+    <div class="dropright w-100" id="dropbtn">
+      <a type="button" class="dropdown-toggle" data-toggle="dropdown" value="Manage Users">
+      <div class="dropdown-menu mx-auto text-center">
+        <a href="#" class="button w-100">View All Users</a>
+        <a href="#" class="button w-100">Ban Appeals</a>
+        <a href="#" class="button w-100">Manage Users</a>
+      </div>
+    </div>
+      <a href="#" class="button w-100">Manage Users</a>
+      <a href="#" class="button w-100">Ban Appeals</a>
+      <a href="#" class="button w-100">Manage Users</a>
+    </div>
+    <div class="col-lg-11">
+        <div class="form-row">
             <div class="col-lg-5 mx-auto" id="top-1">
                 <h3 class="text-primary table-striped font-weight-bold">Active Users</h3>
                 <table class="table" id="user-table">
@@ -111,7 +126,7 @@
                 <h1>Side 2</h1>
             </div>
 </div>
-            <div class="row">
+            <div class="form-row">
             <div class="col-lg-5 mx-auto" id="top-1">
                 <h3 class="text-primary font-weight-bold">Admin Users</h3>
                 <table class="table" id="user-table">
@@ -143,6 +158,8 @@
                 <h1>Side 2</h1>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 </section>
 

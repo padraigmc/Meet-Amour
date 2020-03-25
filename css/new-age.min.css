@@ -1290,6 +1290,7 @@ section h2{
 }
 #mainNav{
    border-color:rgba(34,34,34,.05);
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
    transition:all .35s;
    font-family:Catamaran,Helvetica,Arial,sans-serif;
    font-weight:200;
@@ -1407,7 +1408,8 @@ header.masthead .device-container .screen img{
 }
 section.download{
    position:relative;
-   padding:90px 0
+   padding:90px 0;
+   box-shadow: 0 12px 12px -12px #333;
 }
 section.download h2{
    font-size:50px;

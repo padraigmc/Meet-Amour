@@ -165,6 +165,41 @@ iframe {
   margin: 10px;
 }
 
+#button-col  {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#button-col a {
+  margin-top: -15px;
+  margin-bottom: 20px;
+}
+
+.dropdown-menu {
+  background: #fff;
+  border-radius: 4px;
+  padding: 5px;
+  padding-top: 20px;
+  padding-bottom: 0px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#dropbtn {
+  display: inline-block;
+  background-color: #ff70db;
+  color: white;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  padding: 13px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#dropbtn:hover {
+  background-color: #c926a0;
+}
+
 
 /*//////////////////////////////////////////////////////////////////
 [ Utility ]*/
