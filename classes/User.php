@@ -14,6 +14,7 @@
         const IS_VERIFIED = "isVerified";
         const ERROR = "error";
         const LOGGED_IN = "loggedIn"; // flag set to 1 if user is logged in, else 0
+        const NEW_USER = "newUser";
 
         // not needed?
         const USERNAME = "username"; // not needed?
@@ -209,6 +210,7 @@
 
                 // fetch values and save to array
                 if ($stmt->fetch()) {
+                    $vals = array();
                     // Populate array to be returned
                     $vals[Self::USER_ID] = $userID;
                     $vals[Self::FIRST_NAME] = $firstName;
@@ -238,6 +240,22 @@
         
                 // Query database for below statement, return mysqli result object
                 $sql = "SELECT `genderID`, `gender` FROM `Gender`";
+                return $conn->query($sql);
+            } catch (Throwable $t) {
+                echo $t->getMessage();
+                return 0;
+            }
+    
+        }
+
+
+        public static function get_all_locations() {
+            try {
+                // connect to database, terminate script on failure
+                $conn = Database::connect();
+        
+                // Query database for below statement, return mysqli result object
+                $sql = "SELECT `locationID`, `location` FROM `Location`";
                 return $conn->query($sql);
             } catch (Throwable $t) {
                 echo $t->getMessage();
@@ -356,6 +374,63 @@
             }
         }
 
+        public static function set_profile_attributes($userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $newUser = 0) {
+            // test user inputted string lengths
+            if (strlen($fname) < 1) $_SESSION[Self::ERROR][] = UserError::NAME_SHORT;
+            if (strlen($fname) > 30) $_SESSION[Self::ERROR][] = UserError::NAME_LONG;
+            if (strlen($description) > 255) $_SESSION[Self::ERROR][] = UserError::DESCRIPTION_LONG;
+
+            // if the error session variable is not empty, return a failure
+            if (!empty($_SESSION[Self::ERROR]))
+                return 0;
+
+            try {            
+
+                // Open connection
+                $conn = Database::connect();
+
+                echo $newUser;
+                echo "<BR>";
+                
+                // if a new row is to be inserted
+                if ($newUser) {
+                    // set sql statement
+                    $sql = "INSERT INTO `Profile` (`userID`, `fname`, `lname`, `dob`, `genderID`, `seekingID`, `description`, `locationID`) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+                
+                    // prepare bind and execute prepared statement
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ssssssss", $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID);
+
+                    var_dump($stmt);
+
+                // update a row
+                } else {
+                    // set sql statement
+                    $sql = "UPDATE `Profile` 
+                            SET `fname` = ?, `lname` = ?, `dob` = ?, `genderID` = ?, `seekingID` = ?, `description` = ?, `locationID` = ? 
+                            WHERE `userID` = ?;";
+
+                    // prepare bind and execute prepared statement
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ssssssss", $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $userID);
+                }
+
+                // if statement execution is a success, return 1, else 0
+                if ($stmt->execute() && $stmt->affected_rows == 1) {
+                    echo "execute 1";
+                    return 1;
+                } else {
+                    echo $sql;
+                    echo $stmt->error;
+                    return 0;
+            }
+
+            } catch (Throwable $t) {
+                echo $t->getMessage();
+            }
+        }
+
 
 //  ======================================================================================================
 //                                                  Methods
@@ -388,9 +463,8 @@
                 
                     // if sql query is true, return userID else 0
                     if ($stmt->execute()) {
-                        // set session variable logged in
                         User::set_session_vars($username);
-                        $_SESSION[self::LOGGED_IN] = 1;
+                        $_SESSION[self::LOGGED_IN] = 1; // set session variable logged in
                         return 1;
                     } else {
                         return 0;
@@ -432,10 +506,8 @@
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("ssssssss", $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID);
                     if ($stmt->execute()) {
-                        echo "2<BR>";
                         return 1;
                     } else {
-                        echo $stmt->error . "<BR>";
                         return 0;
                     }
 
@@ -469,6 +541,24 @@
                 return 1;
             } else {
                 return 0;
+            }
+        }
+
+
+        /*
+        *   Used to display variable value in an form input element if it is NOT null
+        *   If the variable is null, a placeholder will be displayed
+        *
+        *   $value                  -   value to display if it is not null
+        *   $placeholder_string     -   string to display as a placeholder if value is null
+        *
+        *   return                  -   string containing the 'value' or 'placeholder' form input attribute
+        */
+        public static function populate_form_input($value, $placeholder_string) {
+            if (isset($value)) {
+                return "value=\"" . $value . "\"";
+            } else {
+                return "placeholder=\"" . $placeholder_string . "\"";
             }
         }
     }
