@@ -19,11 +19,11 @@
         include_once("init.php");
         $_SESSION[User::USER_ID] = 7;
 
-        echo User::upload_image($_SESSION[User::USER_ID], "userImage");
+        echo User::upload_user_image($_SESSION[User::USER_ID], "userImage");
 
         sleep(2);
 
-        echo User::delete_image($_SESSION[User::USER_ID]);
+        echo User::delete_user_image($_SESSION[User::USER_ID]);
 
       }
     ?>
