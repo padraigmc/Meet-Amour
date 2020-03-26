@@ -75,7 +75,6 @@
 				$success = 0;
 			}
 
-			echo $success;
 			if ($success) {
 				header("Location: user_profile.php");
 				exit();
@@ -100,8 +99,11 @@
 			$seeking = $profileAttr[User::SEEKING];
 			$description = $profileAttr[User::DESCRIPTION];
 			$location = $profileAttr[User::LOCATION];
-
-			$profile_image_path = User::USER_IMAGES . User::get_user_image_filename($userID);
+			echo "1";
+			
+			if ($profile_image_path = User::get_user_image_filename($userID)) {
+				$profile_image_path = User::USER_IMAGES . $profile_image_path;
+			}
 		} else {
 			// if no rows were returned, a row must be inserted
 			$newUser = true;
@@ -223,7 +225,7 @@
 				</div>
 				<div class="col-lg-6 m-auto">
 					<!--JavaScript upload system to show an image preview-->
-					<img id="image" alt="" width="300" height="300" <?php echo (isset($profile_image_path)) ? "src=\"" . $profile_image_path . "\"" : ""; ?> />
+					<img id="image" alt="" width="300" height="300" src="<?php echo ($profile_image_path) ? $profile_image_path : "img/blank-profile.png"; ?>" />
 					<input type="file" class="mx-auto" name="userImage" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
 				</div>
 				<div class="form-row">
