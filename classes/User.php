@@ -390,9 +390,6 @@
 
                 // Open connection
                 $conn = Database::connect();
-
-                echo $newUser;
-                echo "<BR>";
                 
                 // if a new row is to be inserted
                 if ($newUser) {
@@ -403,8 +400,6 @@
                     // prepare bind and execute prepared statement
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("ssssssss", $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID);
-
-                    var_dump($stmt);
 
                 // update a row
                 } else {
@@ -419,8 +414,7 @@
                 }
 
                 // if statement execution is a success, return 1, else 0
-                if ($stmt->execute() && $stmt->affected_rows == 1) {
-                    echo "execute 1";
+                if ($stmt->execute()) {
                     return 1;
                 } else {
                     echo $sql;
@@ -564,7 +558,7 @@
             }
         }
 
-        public static function get_user_image_path($userID) {
+        public static function get_user_image_filename($userID) {
             if (!isset($userID) || $userID < 1)
                 return 0;
 
@@ -582,7 +576,7 @@
                 // get result
                 $stmt->bind_result($fileName);
                 $stmt->fetch();
-                return (User::USER_IMAGES . $fileName);
+                return ($fileName);
             } else {
                 return 0;
             }
@@ -594,7 +588,7 @@
                 return 0;
 
             // if the user doesn't have an image, return 0
-            if (!($filePath = User::get_user_image_path($userID))) {
+            if (!($filePath = User::get_user_image_filename($userID))) {
                 return 0;
             }
 
@@ -605,9 +599,12 @@
                 return 0;
 
             if ($stmt = $conn->prepare($sql)) {
-                $stmt->bind_param("s", $$filePath);
+                $stmt->bind_param("s", $filePath);
                 $stmt->execute();
-                unlink($filePath);
+            }
+
+            if ($stmt->affected_rows > 0) {
+                unlink(User::USER_IMAGES . $filePath);
                 return 1;
             } else {
                 return 0;
@@ -621,7 +618,7 @@
             $target_dir = User::USER_IMAGES;
 
             // if the user already has an image, delete it
-            User::delete_user_image($userID);
+            echo "<br>delete -" . User::delete_user_image($userID);
 
             // get full filename incl. extension
             $ext = pathinfo($_FILES[$fileInputName]["name"], PATHINFO_EXTENSION);
