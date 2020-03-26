@@ -20,9 +20,8 @@
 
 		if (isset($_POST["submit"])) {
 
-			session_start();
-			require_once("classes/User.php");
-			$_SESSION[User::ERROR] = array();
+			// session start, include User.php and declare error session var
+			require_once("init.php");
 			
 			$username = $_POST["username"];
 			$password = $_POST["password"];

@@ -16,7 +16,7 @@ CREATE TABLE `dbgroup13`.`User` (
 CREATE TABLE `dbgroup13`.`Photo` (
     `photoID` INT(55) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `userID` INT(11) NOT NULL,
-    `filePath` VARCHAR(60) NOT NULL,
+    `fileName` VARCHAR(60) NOT NULL,
     `dateUploaded` DATETIME NOT NULL,
     FOREIGN KEY (`userID`)
     REFERENCES `User`(`userID`)

@@ -22,10 +22,9 @@
 
 		// handle form data of register user
 		if (isset($_POST["submit_user"])) {
-			include_once("classes/User.php");
-
-			session_start();
-			$_SESSION[User::ERROR] = array();
+			
+			// session start, include User.php and declare error session var
+			require_once("init.php");
 			
 			$email = $username = $password = $passwordConfirm = $password_hash = "";
 
