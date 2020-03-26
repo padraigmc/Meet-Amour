@@ -29,6 +29,8 @@
         const SEEKING = "seeking";
         const DESCRIPTION = "description";
         const LOCATION = "location";
+
+        const USER_IMAGES = "user_images/";
      
         //  ======================================================================================================
         //                                                  Getters
@@ -560,6 +562,116 @@
             } else {
                 return "placeholder=\"" . $placeholder_string . "\"";
             }
+        }
+
+        public static function get_user_image_path($userID) {
+            if (!isset($userID) || $userID < 1)
+                return 0;
+
+            $fileName = "";
+            $sql = "SELECT `fileName` 
+                    FROM `Photo` 
+                    WHERE `userID` = ?;";
+            
+            $conn = Database::connect();
+            if ($stmt = $conn->prepare($sql)) {
+                // params and execute
+                $stmt->bind_param("s", $userID);
+                $stmt->execute(); 
+
+                // get result
+                $stmt->bind_result($fileName);
+                $stmt->fetch();
+                return (User::USER_IMAGES . $fileName);
+            } else {
+                return 0;
+            }
+        }
+
+
+        public static function delete_user_image($userID) {
+            if (!isset($userID) || $userID < 1)
+                return 0;
+
+            // if the user doesn't have an image, return 0
+            if (!($filePath = User::get_user_image_path($userID))) {
+                return 0;
+            }
+
+            $sql = "DELETE FROM `Photo` 
+                    WHERE `fileName` = ?;";
+            
+            if (!$conn = Database::connect())
+                return 0;
+
+            if ($stmt = $conn->prepare($sql)) {
+                $stmt->bind_param("s", $$filePath);
+                $stmt->execute();
+                unlink($filePath);
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+
+        public static function upload_user_image($userID, $fileInputName) {
+            $dateUploaded = date("Y-m-d H:i:s");
+            $milliseconds = round(microtime(true) * 1000);
+            $target_dir = User::USER_IMAGES;
+
+            // if the user already has an image, delete it
+            User::delete_user_image($userID);
+
+            // get full filename incl. extension
+            $ext = pathinfo($_FILES[$fileInputName]["name"], PATHINFO_EXTENSION);
+            $filename_orig = pathinfo($_FILES[$fileInputName]["name"], PATHINFO_FILENAME);
+            $filename = substr($filename_orig, 0, 30) . "_" . $milliseconds . "." . $ext;
+            $target_file = $target_dir . $filename;
+            
+            // Check if image file is a actual image or fake image
+            if(getimagesize($_FILES[$fileInputName]["tmp_name"]) === false) {
+                $_SESSION[User::ERROR][] = UserError::IMAGE_UNSUPPORTED;
+                return 0;
+            }            
+            
+            // Check file size 2MB
+            if ($_FILES[$fileInputName]["size"] > 2097152) {
+                $_SESSION[User::ERROR][] = UserError::IMAGE_LARGE;
+                return 0;
+            }
+
+            // Allow certain file formats
+            if($ext != "jpg" && $$ext != "png" && $$ext != "jpeg" && $$ext != "gif" ) {
+                $_SESSION[User::ERROR][] = UserError::IMAGE_UNSUPPORTED;
+                return 0;
+            }
+
+            // try to move file to target folder
+            if (move_uploaded_file($_FILES[$fileInputName]["tmp_name"], $target_file)) {
+                $sql = "INSERT INTO `Photo` (`userID`, `fileName`, `dateUploaded`) 
+                        VALUES (?, ?, ?);";
+
+                $conn = Database::connect();
+                $stmt = $conn->prepare($sql);
+                if (!$stmt->bind_param("sss", $userID, $filename, $dateUploaded)) 
+                    return 0;
+        
+                // if sql query is true, return userID else 0
+                if ($stmt->execute()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+                
+
+            } else {
+                $_SESSION[User::ERROR][] = UserError::GENERAL_ERROR;
+                $conn->close();
+                return 0;
+            }
+            
+            $conn->close();
         }
     }
 ?>
