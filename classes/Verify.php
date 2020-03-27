@@ -158,7 +158,7 @@ class Verify
     public static function verify_username_form($username) {
 
         // verify user inputted username
-        if (preg_match("/^[a-zA-Z0-9_\-]{8,30}$/", $username)) {
+        if (preg_match("/^[a-zA-Z0-9_\-]{4,30}$/", $username)) {
             return 1;
         } else {
             return 0;
