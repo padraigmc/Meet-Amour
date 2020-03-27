@@ -640,7 +640,7 @@
 
         public static function upload_user_image($userID, $fileInputName) {
             $dateUploaded = date("Y-m-d H:i:s");
-            $milliseconds = round(microtime(true) * 1000);
+            $epoch_milli = round(microtime(true) * 1000);
             $target_dir = User::USER_IMAGES;
 
             // if the user already has an image, delete it
@@ -648,8 +648,8 @@
 
             // get full filename incl. extension
             $ext = pathinfo($_FILES[$fileInputName]["name"], PATHINFO_EXTENSION);
-            $filename_orig = pathinfo($_FILES[$fileInputName]["name"], PATHINFO_FILENAME);
-            $filename = substr($filename_orig, 0, 30) . "_" . $milliseconds . "." . $ext;
+            $filename_original = pathinfo($_FILES[$fileInputName]["name"], PATHINFO_FILENAME);
+            $filename = substr($filename_original, 0, 30) . "_" . $epoch_milli . "." . $ext;
             $target_file = $target_dir . $filename;
             
             // Check if image file is a actual image or fake image
