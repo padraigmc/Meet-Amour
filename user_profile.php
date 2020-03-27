@@ -240,6 +240,9 @@
         </li>
         <li class="list-inline-item">
           <a href="#">FAQ</a>
+        <li class="list-inline-item">
+          <a href="admin.php">Admin</a>
+        </li>
         </li>
       </ul>
     </div>

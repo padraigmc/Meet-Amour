@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Login V1</title>
+	<title>MeetAmour - Login</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="img/logoalt.png">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="img/icons/favicon.ico"/>
+	<link rel="icon" type="image/png" href="img/logoalt.png"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.css">
 <!--===============================================================================================-->
@@ -82,10 +83,8 @@
 						</div>
 
 						<div class="text-center p-t-136">
-							<a class="txt2" href="#">
-								<a href="register.php">Create Your Account</a>
+								<a href="register.php" class="txt1">Create Your Account</a>
 								<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-							</a>
 						</div>
 					</form>
 				</div>
