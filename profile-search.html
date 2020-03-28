@@ -25,38 +25,106 @@
 
   <!-- Custom styles for this template -->
   <link href="css/new-age.min.css" rel="stylesheet">
+<style>
+  .slidecontainerage {
+    width: 15%;
+  }
 
-  <style>
-    .slider {
-  -webkit-appearance: none;
-  width: 10%;
-  height: 25px;
-  background: #d3d3d3;
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+  .togglegender {
+    width: 15%;
+  }
+  
+  .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+  
+  .slider:hover {
+    opacity: 1;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+
+  .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
 }
 
-.slider:hover {
-  opacity: 1;
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 25px;
-  height: 25px;
-  background: #4CAF50;
+.slider2 {
+  position: absolute;
   cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
 }
 
-.slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  background: #4CAF50;
-  cursor: pointer;
+.slider2:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
 }
+
+input:checked + .slider2 {
+  background-color: #2196F3;
+}
+
+input:focus + .slider2 {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider2:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider2.round {
+  border-radius: 34px;
+}
+
+.slider2.round:before {
+  border-radius: 50%;
+}
+
   </style>
 
 </head>
@@ -120,10 +188,90 @@
 
 
 <section class="features" id="features">
-  <div class="slidecontainer">
-    <p>Choose your preferred age</p>
-    <input type="range" min="18" max="40" value="18" class="slider" id="myRange">
-    <p>Value: <span id="value"></span></p>
+
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      
+  
+
+<div id="container_3">
+  <div class="partner_search">
+    <div class="inner_border">
+      <div class="form_container">
+        <h3>Partner Search</h3>
+        <form action="#" method="get">
+          <fieldset>
+          <div class="search_row">
+            <div class="search_column_1">
+              <label>I am a</label>
+            </div>
+            <div class="search_column_2">
+              <select class="gender">
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+              <label>Seeking a</label>
+              <select class="gender">
+                <option>Female</option>#
+                <option>Male</option>
+              </select>
+            </div>
+          </div>
+          <div class="search_row">
+            <div class="search_column_1">
+              <label>Looking for a</label>
+            </div>
+            <div class="search_column_2">
+              <select class="date">
+                <option>Date</option>
+                <option>One Night Stand</option>
+                <option>Relationship</option>
+              </select>
+            </div>
+          </div>
+          <div class="search_row">
+            <div class="search_column_1">
+              <label>I was born</label>
+            </div>
+            <div class="search_column_2">
+              <select class="dob">
+                <option>Month</option>
+              </select>
+              <select class="dob">
+                <option>Date</option>
+              </select>
+              <select class="dob">
+                <option>Year</option>
+              </select>
+            </div>
+          </div>
+          <div class="search_row">
+            <div class="search_column_1">
+              <label>By Profile ID</label>
+            </div>
+            <div class="search_column_2">
+              <input type="text" name="" value="" />
+              <label class="check">With Photo</label>
+              <input type="checkbox" name="" value="" class="checkbox"/>
+            </div>
+          </div>
+          <div class="search_row last">
+            <div class="search_column_1">&nbsp;</div>
+            <div class="search_column_2">
+              <input type="image" src="img/search_btn.png" class="search_btn"/>
+            </div>
+          </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="slidecontainerage">
+    <p style="text-align:center;">Choose your preferred age</p>
+    <input type="range" min="18" max="30" value="22" class="slider" id="myRange">
+    <p style="text-align:center;">Value: <span id="value"></span></p>
   </div>
   
   <script>
@@ -135,37 +283,27 @@
     output.innerHTML = this.value;
   }
   </script>
+
+</div>
+</div>
+
       
-      <hr>
-    </div>
+
     
-      <div class="col-lg-11.1 my-auto">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-6">
-              
-            </div>
-            <div class="col-lg-6">
-              <div class="feature-item">
-                
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="feature-item">
-               
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="feature-item">
-                
-              </div>
-            </div>
-          </div>
+      
+</section>
+
+<section class="download bg-primary text-center" id="download">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 mx-auto">
+        <h2 class="section-heading">Results <br> <h3><font color="white"> </font></h3></h2>
+        
+        <div class="badges">
+          <a class="badge-link" href="#"><img src="img/logo.png" alt=""></a>
+          
         </div>
       </div>
-      
     </div>
   </div>
 </section>
