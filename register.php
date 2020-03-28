@@ -25,6 +25,7 @@
 			
 			// session start, include User.php and declare error session var
 			require_once("init.php");
+			$conn = Database::connect();
 			
 			$email = $username = $password = $passwordConfirm = $password_hash = "";
 
@@ -34,7 +35,7 @@
 			$passwordConfirm = htmlspecialchars($_POST["passwordConfirm"]);
 			
 			// Try to register user, if successful redirect to profile set up page
-			if (User::register($email, $username, $password, $passwordConfirm)) {
+			if (User::register($conn, $email, $username, $password, $passwordConfirm)) {
 				header("Location: profile-edit.php");
 				exit();
 			} else {
@@ -115,5 +116,8 @@
 	<!--===============================================================================================-->
 	<script src="js/main.js"></script>
 
+	<?php
+		$conn->close();
+	?>
 </body>
 </html>

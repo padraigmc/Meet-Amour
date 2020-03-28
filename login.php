@@ -23,12 +23,13 @@
 
 			// session start, include User.php and declare error session var
 			require_once("init.php");
+			$conn = Database::connect();
 			
 			$username = $_POST["username"];
 			$password = $_POST["password"];
 
 			// if error array is empty i.e. no errors
-			if (User::login($username, $password)) {
+			if (User::login($conn, $username, $password)) {
 				header('Location: user_profile.php');
 				exit();
 			}
@@ -94,6 +95,7 @@
 		<?php
 
 		}
+		$conn->close();
 
 		?>
 	

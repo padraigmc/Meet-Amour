@@ -33,20 +33,21 @@
 <body id="page-top">
 	<?php
 
-	require_once("init.php");
+  require_once("init.php");
+  $conn = Database::connect();
 	// presume the user does NOT own the profile
 	$owner = 0;
 	// if username supplied by get variable (in url), query db for userID
 	if (isset($_GET[User::USERNAME])) {
 		$username = $_GET[User::USERNAME];
-		$userID = User::get_user_attribute($username, User::USER_ID);
+		$userID = User::get_user_attribute($conn, $username, User::USER_ID);
 	} else {
 		// if user owns the page
 		$userID = $_SESSION[User::USER_ID];
 		$owner = 1;
 	}
 
-	if ($userID > 0 && $profileAttr = User::get_all_profile_attributes($userID)) {
+	if ($userID > 0 && $profileAttr = User::get_all_profile_attributes($conn, $userID)) {
 		// set user variables
 		$fname = $profileAttr[User::FIRST_NAME];
 		$lname = $profileAttr[User::LAST_NAME];
@@ -56,13 +57,13 @@
 		$description = $profileAttr[User::DESCRIPTION];
 		$location = $profileAttr[User::LOCATION];
 
-		if ($profile_image_path = User::get_user_image_filename($userID)) {
+		if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
 			$profile_image_path = User::USER_IMAGES . $profile_image_path;
 		}
 	} else {
 		// if the profile does not have a row in the table
 		if ($owner) {
-			header("Location: profile-edit.php");
+      header("Location: profile-edit.php");
 			exit();
 		} else {
 			$_SESSION[User::ERROR][] = UserError::PROFILE_UNAVAILABLE;
@@ -258,6 +259,9 @@
   <!-- Custom scripts for this template -->
   <script src="js/new-age.min.js"></script>
   
+  <?php
+		$conn->close();
+	?>
  </body>
  
  </html>

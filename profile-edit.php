@@ -34,6 +34,9 @@
 
 		// session start, include User.php and declare error session var
 		require_once("init.php");
+		$conn = Database::connect();
+
+		$profile_image_path = null;
 
 		// if the user isn't logged in, redirect to homepage
 		if (!User::isLoggedIn()) {
@@ -43,9 +46,9 @@
 		// set time variables - used for html date input
 		$date_current = date("Y-m-d");
 		$date_min = date("Y-m-d", strtotime("-120 year", time()));
-		$success = 1;
 
 		if (isset($_POST["submit"])) {
+			$success = 1;
 			// check if row is to be inserted or updated
 			$newUser = $_POST["newUser"];
 
@@ -61,18 +64,13 @@
 
 
 			// update or insert new profile data - dependent on value of $newUser
-			if (!User::set_profile_attributes($userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $newUser)) {
+			if (!User::set_profile_attributes($conn, $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $newUser)) {
 				$success = 0;
-				echo "<BR><BR><BR><BR><BR><BR><BR><BR>profile";
-				var_dump($_SESSION);
 			}
 
-			// upload image if onne use submitted
-			if (isset($_FILES['userImage']['tmp_name'])) {
-				User::upload_user_image($_SESSION[User::USER_ID], 'userImage');
-			} else {
-				echo "<BR><BR><BR><BR><BR><BR><BR><BR>file";
-				$success = 0;
+			// upload image if one use submitted
+			if (isset($_FILES['userImage']['tmp_name']) && $_FILES['userImage']['name'] != "") {
+				User::upload_user_image($conn, $_SESSION[User::USER_ID], 'userImage');
 			}
 
 			if ($success) {
@@ -82,13 +80,14 @@
 				$_SESSION[User::ERROR][] = UserError::GENERAL_ERROR;
 			}
 
+		} else {
 		}
 
 		$profileAttr = array();
 		$userID = $fname = $lname = $dob = $gender = $seeking = $description = $location = null;
 
 		// try get profile data
-		if ($profileAttr = User::get_all_profile_attributes($_SESSION[User::USER_ID])) {
+		if ($profileAttr = User::get_all_profile_attributes($conn, $_SESSION[User::USER_ID])) {
 			$newUser = false;
 
 			$userID = $profileAttr[User::USER_ID];
@@ -99,9 +98,8 @@
 			$seeking = $profileAttr[User::SEEKING];
 			$description = $profileAttr[User::DESCRIPTION];
 			$location = $profileAttr[User::LOCATION];
-			echo "1";
 			
-			if ($profile_image_path = User::get_user_image_filename($userID)) {
+			if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
 				$profile_image_path = User::USER_IMAGES . $profile_image_path;
 			}
 		} else {
@@ -178,7 +176,7 @@
 							<label for="location">Location</label>
 							<select class="form-control" id="location" name="location"><?php
 							// output dynamically generated dropdown list of all the available genders to choose from
-							$genders = User::get_all_locations();
+							$genders = User::get_all_locations($conn);
 							$id = 0;
 							while($row = $genders->fetch_assoc()) {
 								// populate option with information pulled from database
@@ -193,7 +191,7 @@
 							<label for="gender">Gender</label>
 							<select class="form-control" id="gender" name="gender"><?php
 								// output dynamically generated dropdown list of all the available genders to choose from
-								$genders = User::get_all_genders();
+								$genders = User::get_all_genders($conn);
 								$id = 0;
 								while($row = $genders->fetch_assoc()) {
 									// populate option with information pulled from database
@@ -206,7 +204,7 @@
 							<label for="seeking">Seeking</label>
 							<select class="form-control" id="seeking" name="seeking"><?php
 								// output dynamically generated dropdown list of all the available genders to choose from
-								$genders = User::get_all_genders();
+								$genders = User::get_all_genders($conn);
 								$id = 0;
 								while($row = $genders->fetch_assoc()) {
 									// populate option with information pulled from database
@@ -273,6 +271,9 @@
 	<!-- Custom scripts for this template -->
 	<script src="js/new-age.min.js"></script>
   
+	<?php
+		$conn->close();
+	?>
  </body>
  
  </html>

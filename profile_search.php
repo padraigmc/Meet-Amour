@@ -8,12 +8,13 @@
 <body>
     <?php
         require_once("init.php");
+        $conn = Database::connect();
         $results = array();
             
         if (isset($_GET["submit"])) {
             $name_search = $_GET["search"];
             
-            $results = User::profile_search($name_search);
+            $results = User::profile_search($conn, $name_search);
         }
 
 

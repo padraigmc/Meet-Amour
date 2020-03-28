@@ -13,13 +13,13 @@ class Verify
         *
         *   return  -   1 on success, 0 (zero) on failure
         */
-    public static function verify_email_register($email) {
+    public static function verify_email_register($dbConnection, $email) {
         // verify email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL))
 				$_SESSION[User::ERROR][] = UserError::EMAIL_INVALID_FORMAT;
 
         // check if email exists in db
-        if (User::get_user_attributes_equal_to("email", $email))
+        if (User::get_user_attributes_equal_to($dbConnection, "email", $email))
             $_SESSION[User::ERROR][] = UserError::EMAIL_EXISTS;
     }
 
@@ -33,13 +33,13 @@ class Verify
         *
         *   return  -   1 on success, 0 (zero) on failure
         */
-    public static function verify_email_login($email) {
+    public static function verify_email_login($dbConnection, $email) {
         // verify email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL))
                 $_SESSION[User::ERROR][] = UserError::EMAIL_INVALID_FORMAT;
 
         // check if email exists i db
-        if (!User::get_user_attributes_equal_to("email", $email))
+        if (!User::get_user_attributes_equal_to($dbConnection, "email", $email))
             $_SESSION[User::ERROR][] = UserError::ACCOUNT_NOT_FOUND;
     }
 
@@ -53,14 +53,14 @@ class Verify
         *
         *   return      -   1 on success, 0 (zero) on failure
         */
-    public static function verify_username_register($username) {
+    public static function verify_username_register($dbConnection, $username) {
         // test username format
         if (!Verify::verify_username_form($username))
             $_SESSION[User::ERROR][] = UserError::USERNAME_INVALID_FORMAT;
 
 
         // test if username already exists
-        if (User::get_user_attributes_equal_to("username", $username))
+        if (User::get_user_attributes_equal_to($dbConnection, "username", $username))
             $_SESSION[User::ERROR][] = UserError::USERNAME_EXISTS;
     }
 
@@ -74,14 +74,14 @@ class Verify
         *
         *   return      -   1 on success, 0 (zero) on failure
         */
-    public static function verify_login($username, $password) {
+    public static function verify_login($dbConnection, $username, $password) {
 
         // test username
-        if (!Verify::verify_username_form($username) || !User::get_user_attributes_equal_to("username", $username)) {
+        if (!Verify::verify_username_form($username) || !User::get_user_attributes_equal_to($dbConnection, "username", $username)) {
             $_SESSION[User::ERROR][] = UserError::LOGIN_ERROR;
             return 0;
 
-        } else if (!Self::verify_password_form($password) || !Self::verify_password_hash($username, $password)) {
+        } else if (!Self::verify_password_form($password) || !Self::verify_password_hash($dbConnection, $username, $password)) {
             $_SESSION[User::ERROR][] =  UserError::PASSWORD_INCORRECT;
             return 0;
 
@@ -137,8 +137,8 @@ class Verify
         *
         *   return          -   1 on success, 0 (zero) on failure
         */
-    public static function verify_password_hash($username, $password) {
-        $password_hash = User::get_user_attribute($username, "passwordHash");
+    public static function verify_password_hash($dbConnection, $username, $password) {
+        $password_hash = User::get_user_attribute($dbConnection, $username, "passwordHash");
 
         if (password_verify($password, $password_hash)) {
             return 1;
