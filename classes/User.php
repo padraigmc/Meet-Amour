@@ -16,8 +16,7 @@
         const LOGGED_IN = "loggedIn"; // flag set to 1 if user is logged in, else 0
         const NEW_USER = "newUser";
 
-        // not needed?
-        const USERNAME = "username"; // not needed?
+        const USERNAME = "username";
         const EMAIL = "email";
         const PASSWORD = "password";
         const DATE_CREATED = "dateCreated";
@@ -29,6 +28,9 @@
         const SEEKING = "seeking";
         const DESCRIPTION = "description";
         const LOCATION = "location";
+
+        const USER_IMAGES = "user_images/";
+        const DEFAULT_USER_IMAGE = "img/blank-profile.png";
      
         //  ======================================================================================================
         //                                                  Getters
@@ -42,7 +44,7 @@
             *
             *   return      -   zero on failure, one on success
             */
-        public static function get_all_user_attributes($username) {
+        public static function get_all_user_attributes($dbConnection, $username) {
             $userID = $email = $password = $dateCreated = $lastLogin = $isAdmin = $isBanned = $isDeactivated = $isVerified = "";
             $vals = array();
             $sql = "SELECT `userID`, `email`, `username`, `passwordHash`, `dateCreated`, `lastLogin`, `isAdmin`, `isBanned`, `isDeactivated`, `isVerified` 
@@ -51,11 +53,8 @@
 
             try {
 
-                // connect to database, terminate script on failure
-                $conn = Database::connect();
-
                 // prepare, bind and execute sql statement
-                $stmt = $conn->prepare($sql);
+                $stmt = $dbConnection->prepare($sql);
                 $stmt->bind_param("s", $username);
                 if (!$stmt->execute()) return 0;
                 
@@ -88,7 +87,6 @@
                 return 0;
             } finally {
                 $stmt->close();
-                $conn->close();
             }
         }
 
@@ -100,24 +98,26 @@
             *
             *   return      -   (string) a single attribute value on success, zero on failure
             */
-        public static function get_user_attribute($username, $attribute) {
+        public static function get_user_attribute($dbConnection, $username, $attribute) {
+            $val ="";
             $sql = "SELECT {$attribute} FROM `User` WHERE `username` = ?;";
 
             try {
-                // connect to database
-                $conn = Database::connect();
 
                 // prepare, bind and execute statement
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $username);
-                if (!$stmt->execute()) return 0;
+                if ($stmt = $dbConnection->prepare($sql)) {
+                    $stmt->bind_param("s", $username);
+                    $stmt->execute();
 
-                // statement was succesful, bind result
-                if (!$stmt->bind_result($val)) return 0;
-                
-                // fetch result and return it
-                if ($stmt->fetch()) {
-                    return $val;
+                    // statement was succesful, bind result
+                    $stmt->bind_result($val);
+                    
+                    // fetch result and return it
+                    if ($stmt->fetch()) {
+                        return $val;
+                    } else {
+                        return 0;
+                    }
                 } else {
                     return 0;
                 }
@@ -126,8 +126,7 @@
                 return 0;
             } finally {
                 $stmt->close();
-                $conn->close();
-            }            
+            }
         }
 
         /*
@@ -138,16 +137,15 @@
             *
             *   return      -   array of values if values found, otherwise empty array
             */  
-        public static function get_user_attributes_equal_to($attribute, $value) {
+        public static function get_user_attributes_equal_to($dbConnection, $attribute, $value) {
             $sql = "SELECT {$attribute} FROM `User` WHERE {$attribute} = ?;";
             $arr = array();
+            $val = "";
 
             try {
-                // connect to database, terminate script on failure
-                $conn = Database::connect();
 
                 // prepare, bind ad execute statement
-                $stmt = $conn->prepare($sql);
+                $stmt = $dbConnection->prepare($sql);
                 $stmt->bind_param("s", $value);
                 if (!$stmt->execute()) return 0;
 
@@ -171,7 +169,6 @@
                 return 0;
             } finally {
                 $stmt->close();
-                $conn->close();
             }
         }
 
@@ -183,7 +180,8 @@
             *
             *   return      -   zero on failure, one on success
             */
-        public static function get_all_profile_attributes($userID) {
+        public static function get_all_profile_attributes($dbConnection, $userID) {
+            $firstName = $lastName = $dob = $gender = $seeking = $description = $location = "";
             $sql = "SELECT p.`userID`, p.`fname`, p.`lname`, p.`dob`, g.`gender`, s.`gender` AS `seeking`, p.`description`, l.`location`
                     FROM `Profile` AS `p`, 
                             `Gender` AS `g`, 
@@ -195,15 +193,14 @@
                             p.`locationID` = l.`locationID`;";
 
             try {
-                // connect to database, terminate script on failure
-                $conn = Database::connect();
 
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $userID);
+                $stmt = $dbConnection->prepare($sql);
+
+                $stmt->bind_param("i", $userID);
                 
                 // execute statement, terminate script on failure
                 if (!$stmt->execute()) return 0;
-
+                
                 // bind variables for fetch
                 if (!$stmt->bind_result($userID, $firstName, $lastName, $dob, $gender, $seeking, $description, $location))
                     return 0;
@@ -229,18 +226,15 @@
                 echo $t->getMessage();
             } finally {
                 $stmt->close();
-                $conn->close();
             }
         }
 
-        public static function get_all_genders() {
+        public static function get_all_genders($dbConnection) {
             try {
-                // connect to database, terminate script on failure
-                $conn = Database::connect();
         
                 // Query database for below statement, return mysqli result object
                 $sql = "SELECT `genderID`, `gender` FROM `Gender`";
-                return $conn->query($sql);
+                return $dbConnection->query($sql);
             } catch (Throwable $t) {
                 echo $t->getMessage();
                 return 0;
@@ -249,19 +243,48 @@
         }
 
 
-        public static function get_all_locations() {
+        public static function get_all_locations($dbConnection) {
             try {
-                // connect to database, terminate script on failure
-                $conn = Database::connect();
-        
                 // Query database for below statement, return mysqli result object
                 $sql = "SELECT `locationID`, `location` FROM `Location`";
-                return $conn->query($sql);
+                return $dbConnection->query($sql);
+
             } catch (Throwable $t) {
                 echo $t->getMessage();
                 return 0;
             }
     
+        }
+
+        public static function profile_search($dbConnection, $name, $rowOffset = 0) {
+            $sql = "SELECT p.`userID`, concat(p.`fname`, ' ', p.`lname`) AS `name`, p.`dob`, g.`gender`, s.`gender` AS `seeking`, p.`description`, l.`location`
+            FROM `Profile` AS `p`, 
+                    `Gender` AS `g`, 
+                    `Gender` AS `s`, 
+                    `Location` AS `l`
+            WHERE concat(p.`fname`, p.`lname`) LIKE ? AND 
+                    p.`genderID` = g.`genderID` AND 
+                    p.`seekingID` = s.`genderID` AND
+                    p.`locationID` = l.`locationID`
+            LIMIT ?, 10;";
+
+            $name = str_replace(array("?", "%"), "", $name);
+            $name = "%" . $name . "%";
+
+            $stmt = $dbConnection->prepare($sql);
+            $stmt->bind_param("si", $name, $rowOffset);
+            
+            // execute statement, terminate script on failure
+            if (!$stmt->execute()) return 0;
+
+            $result = $stmt->get_result();
+            $rows = array();
+
+            while($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
+            $stmt->close();
+            return $rows;
         }
 
 
@@ -279,18 +302,15 @@
             *
             *   return      -   zero on failure, one on success
             */
-        public static function set_session_vars($username) {
+        public static function set_session_vars($dbConnection, $username) {
             $sql = "SELECT `userID`, `isAdmin`, `isBanned`, `isDeactivated`, `isVerified`
                     FROM `User` 
                     WHERE `username` = ?;";
 
             try {
 
-                // connect to database, terminate script on failure
-                $conn = Database::connect();
-
                 // prepare, bind and execute sql statement
-                $stmt = $conn->prepare($sql);
+                $stmt = $dbConnection->prepare($sql);
                 $stmt->bind_param("s", $username);
                 if (!$stmt->execute()) return 0;
                 
@@ -316,7 +336,6 @@
                 return 0;
             } finally {
                 $stmt->close();
-                $conn->close();
             }
         }
 
@@ -346,15 +365,13 @@
             *
             *   return      -   one on success, zero on failure
             */
-        public static function update_user_attribute($username, $attribute, $newValue) {
+        public static function update_user_attribute($dbConnection, $username, $attribute, $newValue) {
             $sql = "UPDATE `User` SET {$attribute} = ?  WHERE `username` = ?;";
 
             try {
-                // connect to database, terminate script on failure
-                $conn = Database::connect();
 
                 // prepare and bind statement
-                $stmt = $conn->prepare($sql);
+                $stmt = $dbConnection->prepare($sql);
                 $stmt->bind_param("ss", $newValue, $username);
                 
                 // execute statement, terminate script on failure
@@ -370,11 +387,11 @@
                 return 0;
             } finally {
                 $stmt->close();
-                $conn->close();
             }
         }
 
-        public static function set_profile_attributes($userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $newUser = 0) {
+        public static function set_profile_attributes($dbConnection, $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $newUser = 0) {
+            
             // test user inputted string lengths
             if (strlen($fname) < 1) $_SESSION[Self::ERROR][] = UserError::NAME_SHORT;
             if (strlen($fname) > 30) $_SESSION[Self::ERROR][] = UserError::NAME_LONG;
@@ -384,13 +401,7 @@
             if (!empty($_SESSION[Self::ERROR]))
                 return 0;
 
-            try {            
-
-                // Open connection
-                $conn = Database::connect();
-
-                echo $newUser;
-                echo "<BR>";
+            try {
                 
                 // if a new row is to be inserted
                 if ($newUser) {
@@ -399,10 +410,8 @@
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
                 
                     // prepare bind and execute prepared statement
-                    $stmt = $conn->prepare($sql);
+                    $stmt = $dbConnection->prepare($sql);
                     $stmt->bind_param("ssssssss", $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID);
-
-                    var_dump($stmt);
 
                 // update a row
                 } else {
@@ -412,19 +421,16 @@
                             WHERE `userID` = ?;";
 
                     // prepare bind and execute prepared statement
-                    $stmt = $conn->prepare($sql);
+                    $stmt = $dbConnection->prepare($sql);
                     $stmt->bind_param("ssssssss", $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $userID);
                 }
 
                 // if statement execution is a success, return 1, else 0
-                if ($stmt->execute() && $stmt->affected_rows == 1) {
-                    echo "execute 1";
+                if ($stmt->execute()) {
                     return 1;
                 } else {
-                    echo $sql;
-                    echo $stmt->error;
                     return 0;
-            }
+                }
 
             } catch (Throwable $t) {
                 echo $t->getMessage();
@@ -436,46 +442,47 @@
 //                                                  Methods
 //  ======================================================================================================
 
-        public static function register($email, $username, $password, $passwordConfirm) {
+        public static function register($dbConnection, $email, $username, $password, $passwordConfirm) {
             $sql = "INSERT INTO `User` (`email`, `username`, `passwordHash`, `dateCreated`, `lastLogin` ) VALUES (?, ?, ?, ?, ?);";
             $date = date("Y-m-d H:i:s");
 
 			// verify user inputs, adds any errors to $_SESSION["error"]
-			Verify::verify_email_register($email);
-			Verify::verify_username_register($username);
+			Verify::verify_email_register($dbConnection, $email);
+			Verify::verify_username_register($dbConnection, $username);
 			Verify::verify_password_register($password, $passwordConfirm);
       
 			// if no errors were found
 			if (empty($_SESSION[Self::ERROR])) {
-
-				// Check connection
-				if (!$conn = Database::connect()) {
-					die("Connection failed: " . $conn->connect_error);
-				}
 
 				// hash password
 				$password_hash = password_hash($password, PASSWORD_DEFAULT);
             
                 try {
                     // prepare, bind and execute
-                    $stmt = $conn->prepare($sql);
-                     if (!$stmt->bind_param("sssss", $email, $username, $password_hash, $date, $date)) return 0;
+                    if (!$stmt = $dbConnection->prepare($sql)) {
+                        $stmt->close();
+                        return 0;
+                    }
+
+                    $stmt->bind_param("sssss", $email, $username, $password_hash, $date, $date);
                 
                     // if sql query is true, return userID else 0
                     if ($stmt->execute()) {
-                        User::set_session_vars($username);
+                        User::set_session_vars($dbConnection, $username);
                         $_SESSION[self::LOGGED_IN] = 1; // set session variable logged in
-                        return 1;
+                        $success = 1;
                     } else {
-                        return 0;
+                        $success = 0;
                     }
+
+                    $stmt->close();
+                    return $success;
 
                 } catch (Throwable $t) {
                     echo $t->getMessage();
                     return 0;
                 } finally {
                     $stmt->close();
-                    $conn->close();
                 }
             } else {
                 // ==================================================== to delete, testing purposes only
@@ -483,7 +490,7 @@
             }
         }
 
-        public static function profile_set_up($userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID) {
+        public static function profile_set_up($dbConnection, $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID) {
             // test user inputted string lengths
             if (strlen($fname) < 1) $_SESSION[Self::ERROR][] = UserError::NAME_SHORT;
             if (strlen($fname) > 30) $_SESSION[Self::ERROR][] = UserError::NAME_LONG;
@@ -493,23 +500,21 @@
             try {
                 // if no errors were found
                 if (empty($_SESSION[Self::ERROR])) {
+                    $success = 1;
 
                     // declare variables
                     $sql = "INSERT INTO `Profile` (`userID`, `fname`, `lname`, `dob`, `genderID`, `seekingID`, `description`, `locationID`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
                     
-
-                    // Open connection
-                    $conn = Database::connect();
-                
-                    echo "-" . $dob . "-<BR>";
                     // prepare bind and execute prepared statement
-                    $stmt = $conn->prepare($sql);
+                    if (!$stmt = $dbConnection->prepare($sql))
+                        $success = 0;
+
                     $stmt->bind_param("ssssssss", $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID);
-                    if ($stmt->execute()) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
+                    if (!$stmt->execute())
+                        $success = 0;
+                    
+                    $stmt->close();
+                    return $success;
 
                 } else {
                     return 0;
@@ -519,15 +524,14 @@
                 return 0;
             } finally {
                 $stmt->close();
-                $conn->close();
             }
         }
 
-        public static function login($username, $password) {
+        public static function login($dbConnection, $username, $password) {
 
             // test login, if successful set session variables
-            if (Verify::verify_login($username, $password)) {
-                User::set_session_vars($username);
+            if (Verify::verify_login($dbConnection, $username, $password)) {
+                User::set_session_vars($dbConnection, $username);
 
                 // add error to list if user account is banned
                 if ($_SESSION[User::IS_BANNED]) {
@@ -544,21 +548,195 @@
             }
         }
 
+        public static function logout() {
+
+            // if a session exists, destory it
+            if (session_status() == PHP_SESSION_ACTIVE) {
+                session_destroy();
+            }
+
+            // redirect to login page
+            header("Location: login.php");
+        }
+
 
         /*
-        *   Used to display variable value in an form input element if it is NOT null
-        *   If the variable is null, a placeholder will be displayed
-        *
-        *   $value                  -   value to display if it is not null
-        *   $placeholder_string     -   string to display as a placeholder if value is null
-        *
-        *   return                  -   string containing the 'value' or 'placeholder' form input attribute
-        */
+            *   Used to display variable value in an form input element if it is NOT null
+            *   If the variable is null, a placeholder will be displayed
+            *
+            *   $value                  -   value to display if it is not null
+            *   $placeholder_string     -   string to display as a placeholder if value is null
+            *
+            *   return                  -   string containing the 'value' or 'placeholder' form input attribute
+            */
         public static function populate_form_input($value, $placeholder_string) {
             if (isset($value)) {
                 return "value=\"" . $value . "\"";
             } else {
                 return "placeholder=\"" . $placeholder_string . "\"";
+            }
+        }
+
+        /*
+            *   Returns the relative file path of a user's profile image e.g. "my_profile.png"
+            *
+            *   $userID         -   user id of the user
+            *   $getRelative    -   if 1, the relative path will be returned according to User::USER_IMAGES, otherwise the filename will be returned
+            *
+            *   return      -   filename of the user's profile image on success appended onto 'User::USER_IMAGES', 0 on failure
+            */
+        public static function get_user_image_filename($dbConnection, $userID) {
+            if (!isset($userID) || $userID < 1)
+                return 0;
+
+            $fileName = "";
+            $sql = "SELECT `fileName` 
+                    FROM `Photo` 
+                    WHERE `userID` = ?;";
+            
+
+            if ($stmt = $dbConnection->prepare($sql)) {
+                // params and execute
+                $stmt->bind_param("s", $userID);
+                $stmt->execute(); 
+
+                // get result
+                $stmt->bind_result($fileName);
+                $stmt->fetch();
+
+                // close mysli_stmt object and connection
+                $stmt->close();
+            }
+
+            if ($fileName) {
+                $filePath = User::USER_IMAGES . $fileName;
+                // if an entry in the file table exists but the actual file does not, delete the row
+                if (is_file($filePath)) {
+                    return $fileName;
+                }
+            } else {
+                return 0;
+            }
+        }
+
+
+        /*
+            *   Delete's a user's profile image from the database and file system
+            *
+            *   $userID     -   user id of the user
+            *   $filename   -   name of the image to be deleted e.g. 'my_profile.png'
+            *
+            *   return      -   filename of the user's profile image on success, 0 on failure
+            */
+        public static function delete_user_image($dbConnection, $userID) {
+            if (!isset($userID) || $userID < 1) {
+                return 0;
+            }
+
+            $fileName = User::get_user_image_filename($dbConnection, $userID);
+
+            $sql = "DELETE FROM `Photo` 
+                    WHERE `fileName` = ?;";
+
+            if ($stmt = $dbConnection->prepare($sql)) {
+                $stmt->bind_param("s", $fileName);
+                $stmt->execute();
+
+                $stmt->close();
+            
+                $filePath = User::USER_IMAGES . $fileName;
+                if (is_file($filePath)) unlink($filePath);
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+
+        public static function upload_user_image($dbConnection, $userID, $fileInputName) {
+            $dateUploaded = date("Y-m-d H:i:s");
+            $epoch_milli = round(microtime(true) * 1000);
+            $target_dir = User::USER_IMAGES;
+
+            // if the user already has an image, delete it
+            User::delete_user_image($dbConnection, $userID);
+
+            // get full filename incl. extension
+            $ext = pathinfo($_FILES[$fileInputName]["name"], PATHINFO_EXTENSION);
+            $filename_original = pathinfo($_FILES[$fileInputName]["name"], PATHINFO_FILENAME);
+            $filename = substr($filename_original, 0, 30) . "_" . $epoch_milli . "." . $ext;
+            $target_file = $target_dir . $filename;
+            
+            // Check if image file is a actual image or fake image
+            if(getimagesize($_FILES[$fileInputName]["tmp_name"]) === false) {
+                $_SESSION[User::ERROR][] = UserError::IMAGE_UNSUPPORTED;
+                return 0;
+            }            
+            
+            // Check file size 2MB
+            if ($_FILES[$fileInputName]["size"] > 2097152) {
+                $_SESSION[User::ERROR][] = UserError::IMAGE_LARGE;
+                return 0;
+            }
+
+            // Allow certain file formats
+            if($ext != "jpg" && $$ext != "png" && $$ext != "jpeg" && $$ext != "gif" ) {
+                $_SESSION[User::ERROR][] = UserError::IMAGE_UNSUPPORTED;
+                return 0;
+            }
+
+            // try to move file to target folder
+            if (move_uploaded_file($_FILES[$fileInputName]["tmp_name"], $target_file)) {
+                $sql = "INSERT INTO `Photo` (`userID`, `fileName`, `dateUploaded`) 
+                        VALUES (?, ?, ?);";
+
+                if (!$stmt = $dbConnection->prepare($sql)) {
+                    $stmt->close();
+                    return 0;
+                }
+
+                $stmt->bind_param("sss", $userID, $filename, $dateUploaded);
+                $sucess = $stmt->execute();
+
+                $stmt->close();
+                return $sucess;
+
+            } else {
+                $_SESSION[User::ERROR][] = UserError::GENERAL_ERROR;
+                return 0;
+            }
+        }
+
+
+        /*
+            *    Function to calculate the age of a user given their date of birth.
+            *    Supported date formats are ones supported by the strtotime() function. (incl. MySQL's DATETIME data type)
+            *
+            *    $dateOfBirth    -   User's date of birth
+            * 
+            *    return          -   User's age in years on success, zero on failure
+            */
+        function calc_age($dateOfBirth) {
+
+            // if supplied date isn't correctly formatted, return 0 for failure
+            if (!$dob_timestamp = strtotime($dateOfBirth))
+                return 0;
+
+            // get formatted date string
+            $dateOfBirth = date("Y-m-d", $dob_timestamp);
+
+            //explode the date to get month, day and year
+            $dateOfBirth = explode("-", $dateOfBirth);
+
+            $year = $dateOfBirth[0];
+            $month = $dateOfBirth[1];
+            $day = $dateOfBirth[2];
+            
+            //get age from date or dateOfBirth
+            if (date("md", date("U", mktime(0, 0, 0, $month, $day, $year))) > date("md")) {
+                return ((date("Y") - $year) - 1);
+            } else {
+                return (date("Y") - $year);
             }
         }
     }

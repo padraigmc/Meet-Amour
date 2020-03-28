@@ -22,5 +22,11 @@
 
         const DESCRIPTION_LONG = "Description too long.";
 
+        const IMAGE_LARGE = "Sorry, your file is too large.";
+        const IMAGE_UNSUPPORTED = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+
+        const GENERAL_ERROR = "There was an error processing your request, please try again later.";
+        const PROFILE_UNAVAILABLE = "This profile is not available :(";
+
     }
 ?>

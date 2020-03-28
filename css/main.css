@@ -133,6 +133,17 @@ iframe {
 /*//////////////////////////////////////////////////////////////////
 [ admin  ]*/
 
+.admin-main{
+  padding: 50px;
+  margin-top: 0px;
+  margin-bottom: 180px;
+  border-radius: 8px;
+  background: #121212;
+  color: #f1f1f1;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+}
+
 #admin-top {
   margin-left: 20px;
   margin-right: 20px;
@@ -140,11 +151,54 @@ iframe {
 
 #top-1, #top-2 {
   color: grey;
-  background-color: white;
+  background-color: #1f1b24;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin-bottom: 20px;
+}
+
+#top-1 #user-table {
+  color: white;
+}
+
+#top-1 h3 {
+  margin: 10px;
+}
+
+#button-col  {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#button-col a {
+  margin-top: -15px;
+  margin-bottom: 20px;
+}
+
+.dropdown-menu {
+  background: #fff;
+  border-radius: 4px;
+  padding: 5px;
+  padding-top: 20px;
+  padding-bottom: 0px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#dropbtn {
+  display: inline-block;
+  background-color: #ff70db;
+  color: white;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  padding: 13px 20px;
+  text-decoration: none;
   border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+#dropbtn:hover {
+  background-color: #c926a0;
+}
 
 
 /*//////////////////////////////////////////////////////////////////
@@ -153,14 +207,14 @@ iframe {
   font-family: Poppins-Regular;
   font-size: 13px;
   line-height: 1.5;
-  color: #999999;
+  color: #fff;
 }
 
 .txt2 {
   font-family: Poppins-Regular;
   font-size: 13px;
   line-height: 1.5;
-  color: #666666;
+  color: rgb(161, 161, 161)
 }
 
 
@@ -311,7 +365,8 @@ input[type=submit]:hover {
 
 .wrap-login100 {
   width: 960px;
-  background: #fff;
+  background: rgb(51, 51, 51);
+  color: #fff;
   border-radius: 10px;
   overflow: hidden;
 
@@ -345,7 +400,7 @@ input[type=submit]:hover {
 .login100-form-title {
   font-family: Poppins-Bold;
   font-size: 24px;
-  color: #333333;
+  color: #fff;
   line-height: 1.2;
   text-align: center;
 
@@ -367,7 +422,7 @@ input[type=submit]:hover {
   font-family: Poppins-Medium;
   font-size: 15px;
   line-height: 1.5;
-  color: #666666;
+  color: rgb(51, 51, 51);
 
   display: block;
   width: 100%;

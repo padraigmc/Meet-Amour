@@ -30,52 +30,64 @@
 
 </head>
 <body id="page-top">
-
 	<?php
 
-	session_start();
-	require_once("classes/User.php");
+		// session start, include User.php and declare error session var
+		require_once("init.php");
+		$conn = Database::connect();
 
-	$date_current = date("Y-m-d");
-	$date_min = date("Y-m-d", strtotime("-120 year", time()));
-	
-	// if the user isn't logged in, redirect to homepage
-	if (!isset($_SESSION[User::LOGGED_IN]))
-		header("Location: index.html");
+		$profile_image_path = null;
 
-
-
-	if (isset($_POST["submit"])) {
-		// check if row is to be inserted or updated
-		$newUser = $_POST["newUser"];
-
-		// set variables to be insterted
-		$userID = $_SESSION['userID'];
-		$fname = htmlspecialchars($_POST["fname"]);
-		$lname = htmlspecialchars($_POST["lname"]);
-		$dob = $_POST["dob"];
-		$genderID = $_POST["gender"];
-		$seekingID = $_POST["seeking"];
-		$description = htmlspecialchars($_POST["description"]);
-		$locationID = $_POST["location"];
-
-
-
-		if (User::set_profile_attributes($userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $newUser)) {
-			header("Location: user_profile.php");
-			exit();
-		} else {
-
+		// if the user isn't logged in, redirect to homepage
+		if (!User::isLoggedIn()) {
+			header("Location: login.php");
 		}
 
-	} else {
+		// set time variables - used for html date input
+		$date_current = date("Y-m-d");
+		$date_min = date("Y-m-d", strtotime("-120 year", time()));
 
-		
+		if (isset($_POST["submit"])) {
+			$success = 1;
+			// check if row is to be inserted or updated
+			$newUser = $_POST["newUser"];
+
+			// set variables to be insterted
+			$userID = $_SESSION['userID'];
+			$fname = htmlspecialchars($_POST["fname"]);
+			$lname = htmlspecialchars($_POST["lname"]);
+			$dob = $_POST["dob"];
+			$genderID = $_POST["gender"];
+			$seekingID = $_POST["seeking"];
+			$description = htmlspecialchars($_POST["description"]);
+			$locationID = $_POST["location"];
+
+
+			// update or insert new profile data - dependent on value of $newUser
+			if (!User::set_profile_attributes($conn, $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $newUser)) {
+				$success = 0;
+			}
+
+			// upload image if one use submitted
+			if (isset($_FILES['userImage']['tmp_name']) && $_FILES['userImage']['name'] != "") {
+				User::upload_user_image($conn, $_SESSION[User::USER_ID], 'userImage');
+			}
+
+			if ($success) {
+				header("Location: user_profile.php");
+				exit();
+			} else {
+				$_SESSION[User::ERROR][] = UserError::GENERAL_ERROR;
+			}
+
+		} else {
+		}
 
 		$profileAttr = array();
 		$userID = $fname = $lname = $dob = $gender = $seeking = $description = $location = null;
 
-		if ($profileAttr = User::get_all_profile_attributes($_SESSION[User::USER_ID])) {
+		// try get profile data
+		if ($profileAttr = User::get_all_profile_attributes($conn, $_SESSION[User::USER_ID])) {
 			$newUser = false;
 
 			$userID = $profileAttr[User::USER_ID];
@@ -86,61 +98,65 @@
 			$seeking = $profileAttr[User::SEEKING];
 			$description = $profileAttr[User::DESCRIPTION];
 			$location = $profileAttr[User::LOCATION];
+			
+			if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
+				$profile_image_path = User::USER_IMAGES . $profile_image_path;
+			}
 		} else {
+			// if no rows were returned, a row must be inserted
 			$newUser = true;
 		}
-		?>
+	?>
 
-		<!-- Navigation -->
-		<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-		<div class="container">
-			<a class="navbar-brand js-scroll-trigger" href="index.html"><img src="img/logo.png" alt="">  </a>
-			<a class="navbar-brand js-scroll-trigger" href="index.html">MeetAmour</a> 
-			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-			Menu
-			<i class="fas fa-bars"></i>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarResponsive">
-			<ul class="navbar-nav ml-auto">
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+	<div class="container">
+		<a class="navbar-brand js-scroll-trigger" href="index.html"><img src="img/logo.png" alt="">  </a>
+		<a class="navbar-brand js-scroll-trigger" href="index.html">MeetAmour</a> 
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+		Menu
+		<i class="fas fa-bars"></i>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarResponsive">
+		<ul class="navbar-nav ml-auto">
 
-				<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="user.html">Matches</a>
-				</li>
+			<li class="nav-item">
+			<a class="nav-link js-scroll-trigger" href="user.html">Matches</a>
+			</li>
 
-				<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
-				</li>
-				<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="user-profile.html">Profile</a>
-				</li>
-			</ul>
-			</div>
+			<li class="nav-item">
+			<a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
+			</li>
+			<li class="nav-item">
+			<a class="nav-link js-scroll-trigger" href="user-profile.html">Profile</a>
+			</li>
+		</ul>
 		</div>
-		</nav>
+	</div>
+	</nav>
 
-		</br>
-		</br>
-		</br>
+	</br>
+	</br>
+	</br>
 
-		<section class="download bg-primary text-center" id="download">
-			<div class="container">
+	<section class="download bg-primary text-center" id="download">
+		<div class="container">
 			<div class="row">
 				<div class="col-md-8 mx-auto">
-				<h2 class="section-heading">Edit Your Profile<br> <h3><font color="white"></font></h3></h2>
-				
-				<div class="badges">
-					<img src="img/logo.png" alt="">
+					<h2 class="section-heading">Edit Your Profile<br> <h3><font color="white"></font></h3></h2>
 					
-				</div>
+					<div class="badges">
+						<img src="img/logo.png" alt="">
+					</div>
 				</div>
 			</div>
-			</div>
-		</section>
-		
-		<div class="container-fluid w-75 main">
-			<div class="row">
-			<div class="col-lg-6">
-				<form id="info" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+		</div>
+	</section>
+	
+	<div class="container-fluid w-75 main">
+		<form id="edit-info" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
+			<div class="row">		
+				<div class="col-lg-6">
 					<div class="form-row">
 						<div class="col text-left font-weight-bold">
 							<label for="fname">First Name</label>
@@ -160,7 +176,7 @@
 							<label for="location">Location</label>
 							<select class="form-control" id="location" name="location"><?php
 							// output dynamically generated dropdown list of all the available genders to choose from
-							$genders = User::get_all_locations();
+							$genders = User::get_all_locations($conn);
 							$id = 0;
 							while($row = $genders->fetch_assoc()) {
 								// populate option with information pulled from database
@@ -171,100 +187,93 @@
 						</div>
 					</div>
 					<div class="form-row">
-						
-					<div class="col text-left font-weight-bold">
-						<label for="gender">Gender</label>
-						<select class="form-control" id="gender" name="gender"><?php
-							// output dynamically generated dropdown list of all the available genders to choose from
-							$genders = User::get_all_genders();
-							$id = 0;
-							while($row = $genders->fetch_assoc()) {
-								// populate option with information pulled from database
-								?><option id="<?php echo $id;?>" value="<?php echo $row['genderID'];?>"><?php echo $row['gender'];?></option><?php
-								$id++;
-							}?>
-						</select>
+						<div class="col text-left font-weight-bold">
+							<label for="gender">Gender</label>
+							<select class="form-control" id="gender" name="gender"><?php
+								// output dynamically generated dropdown list of all the available genders to choose from
+								$genders = User::get_all_genders($conn);
+								$id = 0;
+								while($row = $genders->fetch_assoc()) {
+									// populate option with information pulled from database
+									?><option id="<?php echo $id;?>" value="<?php echo $row['genderID'];?>"><?php echo $row['gender'];?></option><?php
+									$id++;
+								}?>
+							</select>
+						</div>
+						<div class="col text-left font-weight-bold bottom-div">
+							<label for="seeking">Seeking</label>
+							<select class="form-control" id="seeking" name="seeking"><?php
+								// output dynamically generated dropdown list of all the available genders to choose from
+								$genders = User::get_all_genders($conn);
+								$id = 0;
+								while($row = $genders->fetch_assoc()) {
+									// populate option with information pulled from database
+									?><option id="<?php echo $id;?>" value="<?php echo $row['genderID'];?>"><?php echo $row['gender'];?></option><?php
+									$id++;
+								}?>
+							</select>
+						</div>
 					</div>
-					<div class="col text-left font-weight-bold bottom-div">
-						<label for="seeking">Seeking</label>
-						<select class="form-control" id="seeking" name="seeking"><?php
-							// output dynamically generated dropdown list of all the available genders to choose from
-							$genders = User::get_all_genders();
-							$id = 0;
-							while($row = $genders->fetch_assoc()) {
-								// populate option with information pulled from database
-								?><option id="<?php echo $id;?>" value="<?php echo $row['genderID'];?>"><?php echo $row['gender'];?></option><?php
-								$id++;
-							}?>
-						</select>
+					<div class="form-row">
+						<div class="col text-left font-weight-bold bottom-div">
+							<label for="description">Description</label>
+							<textarea class="form-control" rows="4" cols="50" name="description" id="description" <?php echo (isset($description)) ? (">" . $description) : "placeholder=\"About you...\">"; ?></textarea>
+						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col text-left font-weight-bold bottom-div">
-						<label for="description">Description</label>
-						<textarea class="form-control" rows="4" cols="50" name="description" id="description" <?php echo (isset($description)) ? (">" . $description) : "placeholder=\"About you...\">"; ?></textarea>
-					</div>
+				<div class="col-lg-6 m-auto">
+					<!--JavaScript upload system to show an image preview-->
+					<img id="image" alt="" width="300" height="300" src="<?php echo ($profile_image_path) ? $profile_image_path : "img/blank-profile.png"; ?>" />
+					<input type="file" class="mx-auto" name="userImage" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
 				</div>
-					<div class="row">
+				<div class="form-row">
 					<div class="col submit">
 						<input type="hidden" name="newUser" value="<?php echo $newUser ?>">
 						<input type="submit" name="submit" value="Submit">
-						<!--Link using JavaScript to act as submit button-->
-						<a href="javascript:{}" onclick="document.getElementById('info').submit(); return false;">Save</a>
-						<!--end-->
 					</div>
-					</div>
-					</form>
 				</div>
-
-		<div class="col-lg-6">
-			<!--JavaScript upload system to show an image preview-->
-			<form id="upload"></form>
-			<img id="image" alt="" width="300" height="300" />
-			<input type="file" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
-			<!--end-->
-			<!--Link using JS for submit button-->
-			<a href="javascript:{}" onclick="document.getElementById('upload').submit(); return false;">Upload</a>
-			<!--end-->
-		</form>
-		</div>
-		</div>
-		</div>
-				
-		<footer>
-			<div class="container">
-				<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
-				<ul class="list-inline">
-					<li class="list-inline-item">
-						<a href="#">Privacy</a>
-					</li>
-					<li class="list-inline-item">
-						<a href="#">Terms</a>
-					</li>
-					<li class="list-inline-item">
-						<a href="#">FAQ</a>
-					</li>
-        			<li class="list-inline-item">
-          				<a href="admin.php">Admin</a>
-        			</li>
-				</ul>
 			</div>
-		</footer>
-  
-		<!-- Bootstrap core JavaScript -->
-		<script src="vendor/jquery/jquery.min.js"></script>
-		<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-		<!-- Plugin JavaScript -->
-		<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-		<!-- Custom scripts for this template -->
-		<script src="js/new-age.min.js"></script>
+		</form>
+	</div>
+</div>
 		
-	<?php
-	}
-	?>
+<footer>
+	<div class="container">
+		<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
+		<ul class="list-inline">
+			<li class="list-inline-item">
+				<a href="#">Privacy</a>
+			</li>
+			<li class="list-inline-item">
+				<a href="#">Terms</a>
+			</li>
+			<li class="list-inline-item">
+				<a href="#">FAQ</a>
+			</li>
+			<li class="list-inline-item">
+				<a href="admin.php">Admin</a>
+			</li>
+		</ul>
+	</div>
+</footer>
   
+	<!-- Bootstrap core JavaScript -->
+	<script src="vendor/jquery/jquery.min.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Bootstrap core JavaScript -->
+	<script src="vendor/jquery/jquery.min.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Plugin JavaScript -->
+	<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+	<!-- Custom scripts for this template -->
+	<script src="js/new-age.min.js"></script>
+  
+	<?php
+		$conn->close();
+	?>
  </body>
  
  </html>

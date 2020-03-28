@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
-<link rel="icon" type="image/png" href="img/icons/favicon.ico"/>
+<link rel="icon" type="image/png" href="img/logoalt.png"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.css">
 <!--===============================================================================================-->
@@ -22,10 +22,10 @@
 
 		// handle form data of register user
 		if (isset($_POST["submit_user"])) {
-			include_once("classes/User.php");
-
-			session_start();
-			$_SESSION[User::ERROR] = array();
+			
+			// session start, include User.php and declare error session var
+			require_once("init.php");
+			$conn = Database::connect();
 			
 			$email = $username = $password = $passwordConfirm = $password_hash = "";
 
@@ -35,7 +35,7 @@
 			$passwordConfirm = htmlspecialchars($_POST["passwordConfirm"]);
 			
 			// Try to register user, if successful redirect to profile set up page
-			if (User::register($email, $username, $password, $passwordConfirm)) {
+			if (User::register($conn, $email, $username, $password, $passwordConfirm)) {
 				header("Location: profile-edit.php");
 				exit();
 			} else {
@@ -93,10 +93,8 @@
 						</div>
 
 						<div class="text-center p-t-136">
-							<a class="txt2" href="#">
-								<a href="login.php">Login</a>
+								<a href="login.php" class="txt1">Login</a>
 								<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-							</a>
 						</div>
 					</form>
 				</div>
@@ -118,5 +116,8 @@
 	<!--===============================================================================================-->
 	<script src="js/main.js"></script>
 
+	<?php
+		$conn->close();
+	?>
 </body>
 </html>
