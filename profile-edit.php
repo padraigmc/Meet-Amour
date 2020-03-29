@@ -45,6 +45,7 @@
 
 		// set time variables - used for html date input
 		$date_current = date("Y-m-d");
+		$date_max = date("Y-m-d", strtotime("-18 year", time()));
 		$date_min = date("Y-m-d", strtotime("-120 year", time()));
 
 		if (isset($_POST["submit"])) {
@@ -170,17 +171,17 @@
 					<div class="form-row">
 						<div class="col text-left font-weight-bold">
 							<label for="dob">Date of Birth</label>
-							<input type="date" class="form-control" name="dob" id="dob" <?php echo (isset($dob)) ? ("value=\"" . $dob . "\"") : ""; ?> min="<?php echo $date_min;?>" max="<?php echo $date_current; ?>">
+							<input type="date" class="form-control" name="dob" id="dob" <?php echo (isset($dob)) ? ("value=\"" . $dob . "\"") : ""; ?> min="<?php echo $date_min;?>" max="<?php echo $date_max; ?>">
 						</div>
 						<div class="col text-left font-weight-bold">
 							<label for="location">Location</label>
 							<select class="form-control" id="location" name="location"><?php
 							// output dynamically generated dropdown list of all the available genders to choose from
-							$genders = User::get_all_locations($conn);
+							$locations = User::get_all_locations($conn);
 							$id = 0;
-							while($row = $genders->fetch_assoc()) {
+							while($row = $locations->fetch_assoc()) {
 								// populate option with information pulled from database
-								?><option id="<?php echo $id;?>" value="<?php echo $row['locationID'];?>"><?php echo $row['location'];?></option><?php
+								?><option id="<?php echo $id;?>" value="<?php echo $row['locationID'];?>"><?php echo $row['location'] . "</option>";
 								$id++;
 							}?>
 							</select>

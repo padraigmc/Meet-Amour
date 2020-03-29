@@ -246,7 +246,7 @@
         public static function get_all_locations($dbConnection) {
             try {
                 // Query database for below statement, return mysqli result object
-                $sql = "SELECT `locationID`, `location` FROM `Location`";
+                $sql = "SELECT `locationID`, `location` FROM `Location` ORDER BY `location`";
                 return $dbConnection->query($sql);
 
             } catch (Throwable $t) {
@@ -256,24 +256,40 @@
     
         }
 
-        public static function profile_search($dbConnection, $name, $rowOffset = 0) {
-            $sql = "SELECT p.`userID`, concat(p.`fname`, ' ', p.`lname`) AS `name`, p.`dob`, g.`gender`, s.`gender` AS `seeking`, p.`description`, l.`location`
-            FROM `Profile` AS `p`, 
-                    `Gender` AS `g`, 
-                    `Gender` AS `s`, 
-                    `Location` AS `l`
-            WHERE concat(p.`fname`, p.`lname`) LIKE ? AND 
-                    p.`genderID` = g.`genderID` AND 
-                    p.`seekingID` = s.`genderID` AND
-                    p.`locationID` = l.`locationID`
-            LIMIT ?, 10;";
+        public static function profile_search($dbConnection, $name, $gender, $location , $min_age, $max_age, $rowOffset = 0) {
+            $name = htmlspecialchars($name);
+            $name = trim($name);
+            
+            if (!isset($name) || $name == "") {
+                return 0;
+            }
+
+            $date_min = date("Y-m-d", strtotime("-" . ($max_age+1) . " year +1 day", time())) . " 00:00:00";
+            $date_max = date("Y-m-d", strtotime("-" . $min_age . " year", time())) . " 23:59:59";
+
+            //abs(to_seconds({$age_dob}) - to_seconds(`p`.`dob`))
+
+            $sql = "SELECT `p`.`userID`, `u`.`username`, concat(`p`.`fname`, ' ', `p`.`lname`) AS `name`, `p`.`dob`, `g`.`gender`, `s`.`gender` as `seeking`, `p`.`description`, `l`.`location`, `Photo`.`filename`, `u`.`lastLogin`
+                    FROM `Profile` AS `p`
+                    LEFT JOIN `User` AS `u` ON `p`.`userID`=`u`.`userID`
+                    LEFT JOIN `Gender` AS `g` ON `p`.`genderID`=`g`.`genderID`
+                    LEFT JOIN `Gender` AS `s` ON `p`.`seekingID`=`s`.`genderID`
+                    LEFT JOIN `Location` AS `l` ON `p`.`locationID`=`l`.`locationID`
+                    LEFT JOIN `Photo` ON `p`.`userID`=`Photo`.`userID`
+                    WHERE concat(`p`.`fname`, `p`.`lname`) LIKE ? AND
+                            `g`.`genderID` LIKE ? AND
+                            `l`.`locationID` LIKE ? AND
+                            `p`.`dob` >= ? AND `p`.`dob` <= ?
+                    ORDER BY `u`.`lastLogin` DESC
+                    LIMIT ?, 10;";
 
             $name = str_replace(array("?", "%"), "", $name);
             $name = "%" . $name . "%";
 
             $stmt = $dbConnection->prepare($sql);
-            $stmt->bind_param("si", $name, $rowOffset);
-            
+
+            $stmt->bind_param("sssssi", $name, $gender, $location, $date_min, $date_max, $rowOffset);
+
             // execute statement, terminate script on failure
             if (!$stmt->execute()) return 0;
 
@@ -283,6 +299,7 @@
             while($row = $result->fetch_assoc()) {
                 $rows[] = $row;
             }
+
             $stmt->close();
             return $rows;
         }

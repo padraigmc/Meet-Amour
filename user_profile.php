@@ -140,36 +140,36 @@
             <h4 class="font-weight-bold"><?php echo $fname . " " . $lname . ","; ?> <span class="text-weight-bold text-primary"><?php echo $age; ?></span></h4>
 			</br>
 			</br>
-                <div class="tab-content profile">
-                  <table class="table table-sm w-75 table-borderless text-left" id="interests-table mx-auto">
-                    <tbody>
-                    <tr>
-                      <th scope="row"></th>
-                      <td class="text-primary">Location</td>
-                      <td><?php echo $location; ?></td>
-                    </tr>
-                    <tr>
-                      <th scope="row"></th>
-                      <td class="text-primary">Profession</td>
-                      <td>Web Developer & Designer</td>
+      
+			<div class="tab-content profile">
+			<table class="table table-sm w-75 table-borderless text-left" id="interests-table mx-auto">
+				<tbody>
+					<tr>
+						<th scope="row"></th>
+						<td class="text-primary">Location</td>
+						<td><?php echo $location; ?></td>
 					</tr>
 					<tr>
-                      <th scope="row"></th>
-                      <td class="text-primary">Gender</td>
-                      <td><?php echo $gender; ?></td>
-                    </tr>
-                    <tr>
-                      <th scope="row"></th>
-                        <td class="text-primary">Seeking</td>
-                        <td><?php echo $seeking; ?></td>
-                    </tr>
-                    <tr>
-                      <th scope="row"></th>
-                      <td colspan="2"></td>
-                      
-                    </tr>
-                    </tbody>
-                  </table>
+						<th scope="row"></th>
+						<td class="text-primary">Profession</td>
+						<td>Web Developer & Designer</td>
+					</tr>
+					<tr>
+						<th scope="row"></th>
+						<td class="text-primary">Gender</td>
+						<td><?php echo $gender; ?></td>
+					</tr>
+					<tr>
+						<th scope="row"></th>
+						<td class="text-primary">Seeking</td>
+						<td><?php echo $seeking; ?></td>
+					</tr>
+					<tr>
+						<th scope="row"></th>
+						<td colspan="2"></td>
+					</tr>
+				</tbody>
+			</table>
   </div>
 </div>
 </div>
