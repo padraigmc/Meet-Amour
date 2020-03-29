@@ -14,7 +14,7 @@
         $conn = Database::connect();
 
 
-        if(isset($_POST['submit'])){//to run PHP script on submit
+        if(isset($_POST['submit'])){
             $selected_hobbies = array();
             if(!empty($_POST['selected_hobbies'])){
                 // Loop to store and display values of individual checked checkbox.
@@ -49,6 +49,7 @@
     
     <?php
     }
+    $conn->close();
     ?>
 </body>
 </html>
