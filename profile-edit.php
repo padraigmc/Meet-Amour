@@ -34,6 +34,7 @@
 
 		// session start, include User.php and declare error session var
 		require_once("init.php");
+		require_once("classes/Hobby.php");
 		$conn = Database::connect();
 
 		$profile_image_path = null;
@@ -45,6 +46,7 @@
 
 		// set time variables - used for html date input
 		$date_current = date("Y-m-d");
+		$date_max = date("Y-m-d", strtotime("-18 year", time()));
 		$date_min = date("Y-m-d", strtotime("-120 year", time()));
 
 		if (isset($_POST["submit"])) {
@@ -72,6 +74,18 @@
 			if (isset($_FILES['userImage']['tmp_name']) && $_FILES['userImage']['name'] != "") {
 				User::upload_user_image($conn, $_SESSION[User::USER_ID], 'userImage');
 			}
+
+			$selected_hobbies = array();
+            if(!empty($_POST['selected_hobbies'])){
+                // Loop to store and display values of individual checked checkbox.
+                foreach($_POST['selected_hobbies'] as $selected){
+                    $selected_hobbies[] = (int) $selected;
+                }
+
+                $current_user_hobbies = array_map(null, ...Hobby::get_user_hobbies($conn, $_SESSION[User::USER_ID]))[0];
+
+                echo Hobby::set_user_hobbies($conn, $_SESSION[User::USER_ID], $current_user_hobbies, $selected_hobbies);
+            }
 
 			if ($success) {
 				header("Location: user_profile.php");
@@ -102,6 +116,9 @@
 			if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
 				$profile_image_path = User::USER_IMAGES . $profile_image_path;
 			}
+
+			$_SESSION["all_hobbies"] = Hobby::get_all_hobbies($conn);
+            $_SESSION["current_user_hobbies"] = array_map(null, ...Hobby::get_user_hobbies($conn, $_SESSION[User::USER_ID]))[0];
 		} else {
 			// if no rows were returned, a row must be inserted
 			$newUser = true;
@@ -153,10 +170,17 @@
 		</div>
 	</section>
 	
-	<div class="container-fluid w-75 main">
+	<div class="container-fluid main">
 		<form id="edit-info" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
-			<div class="row">		
-				<div class="col-lg-6">
+			<div class="row">
+				<div class="col-lg-3">
+					<h3 class="pb-4">Profile Picture</h3>
+					<!--JavaScript upload system to show an image preview-->
+					<img id="image" alt="" class="py-auto" width="300" height="300" src="<?php echo ($profile_image_path) ? $profile_image_path : "img/blank-profile.png"; ?>" />
+					<input type="file" class="mx-auto" name="userImage" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
+				</div>
+				<div class="col-lg-7">
+					<h3>Personal Details</h3>
 					<div class="form-row">
 						<div class="col text-left font-weight-bold">
 							<label for="fname">First Name</label>
@@ -170,17 +194,17 @@
 					<div class="form-row">
 						<div class="col text-left font-weight-bold">
 							<label for="dob">Date of Birth</label>
-							<input type="date" class="form-control" name="dob" id="dob" <?php echo (isset($dob)) ? ("value=\"" . $dob . "\"") : ""; ?> min="<?php echo $date_min;?>" max="<?php echo $date_current; ?>">
+							<input type="date" class="form-control" name="dob" id="dob" <?php echo (isset($dob)) ? ("value=\"" . $dob . "\"") : ""; ?> min="<?php echo $date_min;?>" max="<?php echo $date_max; ?>">
 						</div>
 						<div class="col text-left font-weight-bold">
 							<label for="location">Location</label>
 							<select class="form-control" id="location" name="location"><?php
 							// output dynamically generated dropdown list of all the available genders to choose from
-							$genders = User::get_all_locations($conn);
+							$locations = User::get_all_locations($conn);
 							$id = 0;
-							while($row = $genders->fetch_assoc()) {
+							while($row = $locations->fetch_assoc()) {
 								// populate option with information pulled from database
-								?><option id="<?php echo $id;?>" value="<?php echo $row['locationID'];?>"><?php echo $row['location'];?></option><?php
+								?><option id="<?php echo $id;?>" value="<?php echo $row['locationID'];?>"><?php echo $row['location'] . "</option>";
 								$id++;
 							}?>
 							</select>
@@ -221,16 +245,23 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-6 m-auto">
-					<!--JavaScript upload system to show an image preview-->
-					<img id="image" alt="" width="300" height="300" src="<?php echo ($profile_image_path) ? $profile_image_path : "img/blank-profile.png"; ?>" />
-					<input type="file" class="mx-auto" name="userImage" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
+				<div class="col-lg-2 text-left">
+					<h3 class="pb-1">Hobbies</h3>
+					<?php
+						$checkboxID = 0;
+						foreach ($_SESSION["all_hobbies"] as $value) { ?>
+							<input type="checkbox" <?php echo "id=\"" . $checkboxID . "\" name=\"selected_hobbies[]\" value=\"" . $value[0] . "\""; echo (in_array($value[0], $_SESSION["current_user_hobbies"])) ? "checked" : "";?>><?php
+							echo "<label for=\"" . $checkboxID . "\">" .  $value[1] . "</label><br>";
+							
+							$checkboxID++;
+						}        
+					?>
 				</div>
-				<div class="form-row">
-					<div class="col submit">
-						<input type="hidden" name="newUser" value="<?php echo $newUser ?>">
-						<input type="submit" name="submit" value="Submit">
-					</div>
+			</div>
+			<div class="row">
+				<div class="col submit">
+					<input type="hidden" name="newUser" value="<?php echo $newUser ?>">
+					<input class="w-100" type="submit" name="submit" value="Submit">
 				</div>
 			</div>
 		</form>
