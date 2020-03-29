@@ -2,17 +2,18 @@
 
 
     require_once("init.php");
+    require_once("classes/Hobby.php");
 
     $conn = Database::connect();
 
-    $min_age = 20;
-    $max_age = 20;
+    $hobbies = Hobby::get_user_hobbies($conn, "16");
     
-    $date_min = date("Y-m-d", strtotime("-" . ($max_age+1) . " year +1 day", time())) . " 00:00:00";
-    $date_max = date("Y-m-d", strtotime("-" . $min_age . " year", time())) . " 23:59:59";
-    echo $date_min;
-    echo "<br>";
-    echo $date_max;
+    if (!$hobbies) echo "0";
+
+
+    foreach ($hobbies as $value) {
+        echo $value[1] . "<br>";
+    }   
     
     
     

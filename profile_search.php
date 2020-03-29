@@ -388,6 +388,9 @@
     <!-- Custom scripts for this template -->
     <script src="js/new-age.min.js"></script>
 
+    <?php
+        $conn->close();
+    ?>
 
 </body>
 </html>
