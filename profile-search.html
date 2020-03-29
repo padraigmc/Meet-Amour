@@ -182,9 +182,6 @@ input:checked + .slider2:before {
     </div>
   </section>
 
-  
-</div>
-
 
 
 <section class="features" id="features">
@@ -260,6 +257,25 @@ input:checked + .slider2:before {
             <div class="search_column_2">
               <input type="image" src="img/search_btn.png" class="search_btn"/>
             </div>
+
+            <div class="slidecontainerage">
+              <p style="text-align:center;">Choose your preferred age</p>
+              <input type="range" min="18" max="30" value="22" class="slider" id="myRange">
+              <p style="text-align:center;">Value: <span id="value"></span></p>
+            </div>
+            
+            <script>
+            var slider = document.getElementById("myRange");
+            var output = document.getElementById("value");
+            output.innerHTML = slider.value;
+            
+            slider.oninput = function() {
+              output.innerHTML = this.value;
+            }
+            </script>
+          
+          </div>
+
           </div>
           </fieldset>
         </form>
@@ -268,23 +284,7 @@ input:checked + .slider2:before {
   </div>
   
 
-  <div class="slidecontainerage">
-    <p style="text-align:center;">Choose your preferred age</p>
-    <input type="range" min="18" max="30" value="22" class="slider" id="myRange">
-    <p style="text-align:center;">Value: <span id="value"></span></p>
-  </div>
-  
-  <script>
-  var slider = document.getElementById("myRange");
-  var output = document.getElementById("value");
-  output.innerHTML = slider.value;
-  
-  slider.oninput = function() {
-    output.innerHTML = this.value;
-  }
-  </script>
 
-</div>
 </div>
 
       
