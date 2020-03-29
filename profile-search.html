@@ -167,6 +167,7 @@ input:checked + .slider2:before {
 </br>
 </br>
 
+
   <section class="download bg-primary text-center" id="search">
     <div class="container">
       <div class="row">
@@ -182,6 +183,129 @@ input:checked + .slider2:before {
     </div>
   </section>
 
+  <br>
+  <br>
+
+  
+    <div class="container h-100">
+      <div class="row h-100">
+        <div class="col-lg-7 my-auto">
+          <div class="header-content mx-auto">
+
+            <div id="container_3">
+              <div class="partner_search">
+                <div class="inner_border">
+                  <div class="form_container">
+                    <h3>Partner Search</h3>
+                    <form action="#" method="get">
+                      <fieldset>
+                      <div class="search_row">
+                        <div class="search_column_1">
+                          <label>I am a</label>
+                        </div>
+                        <div class="search_column_2">
+                          <select class="gender">
+                            <option>Male</option>
+                            <option>Female</option>
+                          </select>
+                          <label>Seeking a</label>
+                          <select class="gender">
+                            <option>Female</option>#
+                            <option>Male</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="search_row">
+                        <div class="search_column_1">
+                          <label>Looking for a</label>
+                        </div>
+                        <div class="search_column_2">
+                          <select class="date">
+                            <option>Date</option>
+                            <option>One Night Stand</option>
+                            <option>Relationship</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="search_row">
+                        <div class="search_column_1">
+                          <label>I was born</label>
+                        </div>
+                        <div class="search_column_2">
+                          <select class="dob">
+                            <option>Month</option>
+                          </select>
+                          <select class="dob">
+                            <option>Date</option>
+                          </select>
+                          <select class="dob">
+                            <option>Year</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="search_row">
+                        <div class="search_column_1">
+                          <label>By Profile ID</label>
+                        </div>
+                        <div class="search_column_2">
+                          <input type="text" name="" value="" />
+                          <label class="check">With Photo</label>
+                          <input type="checkbox" name="" value="" class="checkbox"/>
+                        </div>
+                      </div>
+            
+                      <div class="slidecontainerage">
+                        <p style="text-align:center;">Choose your preferred age</p>
+                        <input type="range" min="18" max="30" value="22" class="slider" id="myRange">
+                        <p style="text-align:center;">Value: <span id="value"></span></p>
+                      </div>
+                      
+                      <script>
+                      var slider = document.getElementById("myRange");
+                      var output = document.getElementById("value");
+                      output.innerHTML = slider.value;
+                      
+                      slider.oninput = function() {
+                        output.innerHTML = this.value;
+                      }
+                      </script>
+                    
+                    </div>
+            
+                      <div class="search_row last">
+                        <div class="search_column_1">&nbsp;</div>
+                        <div class="search_column_2">
+                          <input type="image" src="img/search_btn.png" class="search_btn"/>
+                        </div>
+            
+                        
+            
+                      </div>
+                      </fieldset>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            
+          </div>
+        </div>
+        <div class="col-lg-5 my-auto">
+
+          <img src="img/profilesearchimg.png" alt="profilesearch image" width="910" height="500">
+          
+                  
+                  
+                </div>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+
 
 
 <section class="features" id="features">
@@ -191,98 +315,6 @@ input:checked + .slider2:before {
       
   
 
-<div id="container_3">
-  <div class="partner_search">
-    <div class="inner_border">
-      <div class="form_container">
-        <h3>Partner Search</h3>
-        <form action="#" method="get">
-          <fieldset>
-          <div class="search_row">
-            <div class="search_column_1">
-              <label>I am a</label>
-            </div>
-            <div class="search_column_2">
-              <select class="gender">
-                <option>Male</option>
-                <option>Female</option>
-              </select>
-              <label>Seeking a</label>
-              <select class="gender">
-                <option>Female</option>#
-                <option>Male</option>
-              </select>
-            </div>
-          </div>
-          <div class="search_row">
-            <div class="search_column_1">
-              <label>Looking for a</label>
-            </div>
-            <div class="search_column_2">
-              <select class="date">
-                <option>Date</option>
-                <option>One Night Stand</option>
-                <option>Relationship</option>
-              </select>
-            </div>
-          </div>
-          <div class="search_row">
-            <div class="search_column_1">
-              <label>I was born</label>
-            </div>
-            <div class="search_column_2">
-              <select class="dob">
-                <option>Month</option>
-              </select>
-              <select class="dob">
-                <option>Date</option>
-              </select>
-              <select class="dob">
-                <option>Year</option>
-              </select>
-            </div>
-          </div>
-          <div class="search_row">
-            <div class="search_column_1">
-              <label>By Profile ID</label>
-            </div>
-            <div class="search_column_2">
-              <input type="text" name="" value="" />
-              <label class="check">With Photo</label>
-              <input type="checkbox" name="" value="" class="checkbox"/>
-            </div>
-          </div>
-          <div class="search_row last">
-            <div class="search_column_1">&nbsp;</div>
-            <div class="search_column_2">
-              <input type="image" src="img/search_btn.png" class="search_btn"/>
-            </div>
-
-            <div class="slidecontainerage">
-              <p style="text-align:center;">Choose your preferred age</p>
-              <input type="range" min="18" max="30" value="22" class="slider" id="myRange">
-              <p style="text-align:center;">Value: <span id="value"></span></p>
-            </div>
-            
-            <script>
-            var slider = document.getElementById("myRange");
-            var output = document.getElementById("value");
-            output.innerHTML = slider.value;
-            
-            slider.oninput = function() {
-              output.innerHTML = this.value;
-            }
-            </script>
-          
-          </div>
-
-          </div>
-          </fieldset>
-        </form>
-      </div>
-    </div>
-  </div>
-  
 
 
 </div>
