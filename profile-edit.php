@@ -145,7 +145,7 @@
 			<a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
 			</li>
 			<li class="nav-item">
-			<a class="nav-link js-scroll-trigger" href="user-profile.html">Profile</a>
+			<a class="nav-link js-scroll-trigger" href="user_profile.php">Profile</a>
 			</li>
 		</ul>
 		</div>
@@ -170,7 +170,7 @@
 		</div>
 	</section>
 	
-	<div class="container-fluid main">
+	<div class="container-fluid main w-100">
 		<form id="edit-info" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
 			<div class="row">
 				<div class="col-lg-3">
