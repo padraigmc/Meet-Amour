@@ -21,6 +21,7 @@
 
         public function get_user_hobbies($dbConnection, $userID) {
             $res = array();
+            $hobbyID = $hobby = "";
             $sql = "SELECT `h`.`hobbyID`, `h`.`hobby` 
                     FROM `Hobby` AS `h`, `UserHobby` AS `u` 
                     WHERE `h`.`hobbyID` = `u`.`hobbyID` AND
@@ -30,7 +31,10 @@
             if ($stmt = $dbConnection->prepare($sql)) {
                 $stmt->bind_param("s", $userID);
                 $stmt->execute();
-                $res = $stmt->get_result()->fetch_all();
+                $stmt->bind_result($hobbyID, $hobby);
+                while ($stmt->fetch()) {
+                    $res[$hobby] = $hobbyID;
+                }
                 
                 $stmt->close();
                 return $res;
@@ -48,6 +52,9 @@
             $hobbyID = null;
             $hobbies_to_add = array_diff($new_user_hobbies, $current_user_hobbies);
             $hobbies_to_del = array_diff($current_user_hobbies, $new_user_hobbies);
+
+            var_dump($hobbies_to_add);
+            var_dump($hobbies_to_del);
 
             // remove hobbies in $current_user_hobbies not included in $new_user_hobbies
             if ($stmt = $dbConnection->prepare($delete_hobby)) {

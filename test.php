@@ -6,15 +6,14 @@
 
     $conn = Database::connect();
 
-    $hobbies = Hobby::get_user_hobbies($conn, "16");
+    $hobbies = Hobby::get_user_hobbies($conn, "20");
     
     if (!$hobbies) echo "0";
 
 
-    foreach ($hobbies as $value) {
-        echo $value[1] . "<br>";
-    }   
-    
+    foreach ($hobbies as $key=>$value) {
+        echo $key . " - " . $value . "<br>";
+    }  
     
     
     

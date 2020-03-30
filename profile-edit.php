@@ -80,11 +80,12 @@
                 // Loop to store and display values of individual checked checkbox.
                 foreach($_POST['selected_hobbies'] as $selected){
                     $selected_hobbies[] = (int) $selected;
-                }
+				}
+				
+				var_dump($selected_hobbies); echo "<BR>";
+				var_dump($_SESSION["current_user_hobbies"]); echo "<BR>"; echo "<BR>";
 
-                $current_user_hobbies = array_map(null, ...Hobby::get_user_hobbies($conn, $_SESSION[User::USER_ID]))[0];
-
-                echo Hobby::set_user_hobbies($conn, $_SESSION[User::USER_ID], $current_user_hobbies, $selected_hobbies);
+                echo Hobby::set_user_hobbies($conn, $_SESSION[User::USER_ID], $_SESSION["current_user_hobbies"], $selected_hobbies);
             }
 
 			if ($success) {
@@ -99,6 +100,8 @@
 
 		$profileAttr = array();
 		$userID = $fname = $lname = $dob = $gender = $seeking = $description = $location = null;
+		
+		$all_hobbies = Hobby::get_all_hobbies($conn);
 
 		// try get profile data
 		if ($profileAttr = User::get_all_profile_attributes($conn, $_SESSION[User::USER_ID])) {
@@ -117,8 +120,20 @@
 				$profile_image_path = User::USER_IMAGES . $profile_image_path;
 			}
 
-			$_SESSION["all_hobbies"] = Hobby::get_all_hobbies($conn);
-            $_SESSION["current_user_hobbies"] = array_map(null, ...Hobby::get_user_hobbies($conn, $_SESSION[User::USER_ID]))[0];
+			if ($_SESSION["current_user_hobbies"] = Hobby::get_user_hobbies($conn, $userID)) {
+				// the user has hobbies set, get a list of their id's
+				echo "<br><br><br><br><br><br><br><br><br><br><br>";
+				var_dump($_SESSION["current_user_hobbies"]); echo "<BR>";
+				//$_SESSION["current_user_hobbies"] = array_map(null, ...$_SESSION["current_user_hobbies"]);
+				//var_dump($_SESSION["current_user_hobbies"]);
+
+			} else {
+				// else set an empty array
+				$_SESSION["current_user_hobbies"] = array();
+			}
+
+			
+			
 		} else {
 			// if no rows were returned, a row must be inserted
 			$newUser = true;
@@ -249,9 +264,9 @@
 					<h3 class="pb-1">Hobbies</h3>
 					<?php
 						$checkboxID = 0;
-						foreach ($_SESSION["all_hobbies"] as $value) { ?>
-							<input type="checkbox" <?php echo "id=\"" . $checkboxID . "\" name=\"selected_hobbies[]\" value=\"" . $value[0] . "\""; echo (in_array($value[0], $_SESSION["current_user_hobbies"])) ? "checked" : "";?>><?php
-							echo "<label for=\"" . $checkboxID . "\">" .  $value[1] . "</label><br>";
+						foreach ($all_hobbies as $hobby) { ?>
+							<input type="checkbox" <?php echo "id=\"" . $checkboxID . "\" name=\"selected_hobbies[]\" value=\"" . $hobby[0] . "\""; echo (in_array($hobby[0], $_SESSION["current_user_hobbies"])) ? "checked" : "";?>><?php
+							echo "<label for=\"" . $checkboxID . "\">" .  $hobby[1] . "</label><br>";
 							
 							$checkboxID++;
 						}        

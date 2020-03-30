@@ -625,12 +625,8 @@
                 $stmt->close();
             }
 
-            if ($fileName) {
-                $filePath = User::USER_IMAGES . $fileName;
-                // if an entry in the file table exists but the actual file does not, delete the row
-                if (is_file($filePath)) {
-                    return $fileName;
-                }
+            if ($fileName && is_file(User::USER_IMAGES . $fileName)) {
+                return $fileName;
             } else {
                 return 0;
             }

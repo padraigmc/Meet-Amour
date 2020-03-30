@@ -62,6 +62,8 @@
 				$profile_image_path = User::USER_IMAGES . $profile_image_path;
 			}
 
+			echo $profile_image_path;
+
 			$hobbies = Hobby::get_user_hobbies($conn, $userID);
 		} else {
 			// if the profile does not have a row in the table
@@ -182,11 +184,11 @@
 			<table class="table table-sm w-75 table-borderless" id="interests-table">
 				<?php
 					if ($hobbies) {
-						foreach ($hobbies as $hobby) {
+						foreach ($hobbies as $key => $hobby) {
 							?>
 							<tr>
 								<th scope="row"></th>
-								<td><?php echo $hobby[1]; ?></td>
+								<td><?php echo $key; ?></td>
 							</tr>
 							<?php
 						}   
