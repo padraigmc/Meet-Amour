@@ -165,11 +165,6 @@ iframe {
   margin: 10px;
 }
 
-#button-col  {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
 #button-col a {
   margin-top: -15px;
   margin-bottom: 20px;
@@ -257,7 +252,7 @@ body{
   padding: 50px;
   margin-top: 0px;
   margin-bottom: 180px;
-  /* border-radius: 8px; */
+  border-radius: 4px;
   background: rgb(51, 51, 51);
   color: #f1f1f1;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);

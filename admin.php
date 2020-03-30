@@ -68,16 +68,14 @@
 <section class="admin-top bg-primary" id="admin-top">
     <div class="container-fluid w-100 main">
     <div class="form-row">
-    <div class="col-lg-1 main mx-auto" id="button-col">
-    <div class="dropright w-100" id="dropbtn">
-      <a type="button" class="dropdown-toggle" data-toggle="dropdown" value="Manage Users">
+    <div class="col-lg-1 top-1" id="button-col">
+      <a type="button" class="dropdown-toggle" data-toggle="dropdown">Manage Users</a>
       <div class="dropdown-menu mx-auto text-center">
         <a href="#" class="button w-100">View All Users</a>
-        <a href="#" class="button w-100">Ban Appeals</a>
-        <a href="#" class="button w-100">Manage Users</a>
-      </div>
+        <a href="#" class="button w-100">Banned Users</a>
+        <a href="#" class="button w-100">Reported Users</a>
     </div>
-      <a href="#" class="button w-100">Manage Users</a>
+      <a href="#" class="button w-100">Search Users</a>
       <a href="#" class="button w-100">Ban Appeals</a>
       <a href="#" class="button w-100">Manage Users</a>
     </div>
@@ -122,8 +120,44 @@
                 </tbody>
                 </table>
             </div>
-            <div class="col-lg-5 mx-auto" id="top-2">
-                <h1>Side 2</h1>
+            <div class="col-lg-5 mx-auto" id="top-1">
+            <h3 class="text-primary table-striped font-weight-bold">Reports</h3>
+            <table class="table" id="user-table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Reported</th>
+                        <th scope="col">Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Damian </td>
+                        <td>Larkin</td>
+                        <td>Kerry</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Padraig</td>
+                        <td>McCarthy</td>
+                        <td>Limerick</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">3</th>
+                        <td>Ashutosh</td>
+                        <td>Yadav</td>
+                        <td>Limerick</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">4</th>
+                        <td>Wasim</td>
+                        <td>Ghazal</td>
+                        <td>Limerick</td>
+                    </tr>
+                </tbody>
+                </table>
             </div>
 </div>
             <div class="form-row">
@@ -154,7 +188,7 @@
                 </tbody>
                 </table>
             </div>
-            <div class="col-lg-5 mx-auto" id="top-2">
+            <div class="col-lg-5 mx-auto" id="top-1">
                 <h1>Side 2</h1>
             </div>
         </div>
