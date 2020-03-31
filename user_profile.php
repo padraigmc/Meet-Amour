@@ -205,7 +205,12 @@
 			
 		</div>
 		<div class="col-lg-1 button align-self-start">
-				<a href="profile-edit.php">Edit</a>
+		<a type="button" class="dropdown-toggle" data-toggle="dropdown">Manage Profile</a>
+      		<div class="dropdown-menu mx-auto text-center">
+        		<a href="profile-edit.php" class="button w-100">Edit Profile</a>
+        		<a href="#" class="button w-100">Ban User</a>
+        		<a href="#" class="button w-100">Edit User</a>
+    		</div>
 		</div>
 	</div>
 
