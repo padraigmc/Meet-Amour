@@ -789,5 +789,65 @@
                 return (date("Y") - $year);
             }
         }
+
+
+        public static function like_user($dbConnection, $recipientUserID, $redirect_url_after_exec) {
+            $sql = "SELECT `userID` FROM `User` WHERE `userID` = ?;";
+
+            // prepare, bind and execute statement
+            if ($stmt = $dbConnection->prepare($sql)) {
+                $stmt->bind_param("s", $recipientUserID);
+                $stmt->execute();
+                $stmt->store_result();
+
+                if ($stmt->num_rows() == 1) {
+                    $current_timestamp = date("Y-m-d H:i:s");
+
+                    $sql = "INSERT INTO `Like` (`fromUserID`, `toUserID`, `dateLiked`) 
+                            VALUES (?, ?, ?);";
+
+                    if ($stmt = $dbConnection->prepare($sql)) {
+                        $stmt->bind_param("sss", $_SESSION[User::USER_ID], $recipientUserID, $current_timestamp);
+                        $stmt->execute();
+                    }
+                }
+            }
+
+            $stmt->close();
+            $dbConnection->close();
+            $redirect_url_after_exec = "Location: " . $redirect_url_after_exec;
+            header($redirect_url_after_exec);
+            exit;
+        }
+
+
+        public static function unlike_user($dbConnection, $recipientUserID, $redirect_url_after_exec) {
+            $sql = "SELECT `userID` FROM `User` WHERE `userID` = ?;";
+
+            // prepare, bind and execute statement
+            if ($stmt = $dbConnection->prepare($sql)) {
+                var_dump($stmt);
+                $stmt->bind_param("s", $recipientUserID);
+                $stmt->execute();
+                $stmt->store_result();
+
+                if ($stmt->num_rows() == 1) {
+                    $sql = "DELETE FROM `Like`
+                            WHERE `fromUserID` = ? AND `toUserID` = ?;";
+
+                    if ($stmt = $dbConnection->prepare($sql)) {
+                        $stmt->bind_param("ss", $_SESSION[User::USER_ID], $recipientUserID);
+                        $stmt->execute();
+                    }
+                }
+            
+            var_dump($stmt);
+            $stmt->close();
+            $redirect_url_after_exec = "Location: " . $redirect_url_after_exec;
+            $dbConnection->close();
+            header($redirect_url_after_exec);
+            exit;
+            }
+        }
     }
 ?>
