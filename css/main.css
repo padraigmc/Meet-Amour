@@ -173,9 +173,8 @@ iframe {
 .dropdown-menu {
   background: #fff;
   border-radius: 4px;
-  padding: 5px;
-  padding-top: 20px;
-  padding-bottom: 0px;
+  margin-bottom: 20px;
+  padding: 20px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 

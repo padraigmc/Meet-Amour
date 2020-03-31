@@ -136,7 +136,7 @@
 		} else {
 	?>
 
-	<div class="row">
+	<div class="form-row">
 		<div class="col-lg-3">
 			<img id="picture" src="<?php echo ($profile_image_path) ? $profile_image_path : "img/blank-profile.png"; ?>" alt="" class="img-fluid" height="300" width="300">
 		</div>	
@@ -204,7 +204,7 @@
 			</table>
 			
 		</div>
-		<div class="col-lg-1 button align-self-start">
+		<div class="col-lg-1">
 		<a type="button" class="dropdown-toggle" data-toggle="dropdown">Manage Profile</a>
       		<div class="dropdown-menu mx-auto text-center">
         		<a href="profile-edit.php" class="button w-100">Edit Profile</a>
