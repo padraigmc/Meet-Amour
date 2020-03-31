@@ -6,15 +6,22 @@
 
     $conn = Database::connect();
 
-    $hobbies = Hobby::get_user_hobbies($conn, "20");
+    $dob = "1999-06-14 00:00:00";
+
+    echo User::calc_age($dob);
+
+
+
+    /*
+    $matches = User::suggest_matches($conn, "21");
     
-    if (!$hobbies) echo "0";
+    if (!$matches) echo "0";
 
 
-    foreach ($hobbies as $key=>$value) {
-        echo $key . " - " . $value . "<br>";
+    foreach ($matches as $key=>$value) {
+        var_dump($value); echo "<br>";
     }  
-    
+    */
     
     
     ?>
