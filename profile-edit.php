@@ -191,7 +191,7 @@
 				<div class="col-lg-3">
 					<h3 class="pb-4">Profile Picture</h3>
 					<!--JavaScript upload system to show an image preview-->
-					<img id="picture" alt="" class="py-auto img-fluid" width="300" height="300" src="<?php echo ($profile_image_path) ? $profile_image_path : "img/blank-profile.png"; ?>" />
+					<img id="image" alt="" class="py-auto img-fluid" width="300" height="300" src="<?php echo ($profile_image_path) ? $profile_image_path : "img/blank-profile.png"; ?>" />
 					<input type="file" class="mx-auto" name="userImage" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
 				</div>
 				<div class="col-lg-7">
