@@ -1282,6 +1282,11 @@ p{
    line-height:1.5;
    margin-bottom:20px
 }
+
+#match-heading{
+  margin-top: 130px;
+  margin-bottom: 80px;
+}
 section{
    padding:100px 0
 }

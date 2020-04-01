@@ -4,18 +4,34 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <link href="css/new-age.min.css" rel="stylesheet">
-	<link href="css/main.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+  
+  <style>
+    body, p {
+      color: rgb(243, 243, 243);
+    }
+    input[type=button] {
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
     <div class="container">
       <div class="row text-center">
-        <div class="col-lg-6 offset-lg-3 col-sm-6 offset-sm-3 col-12 p-3 error-main">
+        <div class="col-lg-12 mx-auto">
           <div class="row">
-            <div class="col-lg-8 col-12 col-sm-10 offset-lg-2 offset-sm-1">
-              <h1 class="m-0">404</h1>
-              <h6>Page not found</h6>
+            <div class="col-lg-12">
+              <h1 class="font-weight-bold">404</h1>
+              <h5 class="font-weight-bold">Page not found</h5>
               <p>Either you typed something wrong, or someone on our end is in trouble.</p>
-              <a href="index.html" id="dropbtn">Return Home</a>
+              <div class="row">
+                <div class="col-lg-6 text-right">
+                  <input type="button" class="font-weight-bold" id="dropbtn" value="Go Back" onclick="history.back(-1)" />
+                </div>
+                <div class="col-lg-6 text-left">
+                  <a href="index.html" class="font-weight-bold" id="dropbtn">Return Home</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

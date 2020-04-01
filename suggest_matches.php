@@ -22,14 +22,9 @@
 	<link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
 	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css'>
 
-	<!-- Plugin CSS -->
-
-
-
 	<!-- Custom styles for this template -->
 	<link href="css/new-age.min.css" rel="stylesheet">
-	<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css'>
-	<link rel="stylesheet" href="./css/cardstyle.css">
+	<link rel="stylesheet" href="css/cardstyle.css">
 
 	<!--Script-->
 
@@ -48,7 +43,7 @@
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
 		<div class="container">
-		
+		<a class="navbar-brand js-scroll-trigger" href="index.html"><img src="img/logo.png" alt="">  </a>
 		<a class="navbar-brand js-scroll-trigger" href="index.html">MeetAmour</a> 
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			Menu
@@ -58,34 +53,23 @@
 			<ul class="navbar-nav ml-auto">
 
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="#page-top">Home</a>
-			</li>
-			
-			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="#matches">View Matches</a>
-			</li>
-
-
-			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="user_profile.php">View My Profile</a>
+				<a class="nav-link js-scroll-trigger" href="user.html">Matches</a>
 			</li>
 
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="about-us.html">About Us</a>
+				<a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
 			</li>
-
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="">Logout</a>
+				<a class="nav-link js-scroll-trigger" href="#">Profile</a>
 			</li>
 			</ul>
 		</div>
 		</div>
 	</nav>
-
 	<section class="matches py-5" id="matches">
 		<div class="container">
 			<div class="section-heading text-center">
-				<h2>Here are today's matches</b></h2>
+				<h2 id="match-heading">Here are today's matches</h2>
 				<hr>
 			</div>
 
@@ -125,7 +109,7 @@
 								</h2>
 								<div class="mc-content">
 									<div class="img-container">
-										<img class="img-responsive" src="<?php echo $image_filepath; ?>" width="300" height="300">
+										<img class="img-fluid" src="<?php echo $image_filepath; ?>" width="300" height="300">
 									</div>
 									<div class="mc-description">
 									<ul>
@@ -190,7 +174,7 @@
 			</li>
 		</ul>
 		</div>
-	</footer> -->
+	</footer>
 
 	<!-- Bootstrap core JavaScript -->
 	<script src="vendor/jquery/jquery.min.js"></script>
