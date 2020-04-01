@@ -103,10 +103,7 @@
 			</li>
 
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="#">Profile</a>
+				<a class="nav-link js-scroll-trigger" href="#">Log Out</a>
 			</li>
 			</ul>
 		</div>
@@ -272,6 +269,8 @@
 			<li class="list-inline-item">
 			<a href="admin.php">Admin</a>
 			</li>
+			<li class="list-inline-item">
+				<a href="about-us.html">About Us</a>
 			</li>
 		</ul>
 		</div>

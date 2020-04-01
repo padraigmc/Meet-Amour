@@ -55,12 +55,11 @@
 			<li class="nav-item">
 				<a class="nav-link js-scroll-trigger" href="user.html">Matches</a>
 			</li>
-
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
+				<a class="nav-link js-scroll-trigger" href="user_profile.php">Profile</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="#">Profile</a>
+				<a class="nav-link js-scroll-trigger" href="#">Log Out</a>
 			</li>
 			</ul>
 		</div>
@@ -170,7 +169,7 @@
 			<a href="#">FAQ</a>
 			</li>
 			<li class="list-inline-item">
-			<a href="admin.php">Admin</a>
+			<a href="about-us.html">About us</a>
 			</li>
 		</ul>
 		</div>
