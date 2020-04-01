@@ -54,10 +54,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="profile_search.php">Find Your Match</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="about-us.html">About Us</a>
+            <a class="nav-link js-scroll-trigger" href="<?php echo Database::ABOUT_US; ?>">About Us</a>
           </li>
 
           <li class="nav-item">
@@ -65,7 +62,11 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="user_profile.php">Profile</a>
+            <a class="nav-link js-scroll-trigger" href="<?php echo Database::REGISTER; ?>">Register</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGIN; ?>">Login</a>
           </li>
         </ul>
       </div>
@@ -83,10 +84,10 @@
                                   &nbsp&nbspDate.&nbsp&nbsp </span></font></h2>
             <div class="form-row">
               <div class="col-lg-4">
-            <a href="register.php" class="btn btn-outline btn-xl js-scroll-trigger w-100">Sign up today!</a>
+            <a href="<?php echo Database::REGISTER; ?>" class="btn btn-outline btn-xl js-scroll-trigger w-100">Sign up today!</a>
             </div>
             <div class="col-lg-4">
-              <a href="login.php" class="btn btn-outline btn-xl js-scroll-trigger w-100">Login</a>
+              <a href="<?php echo Database::LOGIN; ?>" class="btn btn-outline btn-xl js-scroll-trigger w-100">Login</a>
               </div>
             </div>
           </div>
@@ -177,7 +178,7 @@
     <div class="cta-content">
       <div class="container">
         <h2>Find.<br>Match.<br>Date.</h2>
-        <a href="register.php" class="btn btn-outline btn-xl js-scroll-trigger">Sign up now!</a>
+        <a href="<?php echo Database::REGISTER; ?>" class="btn btn-outline btn-xl js-scroll-trigger">Sign up now!</a>
       </div>
     </div>
     <div class="overlay"></div>
@@ -220,9 +221,6 @@
         </li>
         <li class="list-inline-item">
           <a href="#">FAQ</a>
-        </li>
-        <li class="list-inline-item">
-          <a href="admin.php">Admin</a>
         </li>
       </ul>
     </div>
