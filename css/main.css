@@ -320,6 +320,20 @@ color: #f1f1f1;
   background-color: #c926a0;
 }
 
+.main button {
+  display: inline-block;
+  background-color: #ff70db;
+  color: white;
+  margin-top: 0px;
+  text-decoration: none;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.main button:hover {
+  background-color: #c926a0;
+}
+
   /*//////////////////////////////////////////////////////////////////
 [ edit user profile ]*/
 

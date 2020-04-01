@@ -36,9 +36,11 @@
 			
 			// Try to register user, if successful redirect to profile set up page
 			if (User::register($conn, $email, $username, $password, $passwordConfirm)) {
+				$conn->close();
 				header("Location: profile-edit.php");
 				exit();
 			} else {
+				$conn->close();
 				var_dump($_SESSION);
 			}
 		} ?>
@@ -116,8 +118,5 @@
 	<!--===============================================================================================-->
 	<script src="js/main.js"></script>
 
-	<?php
-		$conn->close();
-	?>
 </body>
 </html>
