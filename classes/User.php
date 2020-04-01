@@ -168,7 +168,7 @@
                 echo $t->getMessage();
                 return 0;
             } finally {
-                $stmt->close();
+                //$stmt->close();
             }
         }
 
@@ -538,9 +538,6 @@
                 } finally {
                     $stmt->close();
                 }
-            } else {
-                // ==================================================== to delete, testing purposes only
-                var_dump($_SESSION[Self::ERROR]);
             }
         }
 
@@ -610,7 +607,8 @@
             }
 
             // redirect to login page
-            header("Location: login.php");
+            header("Location: index.php");
+            exit();
         }
 
 

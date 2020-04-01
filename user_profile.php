@@ -33,64 +33,64 @@
 	<body id="page-top">
 		<?php
 
-	require_once("init.php");
-	require_once("classes/Hobby.php");
-	$conn = Database::connect();
+			require_once("init.php");
+			require_once("classes/Hobby.php");
+			$conn = Database::connect();
 
-		// if username supplied by get variable (in url), query db for userID
-		if (isset($_GET[User::USERNAME])) {
-			$owner = 0;
-			$username = $_GET[User::USERNAME];
-			$userID = User::get_user_attribute($conn, $username, User::USER_ID);
+			// if username supplied by get variable (in url), query db for userID
+			if (isset($_GET[User::USERNAME])) {
+				$owner = 0;
+				$username = $_GET[User::USERNAME];
+				$userID = User::get_user_attribute($conn, $username, User::USER_ID);
 
-			if (isset($_POST["like"])) {
-				$isLiked = User::like_user($conn, $userID);
-			} elseif (isset($_POST["unlike"])) {
-				if (User::unlike_user($conn, $userID))
-					$isLiked = 0;
+				if (isset($_POST["like"])) {
+					$isLiked = User::like_user($conn, $userID);
+				} elseif (isset($_POST["unlike"])) {
+					if (User::unlike_user($conn, $userID))
+						$isLiked = 0;
+				} else {
+					$isLiked = User::check_like_status($conn, $userID);
+				}
 			} else {
-				$isLiked = User::check_like_status($conn, $userID);
-			}
-		} else {
-			// if user owns the page
-			$userID = $_SESSION[User::USER_ID];
-			$owner = 1;
-		}
-
-		if ($userID > 0 && $profileAttr = User::get_all_profile_attributes($conn, $userID)) {
-			// set user variables
-			$fname = $profileAttr[User::FIRST_NAME];
-			$lname = $profileAttr[User::LAST_NAME];
-			$age = User::calc_age($profileAttr[User::DATE_OF_BIRTH]); // get users age
-			$gender = $profileAttr[User::GENDER];
-			$seeking = $profileAttr[User::SEEKING];
-			$description = $profileAttr[User::DESCRIPTION];
-			$location = $profileAttr[User::LOCATION];
-
-			if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
-				$profile_image_path = User::USER_IMAGES . $profile_image_path;
+				// if user owns the page
+				$userID = $_SESSION[User::USER_ID];
+				$owner = 1;
 			}
 
-			$hobbies = Hobby::get_user_hobbies($conn, $userID);
-		} else {
-			// if the profile does not have a row in the table
-			if ($owner) {
-				$conn->close();
-				header("Location: profile-edit.php");
-				exit();
+			if ($userID > 0 && $profileAttr = User::get_all_profile_attributes($conn, $userID)) {
+				// set user variables
+				$fname = $profileAttr[User::FIRST_NAME];
+				$lname = $profileAttr[User::LAST_NAME];
+				$age = User::calc_age($profileAttr[User::DATE_OF_BIRTH]); // get users age
+				$gender = $profileAttr[User::GENDER];
+				$seeking = $profileAttr[User::SEEKING];
+				$description = $profileAttr[User::DESCRIPTION];
+				$location = $profileAttr[User::LOCATION];
+
+				if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
+					$profile_image_path = User::USER_IMAGES . $profile_image_path;
+				}
+
+				$hobbies = Hobby::get_user_hobbies($conn, $userID);
 			} else {
-				$_SESSION[User::ERROR][] = UserError::PROFILE_UNAVAILABLE;
-			}
+				// if the profile does not have a row in the table
+				if ($owner) {
+					$conn->close();
+					header("Location: profile-edit.php");
+					exit();
+				} else {
+					$_SESSION[User::ERROR][] = UserError::PROFILE_UNAVAILABLE;
+				}
 
-		}
+			}
 
 		?>
 
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
 		<div class="container">
-		<a class="navbar-brand js-scroll-trigger" href="index.html"><img src="img/logo.png" alt="">  </a>
-		<a class="navbar-brand js-scroll-trigger" href="index.html">MeetAmour</a> 
+		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>"><img src="img/logo.png" alt="">  </a>
+		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>">MeetAmour</a> 
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			Menu
 			<i class="fas fa-bars"></i>
@@ -99,11 +99,19 @@
 			<ul class="navbar-nav ml-auto">
 
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="user.html">Matches</a>
+				<a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
 			</li>
 
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="#">Log Out</a>
+				<a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link js-scroll-trigger" href="#">My Profile</a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
 			</li>
 			<li class="nav-item dropdown">
                   <a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -218,11 +226,6 @@
 							</tr>
 							<tr>
 								<th scope="row"></th>
-								<td class="text-primary">Profession</td>
-								<td>Web Developer & Designer</td>
-							</tr>
-							<tr>
-								<th scope="row"></th>
 								<td class="text-primary">Gender</td>
 								<td><?php echo $gender; ?></td>
 							</tr>
@@ -272,7 +275,7 @@
 					<button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 					<div class="dropdown-menu">
 						<a href="profile-edit.php" class="button w-100 mb-2">Edit Profile</a>
-						<a href="#" class="button w-100">Ban User</a>
+						<!-- <a href="#" class="button w-100">Ban User</a> -->
 					</div>
 				</div>
 			</div>
@@ -323,10 +326,7 @@
 			<li class="list-inline-item">
 			<a href="#">FAQ</a>
 			<li class="list-inline-item">
-			<a href="admin.php">Admin</a>
-			</li>
-			<li class="list-inline-item">
-				<a href="about-us.html">About Us</a>
+			<a href="<?php echo Database::ABOUT_US; ?>">About us</a>
 			</li>
 		</ul>
 		</div>
