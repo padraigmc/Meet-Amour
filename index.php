@@ -30,6 +30,17 @@
 </head>
 
 <body id="page-top">
+  <?php
+    require_once("init.php");
+
+    if (isset($_SESSION[User::LOGGED_IN]) && $_SESSION[User::LOGGED_IN] == 1) {
+      header("Location: user_profile.php");
+      exit();
+    }
+
+
+
+  ?>
 
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">

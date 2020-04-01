@@ -165,11 +165,6 @@
 							</tr>
 							<tr>
 								<th scope="row"></th>
-								<td class="text-primary">Profession</td>
-								<td>Web Developer & Designer</td>
-							</tr>
-							<tr>
-								<th scope="row"></th>
 								<td class="text-primary">Gender</td>
 								<td><?php echo $gender; ?></td>
 							</tr>
@@ -219,7 +214,7 @@
 					<button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 					<div class="dropdown-menu">
 						<a href="profile-edit.php" class="button w-100 mb-2">Edit Profile</a>
-						<a href="#" class="button w-100">Ban User</a>
+						<!-- <a href="#" class="button w-100">Ban User</a> -->
 					</div>
 				</div>
 			</div>
