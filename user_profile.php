@@ -36,12 +36,21 @@
 	require_once("init.php");
 	require_once("classes/Hobby.php");
 	$conn = Database::connect();
-		// presume the user does NOT own the profile
-		$owner = 0;
+
 		// if username supplied by get variable (in url), query db for userID
 		if (isset($_GET[User::USERNAME])) {
+			$owner = 0;
 			$username = $_GET[User::USERNAME];
 			$userID = User::get_user_attribute($conn, $username, User::USER_ID);
+
+			if (isset($_POST["like"])) {
+				$isLiked = User::like_user($conn, $userID);
+			} elseif (isset($_POST["unlike"])) {
+				if (User::unlike_user($conn, $userID))
+					$isLiked = 0;
+			} else {
+				$isLiked = User::check_like_status($conn, $userID);
+			}
 		} else {
 			// if user owns the page
 			$userID = $_SESSION[User::USER_ID];
@@ -62,13 +71,12 @@
 				$profile_image_path = User::USER_IMAGES . $profile_image_path;
 			}
 
-			echo $profile_image_path;
-
 			$hobbies = Hobby::get_user_hobbies($conn, $userID);
 		} else {
 			// if the profile does not have a row in the table
 			if ($owner) {
-		header("Location: profile-edit.php");
+				$conn->close();
+				header("Location: profile-edit.php");
 				exit();
 			} else {
 				$_SESSION[User::ERROR][] = UserError::PROFILE_UNAVAILABLE;
@@ -132,6 +140,7 @@
 		// if an error was found, display it and nothing else
 		if (!empty($_SESSION[User::ERROR])) {
 			echo "<h1>" . $_SESSION[User::ERROR][0] . "</h1></div>";
+			$conn->close();
 			exit();
 		} else {
 	?>
@@ -204,13 +213,29 @@
 			</table>
 			
 		</div>
-		<div class="col-lg-1">
-		<a type="button" class="dropdown-toggle" data-toggle="dropdown">Manage Profile</a>
-      		<div class="dropdown-menu mx-auto text-center">
-        		<a href="profile-edit.php" class="button w-100">Edit Profile</a>
-        		<a href="#" class="button w-100">Ban User</a>
-        		<a href="#" class="button w-100">Edit User</a>
-    		</div>
+		<div class="col-lg-1 d-flex align-items-end flex-column">
+			<div class="row">
+				<div class="btn-group dropright">
+					<button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+					<div class="dropdown-menu">
+						<a href="profile-edit.php" class="button w-100 mb-2">Edit Profile</a>
+						<a href="#" class="button w-100">Ban User</a>
+					</div>
+				</div>
+			</div>
+			<div class="row mt-auto">
+				<?php 
+					if ($owner == 0) {
+						echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?username=" . $username . "\" method=\"POST\">";
+						if ($isLiked) {
+							echo "<button type=\"submit\" class=\"fa fa-fw fa-times\" form=\"like_dislike_form\" name=\"unlike\"></button>";
+						} else {
+							echo "<button type=\"submit\" class=\"fa fa-fw fa-heart\" form=\"like_dislike_form\" name=\"like\"></button>";
+						}
+						echo "</form>";
+					}
+				?>
+			</div>
 		</div>
 	</div>
 

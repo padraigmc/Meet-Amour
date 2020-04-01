@@ -6,10 +6,7 @@
 
     $conn = Database::connect();
 
-    $dob = "1999-06-14 00:00:00";
-
-    echo User::calc_age($dob);
-
+    echo User::like_user($conn, 21);
 
 
     /*

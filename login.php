@@ -30,6 +30,7 @@
 
 			// if error array is empty i.e. no errors
 			if (User::login($conn, $username, $password)) {
+				$conn->close();
 				header('Location: user_profile.php');
 				exit();
 			}
@@ -90,12 +91,11 @@
 					</form>
 				</div>
 			</div>
-		</div>
+		</div>	
 
 		<?php
 
 		}
-		$conn->close();
 
 		?>
 	

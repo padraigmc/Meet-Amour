@@ -81,11 +81,8 @@
                 foreach($_POST['selected_hobbies'] as $selected){
                     $selected_hobbies[] = (int) $selected;
 				}
-				
-				var_dump($selected_hobbies); echo "<BR>";
-				var_dump($_SESSION["current_user_hobbies"]); echo "<BR>"; echo "<BR>";
 
-                echo Hobby::set_user_hobbies($conn, $_SESSION[User::USER_ID], $_SESSION["current_user_hobbies"], $selected_hobbies);
+                Hobby::set_user_hobbies($conn, $_SESSION[User::USER_ID], $_SESSION["current_user_hobbies"], $selected_hobbies);
             }
 
 			if ($success) {
@@ -120,20 +117,10 @@
 				$profile_image_path = User::USER_IMAGES . $profile_image_path;
 			}
 
-			if ($_SESSION["current_user_hobbies"] = Hobby::get_user_hobbies($conn, $userID)) {
-				// the user has hobbies set, get a list of their id's
-				echo "<br><br><br><br><br><br><br><br><br><br><br>";
-				var_dump($_SESSION["current_user_hobbies"]); echo "<BR>";
-				//$_SESSION["current_user_hobbies"] = array_map(null, ...$_SESSION["current_user_hobbies"]);
-				//var_dump($_SESSION["current_user_hobbies"]);
-
-			} else {
+			if (!($_SESSION["current_user_hobbies"] = Hobby::get_user_hobbies($conn, $userID))) {
 				// else set an empty array
 				$_SESSION["current_user_hobbies"] = array();
 			}
-
-			
-			
 		} else {
 			// if no rows were returned, a row must be inserted
 			$newUser = true;
