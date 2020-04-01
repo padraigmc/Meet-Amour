@@ -44,7 +44,7 @@
 						<img src="img/img-01.png" alt="IMG">
 					</div>
 
-					<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+					<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>
 
 						<span class="login100-form-title">
 							Member Login
