@@ -52,14 +52,14 @@
 						<img src="img/img-01.png" alt="IMG">
 					</div>
 
-					<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+					<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>
 
 						<span class="login100-form-title">
 							Sign Up
 						</span>
 						
 						<div class="wrap-input100 validate-input" data-validate = "Username is required">
-							<input class="input100" type="text" name="username" <?php echo (isset($username)) ? ("value=\"" . $username . "\"") : "placeholder=\"Username\""; ?>>
+							<input class="input100" type="text" name="username" <?php echo (isset($username)) ? ("value=\"" . $username . "\"") : "placeholder=\"Username\""; ?>
 							<span class="focus-input100"></span>
 							<span class="symbol-input100">
 								<i class="fa fa-user" aria-hidden="true"></i>
@@ -67,7 +67,7 @@
 						</div>
 
 						<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-							<input class="input100" type="text" name="email" <?php echo (isset($email)) ? ("value=\"" . $email . "\"") : "placeholder=\"Email\""; ?>>
+							<input class="input100" type="text" name="email" <?php echo (isset($email)) ? ("value=\"" . $email . "\"") : "placeholder=\"Email\""; ?>
 							<span class="focus-input100"></span>
 							<span class="symbol-input100">
 								<i class="fa fa-envelope" aria-hidden="true"></i>
