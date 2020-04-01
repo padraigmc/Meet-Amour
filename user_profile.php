@@ -118,9 +118,9 @@
                     <i class="fa fa-bell"></i>
                   </a>
                     <ul class="dropdown-menu">
-                      <li class="head text-light bg-dark">
+                      <li class="head text-light bg-primary">
                         <div class="row">
-                          <div class="col-lg-12 col-sm-12 col-12">
+                          <div class="col-lg-12">
                             <span>Notifications (3)</span>
                             <a href="" class="float-right text-light">Mark all as read</a>
                           </div>
@@ -129,12 +129,12 @@
                         <div class="row">
                           <div class="col-lg-3">
                           </div>    
-                          <div class="col-lg-8 col-sm-8 col-8">
+                          <div class="col-lg-8">
                             <strong class="text-primary">David John</strong>
                             <div>
                               Lorem ipsum dolor sit amet.
                             </div>
-                            <small class="text-warning">27.11.2015, 15:00</small>
+                            <small class="text-info">31.03.2020, 15:00</small>
                           </div>    
                         </div>
                       </li>
@@ -142,12 +142,12 @@
                         <div class="row">
                           <div class="col-lg-3">
                           </div>    
-                          <div class="col-lg-8 col-sm-8 col-8">
+                          <div class="col-lg-8">
                             <strong class="text-primary">David John</strong>
                             <div>
                               Lorem ipsum dolor sit amet.
                             </div>
-                            <small class="text-info">27.11.2015, 15:00</small>
+                            <small class="text-info">31.03.2020, 14:00</small>
                           </div>    
                         </div>
                       </li>
@@ -155,16 +155,16 @@
                         <div class="row">
                           <div class="col-lg-3">
                           </div>    
-                          <div class="col-lg-8 col-sm-8 col-8">
+                          <div class="col-lg-8">
                             <strong class="text-primary">David John</strong>
                             <div>
                               Lorem ipsum dolor sit amet.
                             </div>
-                            <small class="text-warning">27.11.2015, 15:00</small>
+                            <small class="text-info">31.03.2020, 16:00</small>
                           </div>    
                         </div>
                       </li>
-                      <li class="footer bg-dark text-center">
+                      <li class="footer bg-primary text-center">
                         <a href="" class="text-light">View All</a>
                       </li>
                     </ul>
@@ -272,7 +272,7 @@
 		<div class="col-lg-1 d-flex align-items-end flex-column">
 			<div class="row">
 				<div class="btn-group dropright">
-					<button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+					<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 					<div class="dropdown-menu">
 						<a href="profile-edit.php" class="button w-100 mb-2">Edit Profile</a>
 						<!-- <a href="#" class="button w-100">Ban User</a> -->
