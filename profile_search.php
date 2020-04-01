@@ -206,7 +206,7 @@
                 <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="#cta">Sign up</a>
+                <a class="nav-link js-scroll-trigger" href="register.php">Sign up</a>
             </li>
 
             <li class="nav-item">
