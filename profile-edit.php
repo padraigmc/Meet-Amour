@@ -257,7 +257,7 @@
 					<?php
 						$checkboxID = 0;
 						foreach ($all_hobbies as $hobby) { ?>
-							<input type="checkbox" <?php echo "id=\"" . $checkboxID . "\" name=\"selected_hobbies[]\" value=\"" . $hobby[0] . "\""; echo (in_array($hobby[0], $_SESSION["current_user_hobbies"])) ? "checked" : "";?>><?php
+							<input type="checkbox" <?php echo "id=\"" . $checkboxID . "\" name=\"selected_hobbies[]\" value=\"" . $hobby[0] . "\""; echo (isset($_SESSION["current_user_hobbies"]) && in_array($hobby[0], $_SESSION["current_user_hobbies"])) ? "checked" : "";?>><?php
 							echo "<label for=\"" . $checkboxID . "\">" .  $hobby[1] . "</label><br>";
 							
 							$checkboxID++;

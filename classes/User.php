@@ -168,7 +168,7 @@
                 echo $t->getMessage();
                 return 0;
             } finally {
-                $stmt->close();
+                //$stmt->close();
             }
         }
 
@@ -538,9 +538,6 @@
                 } finally {
                     $stmt->close();
                 }
-            } else {
-                // ==================================================== to delete, testing purposes only
-                var_dump($_SESSION[Self::ERROR]);
             }
         }
 
