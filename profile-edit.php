@@ -101,16 +101,16 @@
 		$all_hobbies = Hobby::get_all_hobbies($conn);
 
 		// try get profile data
-		if ($profileAttr = User::get_all_profile_attributes($conn, $_SESSION[User::USER_ID])) {
+		if ($profileAttr = User::resolve_foreign_keys_in_profile_tbl($conn, $_SESSION[User::USER_ID])) {
 			$newUser = false;
 
-			$userID = $profileAttr[User::USER_ID];
-			$fname = $profileAttr[User::FIRST_NAME];
-			$lname = $profileAttr[User::LAST_NAME];
-			$dob = substr($profileAttr[User::DATE_OF_BIRTH], 0, 10); // etract date (original: yyyy-mm-dd hh:mm:ss)
+			$userID = $_SESSION[User::USER_ID];
+			$fname = $_SESSION[User::FIRST_NAME];
+			$lname = $_SESSION[User::LAST_NAME];
+			$dob = substr($_SESSION[User::DATE_OF_BIRTH], 0, 10); // etract date (original: yyyy-mm-dd hh:mm:ss)
 			$gender = $profileAttr[User::GENDER];
 			$seeking = $profileAttr[User::SEEKING];
-			$description = $profileAttr[User::DESCRIPTION];
+			$description = $_SESSION[User::DESCRIPTION];
 			$location = $profileAttr[User::LOCATION];
 			
 			if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
@@ -118,7 +118,6 @@
 			}
 
 			if (!($_SESSION["current_user_hobbies"] = Hobby::get_user_hobbies($conn, $userID))) {
-				// else set an empty array
 				$_SESSION["current_user_hobbies"] = array();
 			}
 		} else {

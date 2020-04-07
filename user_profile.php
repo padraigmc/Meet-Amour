@@ -57,15 +57,15 @@
 				$owner = 1;
 			}
 
-			if ($userID > 0 && $profileAttr = User::get_all_profile_attributes($conn, $userID)) {
+			if ($userID > 0 && $profileAttr = User::resolve_foreign_keys_in_profile_tbl($conn, $userID)) {
 				// set user variables
-				$fname = $profileAttr[User::FIRST_NAME];
-				$lname = $profileAttr[User::LAST_NAME];
-				$age = User::calc_age($profileAttr[User::DATE_OF_BIRTH]); // get users age
-				$gender = $profileAttr[User::GENDER];
-				$seeking = $profileAttr[User::SEEKING];
-				$description = $profileAttr[User::DESCRIPTION];
-				$location = $profileAttr[User::LOCATION];
+				$fname = $_SESSION[User::FIRST_NAME];
+				$lname = $_SESSION[User::LAST_NAME];
+				$age = User::calc_age($_SESSION[User::DATE_OF_BIRTH]); // get users age
+				$gender = $_SESSION[User::GENDER];
+				$seeking = $_SESSION[User::SEEKING];
+				$description = $_SESSION[User::DESCRIPTION];
+				$location = $_SESSION[User::LOCATION];
 
 				if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
 					$profile_image_path = User::USER_IMAGES . $profile_image_path;
@@ -174,11 +174,13 @@
 		</div>
 	</nav>
 
+	</br>
+	</br>
+	</br></br></br></br></br>
 
-
-	</br>
-	</br>
-	</br>
+	<?php 
+		var_dump($_SESSION);
+	?>
 
 	<section class="download bg-primary text-center" id="download">
 		<div class="container">
@@ -284,9 +286,9 @@
 					if ($owner == 0) {
 						echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?username=" . $username . "\" method=\"POST\">";
 						if ($isLiked) {
-							echo "<button type=\"submit\" class=\"fa fa-fw fa-times\" form=\"like_dislike_form\" name=\"unlike\"></button>";
+							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\">Like</button>";
 						} else {
-							echo "<button type=\"submit\" class=\"fa fa-fw fa-heart\" form=\"like_dislike_form\" name=\"like\"></button>";
+							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"like\">Unlike</button>";
 						}
 						echo "</form>";
 					}
