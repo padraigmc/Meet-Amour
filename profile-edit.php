@@ -42,6 +42,8 @@
 		// if the user isn't logged in, redirect to homepage
 		if (!User::isLoggedIn()) {
 			header("Location: login.php");
+			$conn->close();
+			exit();
 		}
 
 		// set time variables - used for html date input
@@ -86,13 +88,13 @@
             }
 
 			if ($success) {
-				header("Location: user_profile.php");
-				exit();
+				header("Location: " . Database::VIEW_PROFILE);
 			} else {
 				$_SESSION[User::ERROR][] = UserError::GENERAL_ERROR;
+				header("Location: " . Database::EDIT_PROFILE .  " ?edit_error");
 			}
-
-		} else {
+			$conn->close();
+			exit();
 		}
 
 		$profileAttr = array();
@@ -161,6 +163,10 @@
 	</br>
 	</br>
 	</br>
+
+	<?php 
+		var_dump($_SESSION);
+	?>
 
 	<section class="download bg-primary text-center" id="download">
 		<div class="container">

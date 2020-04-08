@@ -41,23 +41,30 @@
 			if (isset($_GET[User::USERNAME])) {
 				$owner = 0;
 				$username = $_GET[User::USERNAME];
-				$userID = User::get_user_attribute($conn, $username, User::USER_ID);
+				$profileAttributes = User::get_all_profile_attributes($conn, $username);
+
+				$userID = $profileAttributes[User::USER_ID];
+				$fname = $profileAttributes[User::FIRST_NAME];
+				$lname = $profileAttributes[User::LAST_NAME];
+				$age = User::calc_age($profileAttributes[User::DATE_OF_BIRTH]);
+				$gender = $profileAttributes[User::GENDER];
+				$seeking = $profileAttributes[User::SEEKING];
+				$description = $profileAttributes[User::DESCRIPTION];
+				$location = $profileAttributes[User::LOCATION];
 
 				if (isset($_POST["like"])) {
-					$isLiked = User::like_user($conn, $userID);
+					$isLiked = Like::like_user($conn, $_SESSION[User::USER_ID], $userID);
 				} elseif (isset($_POST["unlike"])) {
-					if (User::unlike_user($conn, $userID))
+					if (Like::unlike_user($conn, $_SESSION[User::USER_ID], $userID))
 						$isLiked = 0;
 				} else {
-					$isLiked = User::check_like_status($conn, $userID);
+					$isLiked = Like::check_like_status($conn, $_SESSION[User::USER_ID], $userID);
 				}
 			} else {
 				// if user owns the page
 				$userID = $_SESSION[User::USER_ID];
 				$owner = 1;
-			}
 
-			if ($userID > 0 && $profileAttr = User::resolve_foreign_keys_in_profile_tbl($conn, $userID)) {
 				// set user variables
 				$fname = $_SESSION[User::FIRST_NAME];
 				$lname = $_SESSION[User::LAST_NAME];
@@ -66,6 +73,9 @@
 				$seeking = $_SESSION[User::SEEKING];
 				$description = $_SESSION[User::DESCRIPTION];
 				$location = $_SESSION[User::LOCATION];
+			}
+
+			if ($userID > 0 && isset($_SESSION[User::FIRST_NAME])) {
 
 				if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
 					$profile_image_path = User::USER_IMAGES . $profile_image_path;
@@ -84,6 +94,14 @@
 
 			}
 
+			if ($notifications = Notification::get_unseen_user_notifications($conn, 3)) {
+				$numUnseenNotifications = sizeof($notifications);
+			} else {
+				$numUnseenNotifications = 0;
+			}
+
+			var_dump($_SESSION);
+
 		?>
 
 	<!-- Navigation -->
@@ -97,78 +115,64 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarResponsive">
 			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
+				</li>
 
-			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
-			</li>
+				<li class="nav-item">
+					<a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
+				</li>
 
-			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
-			</li>
+				<li class="nav-item">
+					<a class="nav-link js-scroll-trigger" href="#">My Profile</a>
+				</li>
 
-			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="#">My Profile</a>
-			</li>
+				<li class="nav-item">
+					<a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fa fa-bell"><?php echo ($notifications) ? $numUnseenNotifications : ""; ?></i>
+					</a>
+					<ul class="dropdown-menu">
+						<li class="head text-light bg-primary">
+							<div class="row">
+								<div class="col-lg-12">
+									<span>Notifications (<?php echo $numUnseenNotifications; ?>)</span>
+									<a href="" class="float-right text-light">Mark all as read</a>
+								</div>
+							</div>
+						</li>
+						<?php
+							if ($notifications) {
+								foreach ($notifications as $key => $value) {
+						?>
+									<li class="notification-box <?php echo ($key % 2 == 1) ? "bg-gray" : ""; ?>">
+										<div class="row">
+											<div class="col-lg-3">
+											</div>    
+											<div class="col-lg-8">
+												<strong class="text-primary">
+													<a href="<?php echo Database::VIEW_PROFILE . "?username=" . $value[User::NOTIFICATION_FROM_USERNAME] ; ?>"><?php echo $value[User::NAME]; ?></a>
+												</strong>
+												<div>
+													<?php echo $value[User::NOTIFICATION_MESSAGE]; ?>
+												</div>
+												<small class="text-info"><?php echo $value[User::NOTIFICATION_DATE_SENT]; ?></small>
+											</div>    
+										</div>
+									</li>
+						<?php
+								}
+							} else {
 
-			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
-			</li>
-			<li class="nav-item dropdown">
-                  <a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-bell"></i>
-                  </a>
-                    <ul class="dropdown-menu">
-                      <li class="head text-light bg-primary">
-                        <div class="row">
-                          <div class="col-lg-12">
-                            <span>Notifications (3)</span>
-                            <a href="" class="float-right text-light">Mark all as read</a>
-                          </div>
-                      </li>
-                      <li class="notification-box">
-                        <div class="row">
-                          <div class="col-lg-3">
-                          </div>    
-                          <div class="col-lg-8">
-                            <strong class="text-primary">David John</strong>
-                            <div>
-                              Lorem ipsum dolor sit amet.
-                            </div>
-                            <small class="text-info">31.03.2020, 15:00</small>
-                          </div>    
-                        </div>
-                      </li>
-                      <li class="notification-box bg-gray">
-                        <div class="row">
-                          <div class="col-lg-3">
-                          </div>    
-                          <div class="col-lg-8">
-                            <strong class="text-primary">David John</strong>
-                            <div>
-                              Lorem ipsum dolor sit amet.
-                            </div>
-                            <small class="text-info">31.03.2020, 14:00</small>
-                          </div>    
-                        </div>
-                      </li>
-                      <li class="notification-box">
-                        <div class="row">
-                          <div class="col-lg-3">
-                          </div>    
-                          <div class="col-lg-8">
-                            <strong class="text-primary">David John</strong>
-                            <div>
-                              Lorem ipsum dolor sit amet.
-                            </div>
-                            <small class="text-info">31.03.2020, 16:00</small>
-                          </div>    
-                        </div>
-                      </li>
-                      <li class="footer bg-primary text-center">
-                        <a href="" class="text-light">View All</a>
-                      </li>
-                    </ul>
-                </li>
+							}
+						?>
+						<li class="footer bg-primary text-center">
+							<a href="" class="text-light">View All</a>
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 		</div>
@@ -176,12 +180,8 @@
 
 	</br>
 	</br>
-	</br></br></br></br></br>
-
-	<?php 
-		var_dump($_SESSION);
-	?>
-
+	</br>
+	
 	<section class="download bg-primary text-center" id="download">
 		<div class="container">
 		<div class="row">

@@ -37,12 +37,15 @@
 		require_once("init.php");
 		$conn = Database::connect();
 
-		if (isset($_POST["like"])) {
-			User::like_user($conn, $_POST["like"]);
+		if (isset($_POST["username"])) {
+			if (isset($_POST["like"])) {
+				Like::like_user($conn, $_POST["like"], $_POST["username"]);
+			} elseif (isset($_POST["unlike"])) {
+				Like::unlike_user($conn, $_SESSION[User::USER_ID], $_POST["unlike"]);
+			}
 			header("Location: suggest_matches.php");
-		} elseif (isset($_POST["unlike"])) {
-			User::unlike_user($conn, $_POST["unlike"]);
-			header("Location: suggest_matches.php");
+			$conn->close();
+			exit();
 		}
 
 		$profles = User::suggest_matches($conn, $_SESSION[User::USER_ID]);
@@ -99,7 +102,7 @@
 					$description = $value[User::DESCRIPTION];
 					$location = $value[User::LOCATION];
 					$image_filepath = User::USER_IMAGES . $value["filename"];
-					$isLiked = User::check_like_status($conn, $userID);
+					$isLiked = Like::check_like_status($conn, $_SESSION[User::USER_ID], $userID);
 
 					// test if the file exists, if not set it to a defualt image
 					if (!is_file($image_filepath)) {
@@ -147,12 +150,12 @@
 									<a class="fa fa-fw fa-times"></a>
 									<?php
 										echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "\" method=\"POST\">";
-										if ($isLiked) {
-											echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\" value=\"" . $userID . "\">Unlike</button>";
-										} else {
-											echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"like\" value=\"" . $userID . "\">Like</button>";
-										}
-										echo "</form>";
+											if ($isLiked) {
+												echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\" value=\"" . $userID . "\">Unlike</button>";
+											} else {
+												echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"like\" value=\"" . $userID . "\">Like</button>";
+											}
+										echo "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">";
 									?>
 								</div>
 							</article>

@@ -1,28 +1,28 @@
 <?php
 
-    include("Database.php");
-    include("Verify.php");
-    include("UserError.php");
+    require_once("Database.php");
+    require_once("Verify.php");
+    require_once("UserError.php");
 
     class User
     {
-        // session variable names
         const USER_ID = "userID";
-        const IS_ADMIN = "isAdmin";
-        const IS_BANNED = "isBanned";
-        const IS_DEACTIVATED = "isDeactivated";
-        const IS_VERIFIED = "isVerified";
-        const ERROR = "error";
-        const LOGGED_IN = "loggedIn"; // flag set to 1 if user is logged in, else 0
-        const NEW_USER = "newUser";
-
         const USERNAME = "username";
         const EMAIL = "email";
         const PASSWORD = "password";
         const DATE_CREATED = "dateCreated";
         const LAST_LOGIN = "lastLogin";
+        const IS_ADMIN = "isAdmin";
+        const IS_BANNED = "isBanned";
+        const IS_DEACTIVATED = "isDeactivated";
+        const IS_VERIFIED = "isVerified";
+        const ERROR = "error";
+        const LOGGED_IN = "loggedIn";
+        const NEW_USER = "newUser";
+
         const FIRST_NAME = "fname";
         const LAST_NAME = "lname";
+        const NAME = "name";
         const DATE_OF_BIRTH = "dob";
         const GENDER_ID = "genderID";
         const GENDER = "gender";
@@ -34,6 +34,10 @@
 
         const USER_IMAGES = "user_images/";
         const DEFAULT_USER_IMAGE = "img/blank-profile.png";
+
+        const NOTIFICATION_FROM_USERNAME = "fromUsername";
+        const NOTIFICATION_MESSAGE = "message";
+        const NOTIFICATION_DATE_SENT = "dateSent";
      
         //  ======================================================================================================
         //                                                  Getters
@@ -46,7 +50,7 @@
             *   $username   -   username of user account to be queried
             *
             *   return      -   zero on failure, one on success
-            */
+            
         public static function get_all_user_attributes($dbConnection, $username) 
         {
             $userID = $email = $password = $dateCreated = $lastLogin = $isAdmin = $isBanned = $isDeactivated = $isVerified = "";
@@ -92,6 +96,41 @@
             } finally {
                 $stmt->close();
             }
+        }
+        */
+
+        public static function get_all_profile_attributes($dbConnection, $uname) {
+            $sql = "SELECT p.`userID`, p.`fname`, p.`lname`, p.`dob`, g.`gender`, s.`gender` AS `seeking`, p.`description`, l.`location`
+                    FROM `User` AS `u`
+                    LEFT JOIN `Profile` AS `p` ON `u`.`userID` = `p`.`userID`
+                    LEFT JOIN `Gender` AS `g` ON `p`.`genderID` = g.`genderID`
+                    LEFT JOIN `Gender` AS `s` ON `p`.`seekingID` = s.`genderID`
+                    LEFT JOIN `Location` AS `l` ON `p`.`locationID` = l.`locationID`
+                    WHERE u.`username` = ?;";
+            $userID = $firstName = $lastName = $dob = $gender = $seeking = $description = $location = "";
+            $profileAttributes = null;
+
+            if ($stmt = $dbConnection->prepare($sql)) {
+                $stmt->bind_param("s", $uname);
+                $stmt->execute();
+                $stmt->bind_result($userID, $firstName, $lastName, $dob, $gender, $seeking, $description, $location);
+    
+                if ($stmt->fetch()) {
+                    $profileAttributes = array();
+
+                    $profileAttributes[Self::USER_ID] = $userID;
+                    $profileAttributes[Self::FIRST_NAME] = $firstName;
+                    $profileAttributes[Self::LAST_NAME] = $lastName;
+                    $profileAttributes[Self::DATE_OF_BIRTH] = $dob;
+                    $profileAttributes[Self::GENDER] = $gender;
+                    $profileAttributes[Self::SEEKING] = $seeking;
+                    $profileAttributes[Self::DESCRIPTION] = $description;
+                    $profileAttributes[Self::LOCATION] = $location;
+    
+                    $stmt->close();
+                }
+            }
+            return $profileAttributes;
         }
 
         /*
@@ -807,72 +846,5 @@
             }
         }
 
-        public static function check_like_status($dbConnection, $recipientUserID) 
-        {
-            $sql = "SELECT `toUserID`
-                    FROM `Like`
-                    WHERE `fromUserID` = ? AND `toUserID` = ?;";
-
-            // prepare, bind and execute statement
-            if ($stmt = $dbConnection->prepare($sql)) {
-                $stmt->bind_param("ss", $_SESSION[User::USER_ID], $recipientUserID);
-                $stmt->execute();
-                $stmt->store_result();
-
-                if ($stmt->num_rows() == 1) {
-                    $stmt->close();
-                    return 1;
-                }
-            } else {
-                return 0;
-            }
-        }
-
-
-        public static function like_user($dbConnection, $recipientUserID) 
-        {
-            $current_timestamp = date("Y-m-d H:i:s");
-
-            $sql = "INSERT INTO `Like` (`fromUserID`, `toUserID`, `dateLiked`) 
-                            VALUES (?, ?, ?);";
-
-            if ($stmt = $dbConnection->prepare($sql)) {
-                $stmt->bind_param("sss", $_SESSION[User::USER_ID], $recipientUserID, $current_timestamp);
-                $stmt->execute();
-                return $stmt->affected_rows;
-            } else {
-                return 0;
-            }
-        }
-
-
-        public static function unlike_user($dbConnection, $recipientUserID) 
-        {
-            $sql = "DELETE FROM `Like`
-                    WHERE `fromUserID` = ? AND `toUserID` = ?;";
-
-            if ($stmt = $dbConnection->prepare($sql)) {
-                $stmt->bind_param("ss", $_SESSION[User::USER_ID], $recipientUserID);
-                $stmt->execute();
-                return $stmt->affected_rows;
-            }
-        }
-
-        static function sendNotificationOnUserLike($dbConnection, $recipientUserID) 
-        {
-            $current_timestamp = date("Y-m-d H:i:s");
-            $message = "";
-
-            $sql = "INSERT INTO `Notification` (`fromUserID`, `toUserID`, `message`, `dateSent`, `seen`) 
-                            VALUES (?, ?, ?, ?, 0);";
-
-            if ($stmt = $dbConnection->prepare($sql)) {
-                $stmt->bind_param("ssss", $_SESSION[User::USER_ID], $recipientUserID, $current_timestamp);
-                $stmt->execute();
-                return $stmt->affected_rows;
-            } else {
-                return 0;
-            }
-        }
     }
 ?>
