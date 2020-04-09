@@ -35,10 +35,6 @@
         const USER_IMAGES = "user_images/";
         const DEFAULT_USER_IMAGE = "img/blank-profile.png";
 
-        const NOTIFICATION_FROM_USERNAME = "fromUsername";
-        const NOTIFICATION_MESSAGE = "message";
-        const NOTIFICATION_DATE_SENT = "dateSent";
-     
         //  ======================================================================================================
         //                                                  Getters
         //  ======================================================================================================

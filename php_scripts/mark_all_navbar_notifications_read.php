@@ -6,11 +6,7 @@
 
     $conn = Database::connect();
 
-    if (isset($_GET[Notification::FROM_USER_ID])) {
-        $fromUserID = $_GET[Notification::FROM_USER_ID];
-        $toUserID = $_SESSION[User::USER_ID];
-        Notification::set_as_seen($conn, $fromUserID, $toUserID);
-    }
+    Notification::set_all_as_seen($conn, $_SESSION[User::USER_ID]);
 
     if (isset($_GET[Notification::REDIRECT_PAGE])) {
         header("Location: " . $_GET[Notification::REDIRECT_PAGE]);
