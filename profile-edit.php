@@ -42,6 +42,8 @@
 		// if the user isn't logged in, redirect to homepage
 		if (!User::isLoggedIn()) {
 			header("Location: login.php");
+			$conn->close();
+			exit();
 		}
 
 		// set time variables - used for html date input
@@ -86,13 +88,13 @@
             }
 
 			if ($success) {
-				header("Location: user_profile.php");
-				exit();
+				header("Location: " . Database::VIEW_PROFILE);
 			} else {
 				$_SESSION[User::ERROR][] = UserError::GENERAL_ERROR;
+				header("Location: " . Database::EDIT_PROFILE .  " ?edit_error");
 			}
-
-		} else {
+			$conn->close();
+			exit();
 		}
 
 		$profileAttr = array();
@@ -101,16 +103,16 @@
 		$all_hobbies = Hobby::get_all_hobbies($conn);
 
 		// try get profile data
-		if ($profileAttr = User::get_all_profile_attributes($conn, $_SESSION[User::USER_ID])) {
+		if ($profileAttr = User::resolve_foreign_keys_in_profile_tbl($conn, $_SESSION[User::USER_ID])) {
 			$newUser = false;
 
-			$userID = $profileAttr[User::USER_ID];
-			$fname = $profileAttr[User::FIRST_NAME];
-			$lname = $profileAttr[User::LAST_NAME];
-			$dob = substr($profileAttr[User::DATE_OF_BIRTH], 0, 10); // etract date (original: yyyy-mm-dd hh:mm:ss)
+			$userID = $_SESSION[User::USER_ID];
+			$fname = $_SESSION[User::FIRST_NAME];
+			$lname = $_SESSION[User::LAST_NAME];
+			$dob = substr($_SESSION[User::DATE_OF_BIRTH], 0, 10); // etract date (original: yyyy-mm-dd hh:mm:ss)
 			$gender = $profileAttr[User::GENDER];
 			$seeking = $profileAttr[User::SEEKING];
-			$description = $profileAttr[User::DESCRIPTION];
+			$description = $_SESSION[User::DESCRIPTION];
 			$location = $profileAttr[User::LOCATION];
 			
 			if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
@@ -118,7 +120,6 @@
 			}
 
 			if (!($_SESSION["current_user_hobbies"] = Hobby::get_user_hobbies($conn, $userID))) {
-				// else set an empty array
 				$_SESSION["current_user_hobbies"] = array();
 			}
 		} else {
@@ -130,8 +131,8 @@
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
 	<div class="container">
-		<a class="navbar-brand js-scroll-trigger" href="index.html"><img src="img/logo.png" alt="">  </a>
-		<a class="navbar-brand js-scroll-trigger" href="index.html">MeetAmour</a> 
+		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>"><img src="img/logo.png" alt="">  </a>
+		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>">MeetAmour</a> 
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 		Menu
 		<i class="fas fa-bars"></i>
@@ -140,14 +141,19 @@
 		<ul class="navbar-nav ml-auto">
 
 			<li class="nav-item">
-			<a class="nav-link js-scroll-trigger" href="user.html">Matches</a>
+			<a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
 			</li>
 
 			<li class="nav-item">
-			<a class="nav-link js-scroll-trigger" href="about-us.html">About us</a>
+			<a class="nav-link js-scroll-trigger" href="<?php echo Database::ABOUT_US; ?>">Find Matches</a>
 			</li>
+
 			<li class="nav-item">
-			<a class="nav-link js-scroll-trigger" href="user_profile.php">Profile</a>
+			<a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
+			</li>
+
+			<li class="nav-item">
+			<a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Logout</a>
 			</li>
 		</ul>
 		</div>
@@ -157,6 +163,10 @@
 	</br>
 	</br>
 	</br>
+
+	<?php 
+		var_dump($_SESSION);
+	?>
 
 	<section class="download bg-primary text-center" id="download">
 		<div class="container">
@@ -252,7 +262,7 @@
 					<?php
 						$checkboxID = 0;
 						foreach ($all_hobbies as $hobby) { ?>
-							<input type="checkbox" <?php echo "id=\"" . $checkboxID . "\" name=\"selected_hobbies[]\" value=\"" . $hobby[0] . "\""; echo (in_array($hobby[0], $_SESSION["current_user_hobbies"])) ? "checked" : "";?>><?php
+							<input type="checkbox" <?php echo "id=\"" . $checkboxID . "\" name=\"selected_hobbies[]\" value=\"" . $hobby[0] . "\""; echo (isset($_SESSION["current_user_hobbies"]) && in_array($hobby[0], $_SESSION["current_user_hobbies"])) ? "checked" : "";?>><?php
 							echo "<label for=\"" . $checkboxID . "\">" .  $hobby[1] . "</label><br>";
 							
 							$checkboxID++;
@@ -284,7 +294,7 @@
 				<a href="#">FAQ</a>
 			</li>
 			<li class="list-inline-item">
-				<a href="admin.php">Admin</a>
+			<a href="<?php echo Database::ABOUT_US; ?>">About us</a>
 			</li>
 		</ul>
 	</div>

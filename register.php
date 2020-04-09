@@ -19,7 +19,7 @@
 
 
 	<?php
-
+		require_once("classes/User.php");
 		// handle form data of register user
 		if (isset($_POST["submit_user"])) {
 			
@@ -39,19 +39,23 @@
 				$conn->close();
 				header("Location: profile-edit.php");
 				exit();
-			} else {
-				$conn->close();
-				var_dump($_SESSION);
 			}
 		} ?>
 
 		<div class="limiter">
 			<div class="container-login100">
-				<div class="wrap-login100">
-					<div class="login100-pic js-tilt" data-tilt style="will-change: transform; transform: perspective(300px) rotateX(0deg) rotateY(0deg);">
-						<img src="img/img-01.png" alt="IMG">
-					</div>
+				<div class="wrap-login100 py-auto">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="login100-pic js-tilt" data-tilt style="will-change: transform; transform: perspective(300px) rotateX(0deg) rotateY(0deg);">
+									<img src="img/img-01.png" alt="IMG">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
+<<<<<<< HEAD
 					<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>
 
 						<span class="login100-form-title">
@@ -73,32 +77,66 @@
 								<i class="fa fa-envelope" aria-hidden="true"></i>
 							</span>
 						</div>
+=======
+									<span class="login100-form-title">
+										Sign Up
+									</span>
+									
+									<div class="wrap-input100 validate-input" data-validate = "Username is required">
+										<input class="input100" type="text" name="username" <?php echo (isset($username)) ? ("value=\"" . $username . "\"") : "placeholder=\"Username\""; ?>>
+										<span class="focus-input100"></span>
+										<span class="symbol-input100">
+											<i class="fa fa-user" aria-hidden="true"></i>
+										</span>
+									</div>
 
-						<div class="wrap-input100 validate-input" data-validate = "Password is required">
-							<input class="input100" type="password" name="password" placeholder="Password">
-							<span class="focus-input100"></span>
-							<span class="symbol-input100">
-								<i class="fa fa-lock" aria-hidden="true"></i>
-							</span>
-						</div>
-						
-						<div class="wrap-input100 validate-input" data-validate = "Password is required">
-							<input class="input100" type="password" name="passwordConfirm" placeholder="Re-enter Password">
-							<span class="focus-input100"></span>
-							<span class="symbol-input100">
-								<i class="fa fa-lock" aria-hidden="true"></i>
-							</span>
-						</div>
-						
-						<div class="container-login100-form-btn">
-							<input class="login100-form-btn" type="submit" name="submit_user" value="Register">
-						</div>
+									<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+										<input class="input100" type="text" name="email" <?php echo (isset($email)) ? ("value=\"" . $email . "\"") : "placeholder=\"Email\""; ?>>
+										<span class="focus-input100"></span>
+										<span class="symbol-input100">
+											<i class="fa fa-envelope" aria-hidden="true"></i>
+										</span>
+									</div>
 
-						<div class="text-center p-t-136">
-								<a href="login.php" class="txt1">Login</a>
-								<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+									<div class="wrap-input100 validate-input" data-validate = "Password is required">
+										<input class="input100" type="password" name="password" placeholder="Password">
+										<span class="focus-input100"></span>
+										<span class="symbol-input100">
+											<i class="fa fa-lock" aria-hidden="true"></i>
+										</span>
+									</div>
+									
+									<div class="wrap-input100 validate-input" data-validate = "Password is required">
+										<input class="input100" type="password" name="passwordConfirm" placeholder="Re-enter Password">
+										<span class="focus-input100"></span>
+										<span class="symbol-input100">
+											<i class="fa fa-lock" aria-hidden="true"></i>
+										</span>
+									</div>
+									
+									<div class="container-login100-form-btn">
+										<input class="login100-form-btn" type="submit" name="submit_user" value="Register">
+									</div>
+>>>>>>> cfd3b0481ef5738885b0c21d32f4ae949fdc2645
+
+									<div class="text-center p-t-136">
+											<a href="login.php" class="txt1">Login</a>
+											<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+									</div>
+								</form>
+							</div>
 						</div>
-					</form>
+						<?php
+							if (isset($_SESSION[User::ERROR]) && sizeof($_SESSION[User::ERROR]) > 0) {
+								echo "<div class=\"row\">";
+								foreach ($_SESSION[User::ERROR] as $key => $value) {
+									echo "<p class=\"text-danger\">" . $value . "</p>";
+								}
+								echo "<div>";
+							}
+
+						?>
+					</div>
 				</div>
 			</div>
 		</div>

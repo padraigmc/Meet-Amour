@@ -33,147 +33,155 @@
 	<body id="page-top">
 		<?php
 
-	require_once("init.php");
-	require_once("classes/Hobby.php");
-	$conn = Database::connect();
+			require_once("init.php");
+			require_once("classes/Hobby.php");
+			$conn = Database::connect();
 
-		// if username supplied by get variable (in url), query db for userID
-		if (isset($_GET[User::USERNAME])) {
-			$owner = 0;
-			$username = $_GET[User::USERNAME];
-			$userID = User::get_user_attribute($conn, $username, User::USER_ID);
+			// if username supplied by get variable (in url), query db for userID
+			if (isset($_GET[User::USERNAME])) {
+				$owner = 0;
+				$username = $_GET[User::USERNAME];
+				$profileAttributes = User::get_all_profile_attributes($conn, $username);
 
-			if (isset($_POST["like"])) {
-				$isLiked = User::like_user($conn, $userID);
-			} elseif (isset($_POST["unlike"])) {
-				if (User::unlike_user($conn, $userID))
-					$isLiked = 0;
+				$userID = $profileAttributes[User::USER_ID];
+				$fname = $profileAttributes[User::FIRST_NAME];
+				$lname = $profileAttributes[User::LAST_NAME];
+				$age = User::calc_age($profileAttributes[User::DATE_OF_BIRTH]);
+				$gender = $profileAttributes[User::GENDER];
+				$seeking = $profileAttributes[User::SEEKING];
+				$description = $profileAttributes[User::DESCRIPTION];
+				$location = $profileAttributes[User::LOCATION];
+
+				if (isset($_POST["like"])) {
+					$isLiked = Like::like_user($conn, $_SESSION[User::USER_ID], $userID);
+				} elseif (isset($_POST["unlike"])) {
+					if (Like::unlike_user($conn, $_SESSION[User::USER_ID], $userID))
+						$isLiked = 0;
+				} else {
+					$isLiked = Like::check_like_status($conn, $_SESSION[User::USER_ID], $userID);
+				}
 			} else {
-				$isLiked = User::check_like_status($conn, $userID);
-			}
-		} else {
-			// if user owns the page
-			$userID = $_SESSION[User::USER_ID];
-			$owner = 1;
-		}
+				// if user owns the page
+				$userID = $_SESSION[User::USER_ID];
+				$owner = 1;
 
-		if ($userID > 0 && $profileAttr = User::get_all_profile_attributes($conn, $userID)) {
-			// set user variables
-			$fname = $profileAttr[User::FIRST_NAME];
-			$lname = $profileAttr[User::LAST_NAME];
-			$age = User::calc_age($profileAttr[User::DATE_OF_BIRTH]); // get users age
-			$gender = $profileAttr[User::GENDER];
-			$seeking = $profileAttr[User::SEEKING];
-			$description = $profileAttr[User::DESCRIPTION];
-			$location = $profileAttr[User::LOCATION];
-
-			if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
-				$profile_image_path = User::USER_IMAGES . $profile_image_path;
+				// set user variables
+				$fname = $_SESSION[User::FIRST_NAME];
+				$lname = $_SESSION[User::LAST_NAME];
+				$age = User::calc_age($_SESSION[User::DATE_OF_BIRTH]); // get users age
+				$gender = $_SESSION[User::GENDER];
+				$seeking = $_SESSION[User::SEEKING];
+				$description = $_SESSION[User::DESCRIPTION];
+				$location = $_SESSION[User::LOCATION];
 			}
 
-			$hobbies = Hobby::get_user_hobbies($conn, $userID);
-		} else {
-			// if the profile does not have a row in the table
-			if ($owner) {
-				$conn->close();
-				header("Location: profile-edit.php");
-				exit();
+			if ($userID > 0 && isset($_SESSION[User::FIRST_NAME])) {
+
+				if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
+					$profile_image_path = User::USER_IMAGES . $profile_image_path;
+				}
+
+				$hobbies = Hobby::get_user_hobbies($conn, $userID);
 			} else {
-				$_SESSION[User::ERROR][] = UserError::PROFILE_UNAVAILABLE;
+				// if the profile does not have a row in the table
+				if ($owner) {
+					$conn->close();
+					header("Location: profile-edit.php");
+					exit();
+				} else {
+					$_SESSION[User::ERROR][] = UserError::PROFILE_UNAVAILABLE;
+				}
+
 			}
 
-		}
+			if ($notifications = Notification::get_unseen_user_notifications($conn, 3)) {
+				$numUnseenNotifications = sizeof($notifications);
+			} else {
+				$numUnseenNotifications = 0;
+			}
+
+			var_dump($_SESSION);
 
 		?>
 
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
 		<div class="container">
-		<a class="navbar-brand js-scroll-trigger" href="index.html"><img src="img/logo.png" alt="">  </a>
-		<a class="navbar-brand js-scroll-trigger" href="index.html">MeetAmour</a> 
+		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>"><img src="img/logo.png" alt="">  </a>
+		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>">MeetAmour</a> 
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			Menu
 			<i class="fas fa-bars"></i>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarResponsive">
 			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
+				</li>
 
-			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="user.html">Matches</a>
-			</li>
+				<li class="nav-item">
+					<a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
+				</li>
 
-			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="#">Log Out</a>
-			</li>
-			<li class="nav-item dropdown">
-                  <a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fa fa-bell"></i>
-                  </a>
-                    <ul class="dropdown-menu">
-                      <li class="head text-light bg-dark">
-                        <div class="row">
-                          <div class="col-lg-12 col-sm-12 col-12">
-                            <span>Notifications (3)</span>
-                            <a href="" class="float-right text-light">Mark all as read</a>
-                          </div>
-                      </li>
-                      <li class="notification-box">
-                        <div class="row">
-                          <div class="col-lg-3">
-                          </div>    
-                          <div class="col-lg-8 col-sm-8 col-8">
-                            <strong class="text-info">David John</strong>
-                            <div>
-                              Lorem ipsum dolor sit amet.
-                            </div>
-                            <small class="text-warning">27.11.2015, 15:00</small>
-                          </div>    
-                        </div>
-                      </li>
-                      <li class="notification-box bg-gray">
-                        <div class="row">
-                          <div class="col-lg-3 col-sm-3 col-3 text-center">
-                            <img src="/demo/man-profile.jpg" class="w-50 rounded-circle">
-                          </div>    
-                          <div class="col-lg-8 col-sm-8 col-8">
-                            <strong class="text-info">David John</strong>
-                            <div>
-                              Lorem ipsum dolor sit amet.
-                            </div>
-                            <small class="text-warning">27.11.2015, 15:00</small>
-                          </div>    
-                        </div>
-                      </li>
-                      <li class="notification-box">
-                        <div class="row">
-                          <div class="col-lg-3 col-sm-3 col-3 text-center">
-                            <img src="/demo/man-profile.jpg" class="w-50 rounded-circle">
-                          </div>    
-                          <div class="col-lg-8 col-sm-8 col-8">
-                            <strong class="text-info">David John</strong>
-                            <div>
-                              Lorem ipsum dolor sit amet.
-                            </div>
-                            <small class="text-warning">27.11.2015, 15:00</small>
-                          </div>    
-                        </div>
-                      </li>
-                      <li class="footer bg-dark text-center">
-                        <a href="" class="text-light">View All</a>
-                      </li>
-                    </ul>
-                </li>
+				<li class="nav-item">
+					<a class="nav-link js-scroll-trigger" href="#">My Profile</a>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fa fa-bell"><?php echo ($notifications) ? $numUnseenNotifications : ""; ?></i>
+					</a>
+					<ul class="dropdown-menu">
+						<li class="head text-light bg-primary">
+							<div class="row">
+								<div class="col-lg-12">
+									<span>Notifications (<?php echo $numUnseenNotifications; ?>)</span>
+									<a href="" class="float-right text-light">Mark all as read</a>
+								</div>
+							</div>
+						</li>
+						<?php
+							if ($notifications) {
+								foreach ($notifications as $key => $value) {
+						?>
+									<li class="notification-box <?php echo ($key % 2 == 1) ? "bg-gray" : ""; ?>">
+										<div class="row">
+											<div class="col-lg-3">
+											</div>    
+											<div class="col-lg-8">
+												<strong class="text-primary">
+													<a href="<?php echo Database::VIEW_PROFILE . "?username=" . $value[User::NOTIFICATION_FROM_USERNAME] ; ?>"><?php echo $value[User::NAME]; ?></a>
+												</strong>
+												<div>
+													<?php echo $value[User::NOTIFICATION_MESSAGE]; ?>
+												</div>
+												<small class="text-info"><?php echo $value[User::NOTIFICATION_DATE_SENT]; ?></small>
+											</div>    
+										</div>
+									</li>
+						<?php
+								}
+							} else {
+
+							}
+						?>
+						<li class="footer bg-primary text-center">
+							<a href="" class="text-light">View All</a>
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 		</div>
 	</nav>
 
-
-
 	</br>
 	</br>
 	</br>
-
+	
 	<section class="download bg-primary text-center" id="download">
 		<div class="container">
 		<div class="row">
@@ -217,11 +225,6 @@
 								<th scope="row"></th>
 								<td class="text-primary">Location</td>
 								<td><?php echo $location; ?></td>
-							</tr>
-							<tr>
-								<th scope="row"></th>
-								<td class="text-primary">Profession</td>
-								<td>Web Developer & Designer</td>
 							</tr>
 							<tr>
 								<th scope="row"></th>
@@ -271,10 +274,10 @@
 		<div class="col-lg-1 d-flex align-items-end flex-column">
 			<div class="row">
 				<div class="btn-group dropright">
-					<button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+					<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 					<div class="dropdown-menu">
 						<a href="profile-edit.php" class="button w-100 mb-2">Edit Profile</a>
-						<a href="#" class="button w-100">Ban User</a>
+						<!-- <a href="#" class="button w-100">Ban User</a> -->
 					</div>
 				</div>
 			</div>
@@ -283,9 +286,9 @@
 					if ($owner == 0) {
 						echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?username=" . $username . "\" method=\"POST\">";
 						if ($isLiked) {
-							echo "<button type=\"submit\" class=\"fa fa-fw fa-times\" form=\"like_dislike_form\" name=\"unlike\"></button>";
+							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\">Like</button>";
 						} else {
-							echo "<button type=\"submit\" class=\"fa fa-fw fa-heart\" form=\"like_dislike_form\" name=\"like\"></button>";
+							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"like\">Unlike</button>";
 						}
 						echo "</form>";
 					}
@@ -325,10 +328,7 @@
 			<li class="list-inline-item">
 			<a href="#">FAQ</a>
 			<li class="list-inline-item">
-			<a href="admin.php">Admin</a>
-			</li>
-			<li class="list-inline-item">
-				<a href="about-us.html">About Us</a>
+			<a href="<?php echo Database::ABOUT_US; ?>">About us</a>
 			</li>
 		</ul>
 		</div>

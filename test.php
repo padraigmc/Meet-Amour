@@ -6,19 +6,10 @@
 
     $conn = Database::connect();
 
-    echo User::like_user($conn, 21);
+    $vars = User::get_all_profile_attributes($conn, "mary");
 
-
-    /*
-    $matches = User::suggest_matches($conn, "21");
-    
-    if (!$matches) echo "0";
-
-
-    foreach ($matches as $key=>$value) {
+    foreach ($vars as $key => $value) {
         var_dump($value); echo "<br>";
-    }  
-    */
+    }
     
-    
-    ?>
+?>

@@ -2,7 +2,16 @@
 
     class Database
     {
-        const INDEX = "index.html";
+        const INDEX = "index.php";
+        const LOGIN = "login.php";
+        const LOGOUT = "logout.php";
+        const REGISTER = "register.php";
+        const SEARCH_PROFILE = "profile_search.php";
+        const SUGGEST_MATCH = "suggest_matches.php";
+        const VIEW_PROFILE = "user_profile.php";
+        const EDIT_PROFILE = "profile-edit.php";
+        const ABOUT_US = "about-us.html";
+        const ADMIN_DASHBOARD = "admin.php";
 
 
         /*

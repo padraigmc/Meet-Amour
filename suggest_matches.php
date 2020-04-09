@@ -37,14 +37,25 @@
 		require_once("init.php");
 		$conn = Database::connect();
 
-		$profles = User::suggest_matches($conn, "21");
+		if (isset($_POST["username"])) {
+			if (isset($_POST["like"])) {
+				Like::like_user($conn, $_POST["like"], $_POST["username"]);
+			} elseif (isset($_POST["unlike"])) {
+				Like::unlike_user($conn, $_SESSION[User::USER_ID], $_POST["unlike"]);
+			}
+			header("Location: suggest_matches.php");
+			$conn->close();
+			exit();
+		}
+
+		$profles = User::suggest_matches($conn, $_SESSION[User::USER_ID]);
 ?>
 
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
 		<div class="container">
-		<a class="navbar-brand js-scroll-trigger" href="index.html"><img src="img/logo.png" alt="">  </a>
-		<a class="navbar-brand js-scroll-trigger" href="index.html">MeetAmour</a> 
+		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>"><img src="img/logo.png" alt="">  </a>
+		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>">MeetAmour</a> 
 		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 			Menu
 			<i class="fas fa-bars"></i>
@@ -53,13 +64,17 @@
 			<ul class="navbar-nav ml-auto">
 
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="user.html">Matches</a>
+				<a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="user_profile.php">Profile</a>
+				<a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link js-scroll-trigger" href="#">Log Out</a>
+				<a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
 			</li>
 			</ul>
 		</div>
@@ -79,6 +94,7 @@
 			
 			echo "<div class=\"container\">";
 				foreach ($profles as $value) {
+					$userID = $value[User::USER_ID];
 					$username = $value[User::USERNAME];
 					$name = $value["name"];
 					$age = User::calc_age($value[User::DATE_OF_BIRTH]);
@@ -86,6 +102,7 @@
 					$description = $value[User::DESCRIPTION];
 					$location = $value[User::LOCATION];
 					$image_filepath = User::USER_IMAGES . $value["filename"];
+					$isLiked = Like::check_like_status($conn, $_SESSION[User::USER_ID], $userID);
 
 					// test if the file exists, if not set it to a defualt image
 					if (!is_file($image_filepath)) {
@@ -97,7 +114,7 @@
 						$row_open = 1;
 					}
 			?>
-					<div class="col-md-4 col-sm-6 col-xs-12">
+					<div id="<?php echo $username ?>" class="col-md-4 col-sm-6 col-xs-12">
 							<article class="material-card Red">
 								<h2>
 									<span><?php echo $name; ?></span>
@@ -108,7 +125,9 @@
 								</h2>
 								<div class="mc-content">
 									<div class="img-container">
-										<img class="img-fluid" src="<?php echo $image_filepath; ?>" width="300" height="300">
+										<a href="<?php echo Database::VIEW_PROFILE . "?username=" . $username ?>">
+											<img class="img-fluid" src="<?php echo $image_filepath; ?>" width="300" height="300">
+										</a>
 									</div>
 									<div class="mc-description">
 									<ul>
@@ -129,6 +148,15 @@
 									</h4>
 									<a class="fa fa-fw fa-heart"></a> 
 									<a class="fa fa-fw fa-times"></a>
+									<?php
+										echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "\" method=\"POST\">";
+											if ($isLiked) {
+												echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\" value=\"" . $userID . "\">Unlike</button>";
+											} else {
+												echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"like\" value=\"" . $userID . "\">Like</button>";
+											}
+										echo "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">";
+									?>
 								</div>
 							</article>
 						</div>
@@ -169,7 +197,7 @@
 			<a href="#">FAQ</a>
 			</li>
 			<li class="list-inline-item">
-			<a href="about-us.html">About us</a>
+			<a href="<?php echo Database::ABOUT_US; ?>">About us</a>
 			</li>
 		</ul>
 		</div>
@@ -184,6 +212,10 @@
 
 	<!-- Custom scripts for this template -->
 	<script src="js/new-age.min.js"></script>
+
+	<?php
+		$conn->close();
+	?>
 
 </body>
 
