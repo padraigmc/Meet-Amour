@@ -281,18 +281,6 @@
 
         public static function profile_search($dbConnection, $name, $gender, $location , $min_age, $max_age, $rowOffset = 0) 
         {
-            $name = htmlspecialchars($name);
-            $name = trim($name);
-            
-            if (!isset($name) || $name == "") {
-                return 0;
-            }
-
-            $date_min = date("Y-m-d", strtotime("-" . ($max_age+1) . " year +1 day", time())) . " 00:00:00";
-            $date_max = date("Y-m-d", strtotime("-" . $min_age . " year", time())) . " 23:59:59";
-
-            //abs(to_seconds({$age_dob}) - to_seconds(`p`.`dob`))
-
             $sql = "SELECT `p`.`userID`, `u`.`username`, concat(`p`.`fname`, ' ', `p`.`lname`) AS `name`, `p`.`dob`, `g`.`gender`, `s`.`gender` as `seeking`, `p`.`description`, `l`.`location`, `Photo`.`filename`, `u`.`lastLogin`
                     FROM `Profile` AS `p`
                     LEFT JOIN `User` AS `u` ON `p`.`userID`=`u`.`userID`
@@ -306,26 +294,30 @@
                             `p`.`dob` >= ? AND `p`.`dob` <= ?
                     ORDER BY `u`.`lastLogin` DESC
                     LIMIT ?, 10;";
-
+            $profiles = NULL;
+            
+            $name= htmlspecialchars($name);
+            $name = trim($name);
             $name = str_replace(array("?", "%"), "", $name);
             $name = "%" . $name . "%";
 
-            $stmt = $dbConnection->prepare($sql);
+            $date_min = date("Y-m-d", strtotime("-" . ($max_age+1) . " year +1 day", time())) . " 00:00:00";
+            $date_max = date("Y-m-d", strtotime("-" . $min_age . " year", time())) . " 23:59:59";
 
-            $stmt->bind_param("sssssi", $name, $gender, $location, $date_min, $date_max, $rowOffset);
+            if ($stmt = $dbConnection->prepare($sql)) {
+                $stmt->bind_param("sssssi", $name, $gender, $location, $date_min, $date_max, $rowOffset);
+                $stmt->execute();
+                $result = $stmt->get_result();
 
-            // execute statement, terminate script on failure
-            if (!$stmt->execute()) return 0;
-
-            $result = $stmt->get_result();
-            $rows = array();
-
-            while($row = $result->fetch_assoc()) {
-                $rows[] = $row;
+                $profiles = array();
+                while($row = $result->fetch_assoc()) {
+                    $profiles[] = $row;
+                }
+    
+                $stmt->close();
             }
 
-            $stmt->close();
-            return $rows;
+            return $profiles;
         }
 
         public static function suggest_matches($dbConnection, $userID) {
@@ -335,6 +327,7 @@
                     LEFT JOIN `Gender` on `Profile`.`genderID` = `Gender`.`genderID`
                     LEFT JOIN `Location` on `Profile`.`locationID` = `Location`.`locationID`
                     LEFT JOIN `Photo` on `Profile`.`userID` = `Photo`.`userID`
+                    LEFT JOIN `Like` on ? = `Like`.`fromUserID` AND `Profile`.`userID` = `Like`.`toUserID`
                     LEFT JOIN (
                         SELECT `uh1`.`userID`, COUNT(`uh2`.`hobbyID`) AS `mutualHobbies`
                         FROM UserHobby AS `uh1`
@@ -342,27 +335,25 @@
                         ON `uh2`.`userID` = ? AND `uh2`.`hobbyID` = `uh1`.`hobbyID`
                         GROUP BY `uh1`.`userID`
                     ) as `UserHobby` ON `Profile`.`userID` = `UserHobby`.`userID`
-                    WHERE `Profile`.`genderID` LIKE '%'
+                    WHERE `Profile`.`userID` != ? AND `Profile`.`genderID` LIKE ? AND `Like`.`dateLiked` IS NULL
                     ORDER BY `Profile`.`locationID` = ? DESC, `UserHobby`.`mutualHobbies` DESC
                     LIMIT 6;";
+            $profiles = null;
 
-            $genderID = 1;
+            if ($stmt = $dbConnection->prepare($sql)) {
+                $stmt->bind_param("sssss",$userID, $userID, $userID, $_SESSION[User::GENDER_ID], $_SESSION[User::LOCATION_ID]);
+                $stmt->execute();
+    
+                $result = $stmt->get_result();
+                $profiles = array();
+    
+                while($row = $result->fetch_assoc()) {
+                    $profiles[] = $row;
+                }
 
-            $stmt = $dbConnection->prepare($sql);
-            $stmt->bind_param("ss", $userID, $genderID);
-
-            // execute statement, terminate script on failure
-            if (!$stmt->execute()) return 0;
-
-            $result = $stmt->get_result();
-            $rows = array();
-
-            while($row = $result->fetch_assoc()) {
-                $rows[] = $row;
+                $stmt->close();
             }
-
-            $stmt->close();
-            return $rows;
+            return $profiles;
         }
 
 
