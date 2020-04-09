@@ -55,29 +55,6 @@
 							<div class="col-md-6">
 								<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
-<<<<<<< HEAD
-					<form class="login100-form validate-form" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>
-
-						<span class="login100-form-title">
-							Sign Up
-						</span>
-						
-						<div class="wrap-input100 validate-input" data-validate = "Username is required">
-							<input class="input100" type="text" name="username" <?php echo (isset($username)) ? ("value=\"" . $username . "\"") : "placeholder=\"Username\""; ?>
-							<span class="focus-input100"></span>
-							<span class="symbol-input100">
-								<i class="fa fa-user" aria-hidden="true"></i>
-							</span>
-						</div>
-
-						<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-							<input class="input100" type="text" name="email" <?php echo (isset($email)) ? ("value=\"" . $email . "\"") : "placeholder=\"Email\""; ?>
-							<span class="focus-input100"></span>
-							<span class="symbol-input100">
-								<i class="fa fa-envelope" aria-hidden="true"></i>
-							</span>
-						</div>
-=======
 									<span class="login100-form-title">
 										Sign Up
 									</span>
@@ -117,7 +94,6 @@
 									<div class="container-login100-form-btn">
 										<input class="login100-form-btn" type="submit" name="submit_user" value="Register">
 									</div>
->>>>>>> cfd3b0481ef5738885b0c21d32f4ae949fdc2645
 
 									<div class="text-center p-t-136">
 											<a href="login.php" class="txt1">Login</a>

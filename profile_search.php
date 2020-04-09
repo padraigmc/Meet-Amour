@@ -206,11 +206,7 @@
                 <a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
             </li>
             <li class="nav-item">
-<<<<<<< HEAD
-                <a class="nav-link js-scroll-trigger" href="register.php">Sign up</a>
-=======
                 <a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
->>>>>>> cfd3b0481ef5738885b0c21d32f4ae949fdc2645
             </li>
 
             <li class="nav-item">
