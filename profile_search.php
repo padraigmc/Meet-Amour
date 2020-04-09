@@ -263,7 +263,7 @@
                                     <p style="text-align:center;">Min age</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="number" name="min_age" id="min_age" min="18" max="100" size="3" value="18" class="form-control">
+                                    <input type="number" name="min_age" id="min_age" min="18" max="100" size="3" value="<?php echo (isset($min_age)) ? $min_age : "18"; ?>" class="form-control">
                                 </div>
                             </div>
 
@@ -272,7 +272,7 @@
                                     <p style="text-align:center;">Max age</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="number" name="max_age" id="max_age" min="18" max="100" size="3" value="100" class="form-control">
+                                    <input type="number" name="max_age" id="max_age" min="18" max="100" size="3" value="<?php echo (isset($max_age)) ? $max_age : "100"; ?>"" class="form-control">
                                 </div>
                             </div>
                         </fieldset>
@@ -283,7 +283,7 @@
                     <!-- Search box -->
                     <h3>Partner Search</h3>
                         <div class="d-flex align-items-start mb-4">
-                            <input class="active-pink-4 form-control" type="text" name="search" placeholder="Search" aria-label="Search">
+                            <input class="active-pink-4 form-control" type="text" name="search" placeholder="Search" aria-label="Search" <?php echo (isset($name_search)) ? "value=\"" . $name_search . "\"" : ""; ?>>
                             <input class="submit" type="submit" value="Submit">
                         </div>
                     </form>
@@ -328,6 +328,14 @@
                                     </div>
                         <?php
                                 }
+                            } else {
+                                ?>
+
+                                <div class="row mb-4 p-3">
+                                    <h3 class="mx-auto">No results found, don't be so specific!</h3>
+                                </div>
+
+                                <?php
                             }
                         ?>
                     </div> 
