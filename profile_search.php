@@ -329,7 +329,7 @@
                                         </div>
                             <?php
                                     }
-                                } else {
+                                } else if ($results == null && isset($_GET[Search::SEARCH_TEXT])) {
                                     ?>
 
                                     <div class="row mb-4 p-3">

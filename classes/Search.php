@@ -34,7 +34,8 @@
                     LEFT JOIN `Gender` AS `s` ON `p`.`seekingID`=`s`.`genderID`
                     LEFT JOIN `Location` AS `l` ON `p`.`locationID`=`l`.`locationID`
                     LEFT JOIN `Photo` ON `p`.`userID`=`Photo`.`userID`
-                    WHERE concat(`p`.`fname`, `p`.`lname`) LIKE ? AND
+                    WHERE `p`.`userID` != ? AND
+                            concat(`p`.`fname`, `p`.`lname`) LIKE ? AND
                             `g`.`genderID` LIKE ? AND
                             `l`.`locationID` LIKE ? AND
                             `p`.`dob` >= ? AND `p`.`dob` <= ?
@@ -43,17 +44,14 @@
             $profiles = NULL;
             $resultLimit = $this::NUM_RESULTS_IN_A_PAGE + 1;
             $resultOffset = $this->indexOfFirstResult;
-            
-            $textInput= htmlspecialchars($textInput);
-            $textInput = trim($textInput);
-            $textInput = str_replace(array("?", "%"), "", $textInput);
-            $textInput = "%" . $textInput . "%";
 
+            $textInput = Search::sanitze_search_input($textInput);
+            
             $date_min = date("Y-m-d", strtotime("-" . ($max_age+1) . " year +1 day", time())) . " 00:00:00";
             $date_max = date("Y-m-d", strtotime("-" . $min_age . " year", time())) . " 23:59:59";
 
             if ($stmt = $this->databaseConnection->prepare($sql)) {
-                $stmt->bind_param("sssssii", $textInput, $gender, $location, $date_min, $date_max, $resultLimit, $resultOffset);
+                $stmt->bind_param("ssssssii", $_SESSION[User::USER_ID], $textInput, $gender, $location, $date_min, $date_max, $resultLimit, $resultOffset);
                 $stmt->execute();
                 $result = $stmt->get_result();
 
@@ -101,6 +99,14 @@
             } else {
                 return false;
             }
+        }
+
+        private static function sanitze_search_input($inputText) {
+            $inputText = htmlspecialchars($inputText);
+            $inputText = trim($inputText);
+            $inputText = str_replace(array("?", "%"), "", $inputText);
+            $inputText = "%" . $inputText . "%";
+            return $inputText;
         }
 
     }
