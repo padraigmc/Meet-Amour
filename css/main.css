@@ -253,7 +253,7 @@ iframe {
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link{
   background-color: #17A2B8;
 }
-.dropdown-menu{
+.dropdown-menu#notification{
   top: 60px;
   right: 0px;
   left: unset;
@@ -262,7 +262,7 @@ iframe {
   padding-bottom: 0px;
   padding: 0px;
 }
-.dropdown-menu:before{
+.dropdown-menu:before#notification{
   content: "";
   position: absolute;
   top: -20px;
@@ -270,6 +270,7 @@ iframe {
   border:10px solid #343A40;
   border-color: transparent transparent #343A40 transparent;
 }
+
 .head{
   padding:5px 15px;
   border-radius: 3px 3px 0px 0px;

@@ -2,8 +2,13 @@
 
 
     require_once("init.php");
-    require_once("classes/Hobby.php");
+    require_once("classes/Admin.php");
 
-    echo $_SERVER['PHP_SELF'];
+    $conn = Database::connect();
+
+    echo Like::like_user($conn, $_SESSION[User::USER_ID], 44);
+
+    
+
     
 ?>

@@ -164,10 +164,6 @@
 	</br>
 	</br>
 
-	<?php 
-		var_dump($_SESSION);
-	?>
-
 	<section class="download bg-primary text-center" id="download">
 		<div class="container">
 			<div class="row">

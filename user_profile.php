@@ -53,12 +53,12 @@
 				$location = $profileAttributes[User::LOCATION];
 
 				if (isset($_POST["like"])) {
-					$isLiked = Like::like_user($conn, $_SESSION[User::USER_ID], $userID);
+					$isLiked = Like::like_user($conn, $userID);
 				} elseif (isset($_POST["unlike"])) {
-					if (Like::unlike_user($conn, $_SESSION[User::USER_ID], $userID))
+					if (Like::unlike_user($conn, $userID))
 						$isLiked = 0;
 				} else {
-					$isLiked = Like::check_like_status($conn, $_SESSION[User::USER_ID], $userID);
+					$isLiked = Like::check_like_status($conn, $userID);
 				}
 			} else {
 				// if user owns the page
@@ -67,7 +67,7 @@
 
 				$fname = $_SESSION[User::FIRST_NAME];
 				$lname = $_SESSION[User::LAST_NAME];
-				$age = User::calc_age($_SESSION[User::DATE_OF_BIRTH]); // get users age
+				$age = User::calc_age($_SESSION[User::DATE_OF_BIRTH]);
 				$gender = $_SESSION[User::GENDER];
 				$seeking = $_SESSION[User::SEEKING];
 				$description = $_SESSION[User::DESCRIPTION];
@@ -99,8 +99,6 @@
 				$numUnseenNotifications = 0;
 			}
 
-			var_dump($_SESSION);
-
 		?>
 
 	<!-- Navigation -->
@@ -123,7 +121,7 @@
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link js-scroll-trigger" href="#">My Profile</a>
+					<a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
 				</li>
 
 				<li class="nav-item">
@@ -133,7 +131,7 @@
 					<a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<i class="fa fa-bell"><?php echo ($notifications) ? $numUnseenNotifications : ""; ?></i>
 					</a>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu" id="notification">
 						<li class="head text-light bg-primary">
 							<div class="row">
 								<div class="col-lg-12">
@@ -206,7 +204,7 @@
 		</div>
 	</section>
 
-	<div class="container-fluid w-75 main">
+	<div class="container main">
 
 	<?php
 		// if an error was found, display it and nothing else
@@ -282,22 +280,27 @@
 		</div>
 		<div class="col-lg-1 d-flex align-items-end flex-column">
 			<div class="row">
-				<div class="btn-group dropright">
-					<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-					<div class="dropdown-menu">
-						<a href="profile-edit.php" class="button w-100 mb-2">Edit Profile</a>
-						<!-- <a href="#" class="button w-100">Ban User</a> -->
+				<?php if ($owner || $_SESSION[User::IS_ADMIN]) { ?>
+					<div class="btn-group dropright">
+						<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+						<div class="dropdown-menu">
+							<a class="dropdown-item button w-100" href="<?php echo Database::EDIT_PROFILE; ?>">Edit Profile</a>
+							<?php if ($_SESSION[User::IS_ADMIN]) { ?>
+								<a class="button w-100" href="<?php echo Database::BAN_USER . "?" . User::USER_ID . "=" . $userID; ?>">Ban User</a>
+								<a class="button w-100" href="<?php echo Database::DELETE_USER . "?" . User::USER_ID . "=" . $userID; ?>">Delete User</a>
+							<?php } ?>
+						</div>
 					</div>
-				</div>
+				<?php } ?>
 			</div>
 			<div class="row mt-auto">
 				<?php 
 					if ($owner == 0) {
 						echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?username=" . $username . "\" method=\"POST\">";
 						if ($isLiked) {
-							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\">Like</button>";
+							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\">Unlike</button>";
 						} else {
-							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"like\">Unlike</button>";
+							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"like\">Like</button>";
 						}
 						echo "</form>";
 					}
@@ -323,7 +326,7 @@
 	<?php
 		}
 	?>
-			
+		
 	<footer>
 		<div class="container">
 		<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
