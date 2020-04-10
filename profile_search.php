@@ -25,13 +25,6 @@
     <!-- Custom styles for this template -->
     <link href="css/new-age.min.css" rel="stylesheet">
 
-    <script>
-        function selectElement(id, valueToSelect) {    
-            document.getElementById(id).value = valueToSelect;
-        }
-        document.getElementById("gender").value = "1";
-    </script>
-    
     <style>
         .slidecontainerage {
             width: 15%;
@@ -160,214 +153,223 @@
 </head>
 
 <body id="page-top">
-    <div id="page-container">
     <?php
         require_once("init.php");
+        require_once("classes/Search.php");
         $conn = Database::connect();
         $results = array();
             
-        if (isset($_GET["search"])) {
-            $name_search = $_GET["search"];
-            
-            if (isset($_GET["gender"])) {
-                $gender = $_GET["gender"];
-                echo "<script>selectElement(\"gender\", \"" . $gender . "\")</script>";
+        if (isset($_GET[Search::SEARCH_TEXT])) {
+
+            if (isset($_GET[Search::RESULTS_PAGE_NUMBER])) {
+                $pageNumber = $_GET[Search::RESULTS_PAGE_NUMBER];
+            } else {
+                $pageNumber = 1;
             }
 
-            if (isset($_GET["location"])) {
-                $location = $_GET["location"];
-                echo "<script>selectElement('location', '" . $location . "')</script>";
-            }
-
-            $min_age = $_GET["min_age"];
-            $max_age = $_GET["max_age"];
+            $name_search = $_GET[Search::SEARCH_TEXT];
             
-            $results = User::profile_search($conn, $name_search, $gender, $location, $min_age, $max_age);
+            $gender = $_GET[Search::GENDER_ID];
+            echo "<script>selectElement(\"gender\", \"" . $gender . "\")</script>";
+
+            $location = $_GET[Search::LOCATION_ID];
+            echo "<script>selectElement('location', '" . $location . "')</script>";
+
+            $min_age = $_GET[Search::MIN_AGE];
+            $max_age = $_GET[Search::MAX_AGE];
+
+            $search = new Search($conn, $pageNumber);
+            
+            $results = $search->profile_search($name_search, $gender, $location, $min_age, $max_age);
+            $nextPageURL = $search->get_next_page_url();
+            $previousPageURL = $search->get_previous_page_url();
         }
     ?>
 
+    <div id="page-container">
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-        <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>"><img src="img/logo.png" alt="">  </a>
-        <a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>">MeetAmour</a> 
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+            <div class="container">
+            <a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>"><img src="img/logo.png" alt="">  </a>
+            <a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>">MeetAmour</a> 
 
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            Menu
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto"> 
-            <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
-            </li>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto"> 
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
-            </li>
-            </ul>
-        </div>
-        </div>
-    </nav>
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
+                </li>
+                </ul>
+            </div>
+            </div>
+        </nav>
 
 
-    <section class="features" id="features">
-        <div class="container-fluid">
-            <div class="row">
+        <section class="features" id="features">
+            <div class="container-fluid">
+                <div class="row">
 
-                <!-- filter section -->
-                <div class="col-md-2 bprder-dark">
-                    <h3>Filter</h3>
-                    <form action="#" method="get">
-                        <fieldset>
-                            <div class="search_row">
-                                <div class="search_column_2 mb-4">
-                                    <select class="form-control" id="gender" name="gender">
-                                        <option id="all" value="%" selected>Gender</option>
-                                        <?php // output dynamically generated dropdown list of all the available genders to choose from
-                                        $genders = User::get_all_genders($conn);
-                                        $id = 0;
-                                        while($row = $genders->fetch_assoc()) {
-                                            // populate option with information pulled from database
-                                            ?><option id="<?php echo $id;?>" value="<?php echo $row['genderID'];?>"><?php echo $row['gender'] . "</option>";
-                                            $id++;
-                                        }?>
-                                    </select>
+                    <!-- filter section -->
+                    <div class="col-md-2 bprder-dark">
+                        <h3>Filter</h3>
+                        <form action="#" method="get">
+                            <fieldset>
+                                <div class="search_row">
+                                    <div class="search_column_2 mb-4">
+                                        <select class="form-control" id="gender" name="<?php echo Search::GENDER_ID; ?>">
+                                            <option id="all" value="%" selected>Gender</option>
+                                            <?php // output dynamically generated dropdown list of all the available genders to choose from
+                                            $genders = User::get_all_genders($conn);
+                                            $id = 0;
+                                            while($row = $genders->fetch_assoc()) {
+                                                // populate option with information pulled from database
+                                                ?><option id="<?php echo $id;?>" value="<?php echo $row['genderID'];?>"><?php echo $row['gender'] . "</option>";
+                                                $id++;
+                                            }?>
+                                        </select>
+                                    </div>
                                 </div>
+                                <div class="search_row mb-4">
+                                    <div class="search_column_2 mb-4">
+                                        <select class="form-control" id="location" name="<?php echo Search::LOCATION_ID; ?>">
+                                            <option id="all" value="%" selected>Location</option>
+                                            <?php // output dynamically generated dropdown list of all the available genders to choose from
+                                            $loactions = User::get_all_locations($conn);
+                                            $id = 0;
+                                            while($row = $loactions->fetch_assoc()) {
+                                                // populate option with information pulled from database
+                                                ?><option id="<?php echo $id;?>" value="<?php echo $row['locationID'];?>"><?php echo $row['location'] . "</option>";
+                                                $id++;
+                                            }?>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <p style="text-align:center;">Min age</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="<?php echo Search::MIN_AGE; ?>" id="min_age" min="18" max="100" size="3" value="<?php echo (isset($min_age)) ? $min_age : "18"; ?>" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <p style="text-align:center;">Max age</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="<?php echo Search::MAX_AGE; ?>" id="max_age" min="18" max="100" size="3" value="<?php echo (isset($max_age)) ? $max_age : "100"; ?>"" class="form-control">
+                                    </div>
+                                </div>
+                            </fieldset>
+                    </div>
+
+                    <!-- Search box & results -->
+                    <div class="col-md-8 border-dark">
+                        <!-- Search box -->
+                        <h3>Partner Search</h3>
+                            <div class="d-flex align-items-start mb-4">
+                                <input class="active-pink-4 form-control" type="text" name="<?php echo Search::SEARCH_TEXT; ?>" placeholder="Search" aria-label="Search" <?php echo (isset($name_search)) ? "value=\"" . $name_search . "\"" : ""; ?>>
+                                <input class="submit" type="submit" value="Submit">
                             </div>
-                            <div class="search_row mb-4">
-                                <div class="search_column_2 mb-4">
-                                    <select class="form-control" id="location" name="location">
-                                        <option id="all" value="%" selected>Location</option>
-                                        <?php // output dynamically generated dropdown list of all the available genders to choose from
-                                        $loactions = User::get_all_locations($conn);
-                                        $id = 0;
-                                        while($row = $loactions->fetch_assoc()) {
-                                            // populate option with information pulled from database
-                                            ?><option id="<?php echo $id;?>" value="<?php echo $row['locationID'];?>"><?php echo $row['location'] . "</option>";
-                                            $id++;
-                                        }?>
-                                    </select>
-                                </div>
-                            </div>
+                        </form>
 
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <p style="text-align:center;">Min age</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="number" name="min_age" id="min_age" min="18" max="100" size="3" value="<?php echo (isset($min_age)) ? $min_age : "18"; ?>" class="form-control">
-                                </div>
-                            </div>
+                        <!-- Search results -->
+                        <div class="container-fluid">
+                            <?php
+                                if (!empty($results)) {
+                                    foreach ($results as $profile) { 
+                                        $username = $profile["username"];
+                                        $name = $profile["name"];
+                                        $age = User::calc_age($profile["dob"]);
+                                        $gender = $profile["gender"];
+                                        $description = $profile["description"];
+                                        $location = $profile["location"];
+                                        $fileName = $profile["filename"];
+                            ?>
 
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <p style="text-align:center;">Max age</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="number" name="max_age" id="max_age" min="18" max="100" size="3" value="<?php echo (isset($max_age)) ? $max_age : "100"; ?>"" class="form-control">
-                                </div>
-                            </div>
-                        </fieldset>
-                </div>
-
-                <!-- Search box & results -->
-                <div class="col-md-8 border-dark">
-                    <!-- Search box -->
-                    <h3>Partner Search</h3>
-                        <div class="d-flex align-items-start mb-4">
-                            <input class="active-pink-4 form-control" type="text" name="search" placeholder="Search" aria-label="Search" <?php echo (isset($name_search)) ? "value=\"" . $name_search . "\"" : ""; ?>>
-                            <input class="submit" type="submit" value="Submit">
-                        </div>
-                    </form>
-
-                    <!-- Search results -->
-                    <div class="container-fluid">
-                        <?php
-                            if (!empty($results)) {
-                                foreach ($results as $profile) { 
-                                    $username = $profile["username"];
-                                    $name = $profile["name"];
-                                    $age = User::calc_age($profile["dob"]);
-                                    $gender = $profile["gender"];
-                                    $description = $profile["description"];
-                                    $location = $profile["location"];
-                                    $fileName = $profile["filename"];
-                        ?>
-
-                                    <div class="row bg-primary border border-dark mb-4 p-3">
-                                        <!-- user image -->
-                                        <div class="col-md-3">
-                                            <a href="user_profile.php?username=<?php echo $username; ?>">
-                                                <img class="fit-image img-thumbnail border-dark" src="<?php echo ($fileName) ? User::USER_IMAGES . $fileName : User::DEFAULT_USER_IMAGE ?>" alt="profile picture">
-                                            </a>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="row">
-                                                <div class="col-md-10">
-                                                    <h2 class="m-0 mt-2"><?php echo $name . ", " . $age; ?></h2>
-                                                    <div class="pl-3">
-                                                        <p class="m-0"><?php echo $location; ?></p>
-                                                        <p class="m-0"><?php echo $gender; ?></p>
+                                        <div class="row bg-primary border border-dark mb-4 p-3">
+                                            <!-- user image -->
+                                            <div class="col-md-3">
+                                                <a href="user_profile.php?username=<?php echo $username; ?>">
+                                                    <img class="fit-image img-thumbnail border-dark" src="<?php echo ($fileName) ? User::USER_IMAGES . $fileName : User::DEFAULT_USER_IMAGE ?>" alt="profile picture">
+                                                </a>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-10">
+                                                        <h2 class="m-0 mt-2"><?php echo $name . ", " . $age; ?></h2>
+                                                        <div class="pl-3">
+                                                            <p class="m-0"><?php echo $location; ?></p>
+                                                            <p class="m-0"><?php echo $gender; ?></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 m-auto text-center">
+                                                        like button
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 m-auto text-center">
-                                                    like button
-                                                </div>
+                                                <hr class="border-dark my-3">
+                                                <p><?php echo $description; ?></p>
                                             </div>
-                                            <hr class="border-dark my-3">
-                                            <p><?php echo $description; ?></p>
                                         </div>
+                            <?php
+                                    }
+                                } else {
+                                    ?>
+
+                                    <div class="row mb-4 p-3">
+                                        <h3 class="mx-auto">No results found, don't be so specific!</h3>
                                     </div>
-                        <?php
+
+                                    <?php
                                 }
-                            } else {
-                                ?>
-
-                                <div class="row mb-4 p-3">
-                                    <h3 class="mx-auto">No results found, don't be so specific!</h3>
-                                </div>
-
-                                <?php
-                            }
-                        ?>
-                    </div> 
-
-
-
-
+                            if (isset($previousPageURL)) { ?>
+                                    <a href="<?php echo $previousPageURL; ?>">Previous</a>
+                            <?php }
+                            if (isset($nextPageURL)) { ?>
+                                    <a class="float-right" href="<?php echo $nextPageURL; ?>">Next</a>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="offset-md-2"></div> <!-- Col offset for symmetry -->
                 </div>
-                <div class="offset-md-2"></div> <!-- Col offset for symmetry -->
-            </div>
-        </div>      
-    </section>
+            </div>      
+        </section>
 
-    <footer id="footer">
-        
-        <p>&copy; MeetAmour 2020. All Rights Reserved.</p>
-        <ul class="list-inline">
-            <li class="list-inline-item">
-            <a href="#">Privacy</a>
-            </li>
-            <li class="list-inline-item">
-            <a href="#">Terms</a>
-            </li>
-            <li class="list-inline-item">
-            <a href="#">FAQ</a>
-            </li>
-            <li class="list-inline-item">
-			<a href="<?php echo Database::ABOUT_US; ?>">About us</a>
-			</li>
-        </ul>
-        </div>
-    </footer>
+        <footer id="footer">
+            
+            <p>&copy; MeetAmour 2020. All Rights Reserved.</p>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                <a href="#">Privacy</a>
+                </li>
+                <li class="list-inline-item">
+                <a href="#">Terms</a>
+                </li>
+                <li class="list-inline-item">
+                <a href="#">FAQ</a>
+                </li>
+                <li class="list-inline-item">
+                <a href="<?php echo Database::ABOUT_US; ?>">About us</a>
+                </li>
+            </ul>
+            </div>
+        </footer>
     </div>
 
     <!-- js for age slider -->
@@ -387,6 +389,14 @@
         slider_max.oninput = function() {
             output_max.innerHTML = this.value;
         }
+    </script>
+
+    <!-- js for auto selecting drop downs as search params -->
+    <script>
+        function selectElement(id, valueToSelect) {    
+            document.getElementById(id).value = valueToSelect;
+        }
+        document.getElementById("gender").value = "1";
     </script>
 
     <!-- Bootstrap core JavaScript -->
