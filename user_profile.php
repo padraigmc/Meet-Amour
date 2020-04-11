@@ -284,8 +284,10 @@
 					<div class="btn-group dropright">
 						<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 						<div class="dropdown-menu">
-							<a class="dropdown-item button w-100" href="<?php echo Database::EDIT_PROFILE; ?>">Edit Profile</a>
-							<?php if ($_SESSION[User::IS_ADMIN]) { ?>
+							<?php if ($owner) { ?>
+								<a class="dropdown-item button w-100" href="<?php echo Database::EDIT_PROFILE; ?>">Edit Profile</a>
+							<?php } else if ($_SESSION[User::IS_ADMIN]) { ?>
+								<a class="dropdown-item button w-100" href="<?php echo Database::EDIT_PROFILE . "?" . User::USERNAME . "=" . $username; ?>">Edit Profile</a>
 								<a class="button w-100" href="<?php echo Database::BAN_USER . "?" . User::USER_ID . "=" . $userID; ?>">Ban User</a>
 								<a class="button w-100" href="<?php echo Database::DELETE_USER . "?" . User::USER_ID . "=" . $userID; ?>">Delete User</a>
 							<?php } ?>

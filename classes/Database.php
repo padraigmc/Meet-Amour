@@ -24,7 +24,7 @@
         *
         *   return  -   mySQLi object on success, 0 on failure
         */
-        function connect() {
+        public static function connect() {
             // set db connection variables
             $dbServerName = "hive.csis.ul.ie";
             $dbUsername = "group13";
@@ -40,6 +40,28 @@
             } else {
                 return $conn;
             }
+        }
+
+        public static function insert_new_user($dbConnection, $email, $username, $password_hash) 
+        {
+            $sql = "INSERT INTO `User` (`email`, `username`, `passwordHash`, `dateCreated`, `lastLogin` ) VALUES (?, ?, ?, ?, ?);";
+            $date = date("Y-m-d H:i:s");
+
+            if ($stmt = $dbConnection->prepare($sql)) {
+                $stmt->bind_param("sssss", $email, $username, $password_hash, $date, $date);
+                $stmt->execute();
+
+                if ($stmt->affected_rows == 1) {
+                    $success = 1;
+                } else {
+                    $success = 0;
+                }
+
+                $stmt->close();
+            } else {
+                $success = 0;
+            }
+            return $success;
         }
     }
 ?>

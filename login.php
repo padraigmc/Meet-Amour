@@ -17,23 +17,29 @@
 <!--===============================================================================================-->
 </head>
   
-<body><?php
-		require_once("classes/User.php");
+<body>
+	<?php
+		require_once("init.php");
+		$nameOfErrorGETVariable = "loginError";
+
 		if (isset($_POST["submit"])) {
 
 			// session start, include User.php and declare error session var
-			require_once("init.php");
 			$conn = Database::connect();
 			
 			$username = $_POST["username"];
 			$password = $_POST["password"];
 
+			$_SESSION[User::USERNAME] = $username;
+
 			// if error array is empty i.e. no errors
 			if (User::login($conn, $username, $password)) {
-				$conn->close();
-				header('Location: user_profile.php');
-				exit();
+				header("Location: " . Database::VIEW_PROFILE);
+			} else {
+				header("Location: " . Database::LOGIN . "?" . $nameOfErrorGETVariable);
 			}
+			$conn->close();
+			exit();
 		}
 	  	?>
 		
@@ -55,7 +61,7 @@
 
 								<div class="wrap-input100 validate-input" data-validate = "Valid email is required.">
 									<!-- email form field -->
-									<input class="input100" type="text" name="username" placeholder="Username">
+									<input class="input100" type="text" name="username" <?php echo (isset($_SESSION[User::USERNAME])) ? "value=\"" . $_SESSION[User::USERNAME] . "\"" : "placeholder=\"Username\""; ?>>
 									<span class="focus-input100"></span>
 									<span class="symbol-input100">
 										<i class="fa fa-envelope" aria-hidden="true"></i>
@@ -96,7 +102,7 @@
 					</div>
 
 					<?php
-						if (isset($_SESSION[User::ERROR]) && sizeof($_SESSION[User::ERROR]) > 0) {
+						if (isset($_GET[$nameOfErrorGETVariable]) && sizeof($_SESSION[User::ERROR]) > 0) {
 							echo "<div class=\"row\">";
 							foreach ($_SESSION[User::ERROR] as $key => $value) {
 								echo "<p class=\"text-danger\">" . $value . "</p>";

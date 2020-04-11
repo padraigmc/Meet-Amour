@@ -3,9 +3,7 @@
     class Search
     {
         private $currentPageNumber;
-        private $numberOfSearchResults;
         private $indexOfFirstResult;
-        private $pageURLS = array();
         private $databaseConnection;
         private $moreResultsThanDisplayed = false;
         

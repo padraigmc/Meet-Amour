@@ -19,27 +19,29 @@
 
 
 	<?php
-		require_once("classes/User.php");
-		// handle form data of register user
+		require_once("init.php");
+		$nameOfErrorGETVariable = "loginError";
+
 		if (isset($_POST["submit_user"])) {
-			
-			// session start, include User.php and declare error session var
-			require_once("init.php");
+			$email = $username = $password = $passwordConfirm = $password_hash = "";			
 			$conn = Database::connect();
 			
-			$email = $username = $password = $passwordConfirm = $password_hash = "";
-
 			$email = htmlspecialchars($_POST["email"]);
 			$username = htmlspecialchars($_POST["username"]);
 			$password = htmlspecialchars($_POST["password"]);
 			$passwordConfirm = htmlspecialchars($_POST["passwordConfirm"]);
+
+			$_SESSION[User::EMAIL] = $email;
+			$_SESSION[User::USERNAME] = $username;
 			
-			// Try to register user, if successful redirect to profile set up page
 			if (User::register($conn, $email, $username, $password, $passwordConfirm)) {
-				$conn->close();
-				header("Location: profile-edit.php");
-				exit();
+				header("Location: " . Database::EDIT_PROFILE);
+			} else {
+				header("Location: " . Database::REGISTER . "?" . $nameOfErrorGETVariable);
 			}
+
+			$conn->close();
+			exit();
 		} ?>
 
 		<div class="limiter">
@@ -60,7 +62,7 @@
 									</span>
 									
 									<div class="wrap-input100 validate-input" data-validate = "Username is required">
-										<input class="input100" type="text" name="username" <?php echo (isset($username)) ? ("value=\"" . $username . "\"") : "placeholder=\"Username\""; ?>>
+										<input class="input100" type="text" name="username" <?php echo (isset($_SESSION[User::USERNAME])) ? ("value=\"" . $_SESSION[User::USERNAME] . "\"") : "placeholder=\"Username\""; ?>>
 										<span class="focus-input100"></span>
 										<span class="symbol-input100">
 											<i class="fa fa-user" aria-hidden="true"></i>
@@ -68,7 +70,7 @@
 									</div>
 
 									<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-										<input class="input100" type="text" name="email" <?php echo (isset($email)) ? ("value=\"" . $email . "\"") : "placeholder=\"Email\""; ?>>
+										<input class="input100" type="text" name="email" <?php echo (isset($_SESSION[User::EMAIL])) ? ("value=\"" . $_SESSION[User::EMAIL] . "\"") : "placeholder=\"Email\""; ?>>
 										<span class="focus-input100"></span>
 										<span class="symbol-input100">
 											<i class="fa fa-envelope" aria-hidden="true"></i>
@@ -103,12 +105,14 @@
 							</div>
 						</div>
 						<?php
-							if (isset($_SESSION[User::ERROR]) && sizeof($_SESSION[User::ERROR]) > 0) {
-								echo "<div class=\"row\">";
+							if (isset($_GET[$nameOfErrorGETVariable]) && sizeof($_SESSION[User::ERROR]) > 0) {
+								echo "<br>";
 								foreach ($_SESSION[User::ERROR] as $key => $value) {
-									echo "<p class=\"text-danger\">" . $value . "</p>";
+									echo "<div class=\"row\">";
+										echo "<p class=\"text-danger\">" . $value . "</p>";
+									echo "</div>";
 								}
-								echo "<div>";
+								
 							}
 
 						?>

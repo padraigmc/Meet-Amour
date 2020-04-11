@@ -10,10 +10,10 @@
         const EMAIL_INVALID_FORMAT = "Invalid email!";
         const EMAIL_EXISTS = "Email already exists!";
         
-        const USERNAME_INVALID_FORMAT = "Username contains an illegal character! Only letters, numbers, underscores and dashes (-) allowed!";
+        const USERNAME_INVALID_FORMAT = "Username must be at least 4 characters long and can only letters, numbers, underscores and dashes";
         const USERNAME_EXISTS = "Username already exists!";
 
-        const PASSWORD_INVALID_FORMAT = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character.";
+        const PASSWORD_INVALID_FORMAT = "Password must be at least 8 characters long and contain at least one uppercase letter and one number.";
         const PASSWORD_MISMATCH = "Passwords do not match";
         const PASSWORD_INCORRECT = "Incorrect password";
 

@@ -1,67 +1,20 @@
 <?php
 
+require_once("UserError.php");
+
 class Verify
 {
+    private $databaseConnection;
+    private $errorList;
 
-    /*
-        *   Verify an inputted email for registration.
-        *   Adds an error message to session var when error found
-        *   Session must be active and variable 'error' must be declares as an array to function properly.
-        *   Session var does not have to be empty.
-        *
-        *   $email  -   email to check
-        *
-        *   return  -   1 on success, 0 (zero) on failure
-        */
-    public static function verify_email_register($dbConnection, $email) {
-        // verify email format
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-				$_SESSION[User::ERROR][] = UserError::EMAIL_INVALID_FORMAT;
-
-        // check if email exists in db
-        if (User::get_user_attributes_equal_to($dbConnection, "email", $email))
-            $_SESSION[User::ERROR][] = UserError::EMAIL_EXISTS;
+    function __construct($databaseConnection)
+    {
+        $this->databaseConnection = $databaseConnection;
+        $this->errorList = array();
     }
 
-    /*
-        *   Verify an inputted email for login.
-        *   Adds an error message to session var when error found
-        *   Session must be active and variable 'error' must be declares as an array to function properly.
-        *   Session var does not have to be empty.
-        *
-        *   $email  -   email to check
-        *
-        *   return  -   1 on success, 0 (zero) on failure
-        */
-    public static function verify_email_login($dbConnection, $email) {
-        // verify email format
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-                $_SESSION[User::ERROR][] = UserError::EMAIL_INVALID_FORMAT;
-
-        // check if email exists i db
-        if (!User::get_user_attributes_equal_to($dbConnection, "email", $email))
-            $_SESSION[User::ERROR][] = UserError::ACCOUNT_NOT_FOUND;
-    }
-
-    /*
-        *   Verify an inputted username for registration.
-        *   Adds an error message to session var when error found
-        *   Session must be active and variable 'error' must be declares as an array to function properly.
-        *   Session var does not have to be empty.
-        *
-        *   $username   -   username to check
-        *
-        *   return      -   1 on success, 0 (zero) on failure
-        */
-    public static function verify_username_register($dbConnection, $username) {
-        // test username format
-        if (!Verify::verify_username_form($username))
-            $_SESSION[User::ERROR][] = UserError::USERNAME_INVALID_FORMAT;
-
-
-        // test if username already exists
-        if (User::get_user_attributes_equal_to($dbConnection, "username", $username))
-            $_SESSION[User::ERROR][] = UserError::USERNAME_EXISTS;
+    public function get_errors() {
+        return $this->errorList;
     }
 
     /*
@@ -74,55 +27,89 @@ class Verify
         *
         *   return      -   1 on success, 0 (zero) on failure
         */
-    public static function verify_login($dbConnection, $username, $password) {
+    public function verify_login($username, $password) {
+        $errorFlag = 0;
 
-        // test username
-        if (!Verify::verify_username_form($username) || !User::get_user_attributes_equal_to($dbConnection, "username", $username)) {
-            $_SESSION[User::ERROR][] = UserError::LOGIN_ERROR;
+        if (!self::verify_username_form($username) || !self::username_exists($username) || 
+            !self::verify_password_form($password) || !self::verify_password_hash($username, $password) || 
+            self::is_banned($username)) {
+            $errorFlag = 1;
+        }
+
+        if ($errorFlag) {
+            $this->errorList[] = UserError::LOGIN_ERROR;
             return 0;
-
-        } else if (!Self::verify_password_form($password) || !Self::verify_password_hash($dbConnection, $username, $password)) {
-            $_SESSION[User::ERROR][] =  UserError::PASSWORD_INCORRECT;
-            return 0;
-
-        } else { // credentials verified successfully
+        } else {
             return 1;
         }
     }
 
+    public function verify_register($email, $username, $password, $passwordConfirm)
+    {
+        $success = 1;
 
-    /*
-        *   Verify an inputted password for registration.
-        *   Adds an error message to session var when error found
-        *   Session must be active and variable 'error' must be declares as an array to function properly.
-        *   Session var does not have to be empty.
-        *
-        *   $password   -   password to check
-        *
-        *   return      -   1 on success, 0 (zero) on failure
-        */
-    public static function verify_password_register($password, $password_conf) {
-        // verify user inputted password
-        if (!Self::verify_password_form($password)) // if the password doesn't match the regex, add error to error array
-            $_SESSION[User::ERROR][] = UserError::PASSWORD_INVALID_FORMAT;
+        if (!self::verify_username_form($username)) {
+            $this->errorList[] = UserError::USERNAME_INVALID_FORMAT;
+            $success = 0;
+        } 
         
-        if ($password != $password_conf) // if the password doesn't match the confirm password, add error to error array
-            $_SESSION[User::ERROR][] = UserError::PASSWORD_MISMATCH;
+        if (self::username_exists($username)) {
+            $this->errorList[] = UserError::USERNAME_EXISTS;
+            $success = 0;
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->errorList[] = UserError::EMAIL_INVALID_FORMAT;
+        }
+
+        if (self::email_exists($email)) {
+            $this->errorList[] = UserError::EMAIL_EXISTS;
+            $success = 0;
+        } 
+        
+        if (!self::verify_password_form($password)) {
+            $this->errorList[] = UserError::PASSWORD_INVALID_FORMAT;
+            $success = 0;
+        } 
+        
+        if ($password != $passwordConfirm) {
+            $this->errorList[] = UserError::PASSWORD_MISMATCH;
+            $success = 0;
+        }
+
+        return $success;
     }
 
+    public function is_banned($username) {
+        $sql = "SELECT `isBanned` FROM `User` WHERE `username` = ?;";
+        $isBanned = null;
 
-    /*
-        *   Verify that an inputted password is well formed. e.g. it has an uppercase letter, number, special char etc
-        *
-        *   $password   -   password to check
-        *
-        *   return      -   1 on success, 0 (zero) on failure
-        */
-    public static function verify_password_form($password) {
-        // one upper and lowercase letter, one num, one special char
-        $password_regex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/"; 
+        if ($stmt = $this->databaseConnection->prepare($sql)) {
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $stmt->store_result();
 
-        // test if password matches the above regex
+            if ($stmt->num_rows == 1) {
+                $stmt->bind_result($isBanned);
+                $stmt->fetch();
+            }
+        }
+
+        return $isBanned;
+    }
+
+    private function verify_username_form($username) {
+        if (preg_match("/^[a-zA-Z0-9_\-]{4,30}$/", $username)) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private function verify_password_form($password) {
+        // one uppercase letter and one number
+        $password_regex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/"; 
+
         if (preg_match($password_regex, $password)) { 
             return 1; 
         } else { 
@@ -130,15 +117,8 @@ class Verify
         }   
     }
 
-    /*
-        *   Verify that a user's password hash matches the stored password hash
-        *
-        *   $password       -   plaintext password to verify
-        *
-        *   return          -   1 on success, 0 (zero) on failure
-        */
-    public static function verify_password_hash($dbConnection, $username, $password) {
-        $password_hash = User::get_user_attribute($dbConnection, $username, "passwordHash");
+    private function verify_password_hash($username, $password) {
+        $password_hash = User::get_user_attribute($this->databaseConnection, $username, "passwordHash");
 
         if (password_verify($password, $password_hash)) {
             return 1;
@@ -148,22 +128,44 @@ class Verify
         
     }
 
-    /*
-        *   Verify username form
-        *
-        *   $username       -   username to verify
-        *
-        *   return          -   1 on success, 0 (zero) on failure
-        */
-    public static function verify_username_form($username) {
+    private function email_exists($email) 
+    {
+        $sql = "SELECT `email` FROM `User` WHERE `email` = ?;";
+        $emailExists = 0;
 
-        // verify user inputted username
-        if (preg_match("/^[a-zA-Z0-9_\-]{4,30}$/", $username)) {
-            return 1;
-        } else {
-            return 0;
+        if ($stmt = $this->databaseConnection->prepare($sql)) {
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if ($stmt->num_rows > 0) { 
+                $emailExists = 1; 
+            } else { 
+                $emailExists = 0;
+            }
         }
 
+        return $emailExists;
+    }
+
+    private function username_exists($username) 
+    {
+        $sql = "SELECT `username` FROM `User` WHERE `username` = ?;";
+        $usernameExists = 0;
+
+        if ($stmt = $this->databaseConnection->prepare($sql)) {
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if ($stmt->num_rows > 0) { 
+                $usernameExists = 1; 
+            } else { 
+                $usernameExists = 0;
+            }
+        }
+
+        return $usernameExists;
     }
 }
 
