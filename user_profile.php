@@ -35,7 +35,6 @@
 
 			require_once("init.php");
 			require_once("classes/Hobby.php");
-			require_once("classes/Profile.php");
 			$conn = Database::connect();
 
 			if (isset($_GET[User::USERNAME])) {
@@ -71,8 +70,6 @@
 			} else {
 				$numUnseenNotifications = 0;
 			}
-
-			var_dump($_SESSION);
 
 		?>
 

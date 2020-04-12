@@ -34,7 +34,6 @@
 
 		// session start, include User.php and declare error session var
 		require_once("init.php");
-		require_once("classes/Profile.php");
 		require_once("classes/Hobby.php");
 		$conn = Database::connect();
 

@@ -155,7 +155,6 @@
 <body id="page-top">
     <?php
         require_once("init.php");
-        require_once("classes/Profile.php");
         require_once("classes/Search.php");
         $conn = Database::connect();
         $results = array();
