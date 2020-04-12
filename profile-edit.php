@@ -34,61 +34,65 @@
 
 		// session start, include User.php and declare error session var
 		require_once("init.php");
+		require_once("classes/Profile.php");
 		require_once("classes/Hobby.php");
 		$conn = Database::connect();
 
-		$profile_image_path = null;
+		if (isset($_GET[User::USERNAME])) {
+			$username = $_GET[User::USERNAME];
+			$profile = Profile::constuct_with_username($conn, $username);
+			if (!$profile->user_has_permission_to_edit()) {
+				unset($profile);
+				$conn->close();
+				header("Location: " . Database::INDEX);
+				exit();
+			}
 
-		// if the user isn't logged in, redirect to homepage
-		if (!User::isLoggedIn()) {
-			header("Location: login.php");
-			$conn->close();
-			exit();
+			$redirect_on_successful_edit = Database::VIEW_PROFILE . "?" . User::USERNAME . "=" . $username;
+		} else {
+			$profile = Profile::constuct_with_session_variables($conn);
+			$redirect_on_successful_edit = Database::VIEW_PROFILE;
 		}
-
-		// set time variables - used for html date input
-		$date_current = date("Y-m-d");
-		$date_max = date("Y-m-d", strtotime("-18 year", time()));
-		$date_min = date("Y-m-d", strtotime("-120 year", time()));
 
 		if (isset($_POST["submit"])) {
 			$success = 1;
-			// check if row is to be inserted or updated
-			$newUser = $_POST["newUser"];
 
 			// set variables to be insterted
-			$userID = $_SESSION['userID'];
-			$fname = htmlspecialchars($_POST["fname"]);
-			$lname = htmlspecialchars($_POST["lname"]);
-			$dob = $_POST["dob"];
-			$genderID = $_POST["gender"];
-			$seekingID = $_POST["seeking"];
-			$description = htmlspecialchars($_POST["description"]);
-			$locationID = $_POST["location"];
+			$profile->fname = htmlspecialchars($_POST["fname"]);
+			$profile->lname = htmlspecialchars($_POST["lname"]);
+			$profile->dob = $_POST["dob"];
+			$profile->genderID = $_POST["gender"];
+			$profile->seekingID = $_POST["seeking"];
+			$profile->description = htmlspecialchars($_POST["description"]);
+			$profile->locationID = $_POST["location"];
 
 
 			// update or insert new profile data - dependent on value of $newUser
-			if (!User::set_profile_attributes($conn, $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $newUser)) {
+			if (!$profile->store_profile_attributes()) {
 				$success = 0;
 			}
 
 			// upload image if one use submitted
 			if (isset($_FILES['userImage']['tmp_name']) && $_FILES['userImage']['name'] != "") {
-				User::upload_user_image($conn, $_SESSION[User::USER_ID], 'userImage');
+				User::upload_user_image($conn, $profile->userID, 'userImage');
 			}
 
-			$selected_hobbies = array();
             if(!empty($_POST['selected_hobbies'])){
-                // Loop to store and display values of individual checked checkbox.
-                foreach($_POST['selected_hobbies'] as $selected){
-                    $selected_hobbies[] = (int) $selected;
-				}
+				$selected_hobbies = $_POST['selected_hobbies'];
 
-                Hobby::set_user_hobbies($conn, $_SESSION[User::USER_ID], $_SESSION["current_user_hobbies"], $selected_hobbies);
-            }
+				$success = Hobby::set_user_hobbies($conn, $profile->userID, $profile->hobbies, $selected_hobbies);
+
+				if ($success) {
+					$profile->hobbies = $selected_hobbies;
+					if ($profile->user_owns_profile()) {
+						$_SESSION[User::HOBBIES] = $selected_hobbies;
+					}
+					
+				}
+            }		
 
 			if ($success) {
-				header("Location: " . Database::VIEW_PROFILE);
+				header("Location: " . $redirect_on_successful_edit);
 			} else {
 				$_SESSION[User::ERROR][] = UserError::GENERAL_ERROR;
 				header("Location: " . Database::EDIT_PROFILE .  " ?edit_error");
@@ -97,35 +101,12 @@
 			exit();
 		}
 
-		$profileAttr = array();
-		$userID = $fname = $lname = $dob = $gender = $seeking = $description = $location = null;
-		
+		// set time variables - used for html date input
+		$date_current = date("Y-m-d");
+		$date_max = date("Y-m-d", strtotime("-18 year", time()));
+		$date_min = date("Y-m-d", strtotime("-120 year", time()));
 		$all_hobbies = Hobby::get_all_hobbies($conn);
 
-		// try get profile data
-		if ($profileAttr = User::resolve_foreign_keys_in_profile_tbl($conn, $_SESSION[User::USER_ID])) {
-			$newUser = false;
-
-			$userID = $_SESSION[User::USER_ID];
-			$fname = $_SESSION[User::FIRST_NAME];
-			$lname = $_SESSION[User::LAST_NAME];
-			$dob = substr($_SESSION[User::DATE_OF_BIRTH], 0, 10); // etract date (original: yyyy-mm-dd hh:mm:ss)
-			$gender = $profileAttr[User::GENDER];
-			$seeking = $profileAttr[User::SEEKING];
-			$description = $_SESSION[User::DESCRIPTION];
-			$location = $profileAttr[User::LOCATION];
-			
-			if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
-				$profile_image_path = User::USER_IMAGES . $profile_image_path;
-			}
-
-			if (!($_SESSION["current_user_hobbies"] = Hobby::get_user_hobbies($conn, $userID))) {
-				$_SESSION["current_user_hobbies"] = array();
-			}
-		} else {
-			// if no rows were returned, a row must be inserted
-			$newUser = true;
-		}
 	?>
 
 	<!-- Navigation -->
@@ -179,12 +160,12 @@
 	</section>
 	
 	<div class="container-fluid main w-100">
-		<form id="edit-info" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" enctype="multipart/form-data">
+		<form id="edit-info" method="POST" action="<?php echo htmlspecialchars($_SERVER["REQUEST_URI"]);?>" enctype="multipart/form-data">
 			<div class="row">
 				<div class="col-lg-3">
 					<h3 class="pb-4">Profile Picture</h3>
 					<!--JavaScript upload system to show an image preview-->
-					<img id="picture" alt="" class="py-auto img-fluid" width="300" height="300" src="<?php echo ($profile_image_path) ? $profile_image_path : "img/blank-profile.png"; ?>" />
+					<img id="picture" alt="" class="py-auto img-fluid" width="300" height="300" src="<?php echo $profile->imageFilePath; ?>" />
 					<input type="file" class="mx-auto" name="userImage" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
 				</div>
 				<div class="col-lg-7">
@@ -192,17 +173,17 @@
 					<div class="form-row">
 						<div class="col text-left font-weight-bold">
 							<label for="fname">First Name</label>
-							<input type="text" class="form-control" id="fname" name="fname" <?php echo User::populate_form_input($fname, "First Name"); ?>>
+							<input type="text" class="form-control" id="fname" name="fname" <?php echo User::populate_form_input($profile->fname, "First Name"); ?>>
 						</div>
 						<div class="col text-left font-weight-bold">
 							<label for="lname">Last Name</label>
-							<input type="text" class="form-control" name="lname" <?php echo User::populate_form_input($lname, "Last Name"); ?>>
+							<input type="text" class="form-control" name="lname" <?php echo User::populate_form_input($profile->lname, "Last Name"); ?>>
 						</div>
 					</div>
 					<div class="form-row">
 						<div class="col text-left font-weight-bold">
 							<label for="dob">Date of Birth</label>
-							<input type="date" class="form-control" name="dob" id="dob" <?php echo (isset($dob)) ? ("value=\"" . $dob . "\"") : ""; ?> min="<?php echo $date_min;?>" max="<?php echo $date_max; ?>">
+							<input type="date" class="form-control" name="dob" id="dob" <?php echo (isset($profile->dob)) ? ("value=\"" . $profile->dob . "\"") : ""; ?> min="<?php echo $date_min;?>" max="<?php echo $date_max; ?>">
 						</div>
 						<div class="col text-left font-weight-bold">
 							<label for="location">Location</label>
@@ -249,7 +230,7 @@
 					<div class="form-row">
 						<div class="col text-left font-weight-bold bottom-div">
 							<label for="description">Description</label>
-							<textarea class="form-control" rows="4" cols="50" name="description" id="description" <?php echo (isset($description)) ? (">" . $description) : "placeholder=\"About you...\">"; ?></textarea>
+							<textarea class="form-control" rows="4" cols="50" name="description" id="description" <?php echo (isset($profile->description)) ? (">" . $profile->description) : "placeholder=\"About you...\">"; ?></textarea>
 						</div>
 					</div>
 				</div>
@@ -258,7 +239,7 @@
 					<?php
 						$checkboxID = 0;
 						foreach ($all_hobbies as $hobby) { ?>
-							<input type="checkbox" <?php echo "id=\"" . $checkboxID . "\" name=\"selected_hobbies[]\" value=\"" . $hobby[0] . "\""; echo (isset($_SESSION["current_user_hobbies"]) && in_array($hobby[0], $_SESSION["current_user_hobbies"])) ? "checked" : "";?>><?php
+							<input type="checkbox" <?php echo "id=\"" . $checkboxID . "\" name=\"selected_hobbies[]\" value=\"" . $hobby[0] . "\""; echo (in_array($hobby[0], $profile->hobbies)) ? "checked" : "";?>><?php
 							echo "<label for=\"" . $checkboxID . "\">" .  $hobby[1] . "</label><br>";
 							
 							$checkboxID++;
@@ -268,7 +249,6 @@
 			</div>
 			<div class="row">
 				<div class="col submit">
-					<input type="hidden" name="newUser" value="<?php echo $newUser ?>">
 					<input class="w-100" type="submit" name="submit" value="Submit">
 				</div>
 			</div>

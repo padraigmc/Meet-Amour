@@ -17,9 +17,6 @@ class Like
                 $stmt->execute();
                 $stmt->store_result();
 
-                echo "<br><br><br><br><br><br><br><br><br><br>-- " . $recipientUserID . "<br><br><br>";
-                var_dump($stmt);
-
                 if ($stmt->num_rows() == 1) {
                     $stmt->close();
                     return 1;

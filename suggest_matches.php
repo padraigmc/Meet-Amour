@@ -97,7 +97,7 @@
 					$userID = $value[User::USER_ID];
 					$username = $value[User::USERNAME];
 					$name = $value["name"];
-					$age = User::calc_age($value[User::DATE_OF_BIRTH]);
+					$age = Profile::calculate_age($value[User::DATE_OF_BIRTH]);
 					$gender = $value[User::GENDER];
 					$description = $value[User::DESCRIPTION];
 					$location = $value[User::LOCATION];

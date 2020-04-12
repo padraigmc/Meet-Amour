@@ -21,6 +21,8 @@
         const NAME_LONG = "Name is too long.";
 
         const DESCRIPTION_LONG = "Description too long.";
+        
+        const INVALID_DATE_OF_BIRTH = "There's a problem with your date of birth.";
 
         const IMAGE_LARGE = "Sorry, your file is too large.";
         const IMAGE_UNSUPPORTED = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";

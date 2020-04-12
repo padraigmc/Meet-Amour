@@ -155,6 +155,7 @@
 <body id="page-top">
     <?php
         require_once("init.php");
+        require_once("classes/Profile.php");
         require_once("classes/Search.php");
         $conn = Database::connect();
         $results = array();
@@ -296,7 +297,7 @@
                                     foreach ($results as $profile) { 
                                         $username = $profile["username"];
                                         $name = $profile["name"];
-                                        $age = User::calc_age($profile["dob"]);
+                                        $age = Profile::calculate_age($profile["dob"]);
                                         $gender = $profile["gender"];
                                         $description = $profile["description"];
                                         $location = $profile["location"];

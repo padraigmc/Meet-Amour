@@ -35,69 +35,44 @@
 
 			require_once("init.php");
 			require_once("classes/Hobby.php");
+			require_once("classes/Profile.php");
 			$conn = Database::connect();
 
-			// if username supplied by get variable (in url), query db for userID
 			if (isset($_GET[User::USERNAME])) {
-				$owner = 0;
 				$username = $_GET[User::USERNAME];
-				$profileAttributes = User::get_all_profile_attributes($conn, $username);
+				$profile = Profile::constuct_with_username($conn, $username);
+				$profile->is_profile_initialized();
+				if ($profile && $profile->is_profile_initialized()) {
+					
+					if (isset($_POST["like"])) {
+						$isLiked = Like::like_user($conn, $profile->userID);
+					} elseif (isset($_POST["unlike"])) {
+						if (Like::unlike_user($conn, $profile->userID))
+							$isLiked = 0;
+					} else {
+						$isLiked = Like::check_like_status($conn, $profile->userID);
+					}
 
-				$userID = $profileAttributes[User::USER_ID];
-				$fname = $profileAttributes[User::FIRST_NAME];
-				$lname = $profileAttributes[User::LAST_NAME];
-				$age = User::calc_age($profileAttributes[User::DATE_OF_BIRTH]);
-				$gender = $profileAttributes[User::GENDER];
-				$seeking = $profileAttributes[User::SEEKING];
-				$description = $profileAttributes[User::DESCRIPTION];
-				$location = $profileAttributes[User::LOCATION];
-
-				if (isset($_POST["like"])) {
-					$isLiked = Like::like_user($conn, $userID);
-				} elseif (isset($_POST["unlike"])) {
-					if (Like::unlike_user($conn, $userID))
-						$isLiked = 0;
-				} else {
-					$isLiked = Like::check_like_status($conn, $userID);
-				}
-			} else {
-				// if user owns the page
-				$userID = $_SESSION[User::USER_ID];
-				$owner = 1;
-
-				$fname = $_SESSION[User::FIRST_NAME];
-				$lname = $_SESSION[User::LAST_NAME];
-				$age = User::calc_age($_SESSION[User::DATE_OF_BIRTH]);
-				$gender = $_SESSION[User::GENDER];
-				$seeking = $_SESSION[User::SEEKING];
-				$description = $_SESSION[User::DESCRIPTION];
-				$location = $_SESSION[User::LOCATION];
-			}
-
-			if ($userID > 0 && isset($_SESSION[User::FIRST_NAME])) {
-
-				if ($profile_image_path = User::get_user_image_filename($conn, $userID)) {
-					$profile_image_path = User::USER_IMAGES . $profile_image_path;
-				}
-
-				$hobbies = Hobby::get_user_hobbies($conn, $userID);
-			} else {
-				// if the profile does not have a row in the table
-				if ($owner) {
-					$conn->close();
-					header("Location: profile-edit.php");
-					exit();
 				} else {
 					$_SESSION[User::ERROR][] = UserError::PROFILE_UNAVAILABLE;
+				}			
+			} else {
+				
+				$profile = Profile::constuct_with_session_variables($conn);
+				if (!$profile->is_profile_initialized()) {
+					$conn->close();
+					header("Location: " . Database::EDIT_PROFILE);
+					exit();
 				}
-
 			}
-
+			
 			if ($notifications = Notification::get_unseen_user_notifications($conn, 3)) {
 				$numUnseenNotifications = sizeof($notifications);
 			} else {
 				$numUnseenNotifications = 0;
 			}
+
+			var_dump($_SESSION);
 
 		?>
 
@@ -217,11 +192,11 @@
 
 	<div class="form-row">
 		<div class="col-lg-3">
-			<img id="picture" src="<?php echo ($profile_image_path) ? $profile_image_path : "img/blank-profile.png"; ?>" alt="" class="img-fluid" height="300" width="300">
+			<img id="picture" src="<?php echo $profile->imageFilePath; ?>" alt="" class="img-fluid" height="300" width="300">
 		</div>	
 		<div class="col-lg-4">
 			<div class="profile-head text-left font-weight-bold">
-				<h4 class="font-weight-bold"><?php echo $fname . " " . $lname . ","; ?> <span class="text-weight-bold text-primary"><?php echo $age; ?></span></h4>
+				<h4 class="font-weight-bold"><?php echo $profile->fname . " " . $profile->lname . ","; ?> <span class="text-weight-bold text-primary"><?php echo $profile->age; ?></span></h4>
 				</br>
 				</br>
 
@@ -231,17 +206,17 @@
 							<tr>
 								<th scope="row"></th>
 								<td class="text-primary">Location</td>
-								<td><?php echo $location; ?></td>
+								<td><?php echo $profile->location; ?></td>
 							</tr>
 							<tr>
 								<th scope="row"></th>
 								<td class="text-primary">Gender</td>
-								<td><?php echo $gender; ?></td>
+								<td><?php echo $profile->gender; ?></td>
 							</tr>
 							<tr>
 								<th scope="row"></th>
 								<td class="text-primary">Seeking</td>
-								<td><?php echo $seeking; ?></td>
+								<td><?php echo $profile->seeking; ?></td>
 							</tr>
 							<tr>
 								<th scope="row"></th>
@@ -257,8 +232,8 @@
 			<h5 class="font-weight-bold mx-auto mt-0">Hobbies</h5>
 			<table class="table table-sm w-75 table-borderless" id="interests-table">
 				<?php
-					if ($hobbies) {
-						foreach ($hobbies as $key => $hobby) {
+					if ($profile->hobbies) {
+						foreach ($profile->hobbies as $key => $hobby) {
 							?>
 							<tr>
 								<th scope="row"></th>
@@ -280,16 +255,16 @@
 		</div>
 		<div class="col-lg-1 d-flex align-items-end flex-column">
 			<div class="row">
-				<?php if ($owner || $_SESSION[User::IS_ADMIN]) { ?>
+				<?php if ($profile->user_has_permission_to_edit()) { ?>
 					<div class="btn-group dropright">
 						<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 						<div class="dropdown-menu">
-							<?php if ($owner) { ?>
+							<?php if ($profile->user_owns_profile()) { ?>
 								<a class="dropdown-item button w-100" href="<?php echo Database::EDIT_PROFILE; ?>">Edit Profile</a>
 							<?php } else if ($_SESSION[User::IS_ADMIN]) { ?>
 								<a class="dropdown-item button w-100" href="<?php echo Database::EDIT_PROFILE . "?" . User::USERNAME . "=" . $username; ?>">Edit Profile</a>
-								<a class="button w-100" href="<?php echo Database::BAN_USER . "?" . User::USER_ID . "=" . $userID; ?>">Ban User</a>
-								<a class="button w-100" href="<?php echo Database::DELETE_USER . "?" . User::USER_ID . "=" . $userID; ?>">Delete User</a>
+								<a class="button w-100" href="<?php echo Database::BAN_USER . "?" . User::USER_ID . "=" . $profile->userID; ?>">Ban User</a>
+								<a class="button w-100" href="<?php echo Database::DELETE_USER . "?" . User::USER_ID . "=" . $profile->userID; ?>">Delete User</a>
 							<?php } ?>
 						</div>
 					</div>
@@ -297,7 +272,7 @@
 			</div>
 			<div class="row mt-auto">
 				<?php 
-					if ($owner == 0) {
+					if (!$profile->user_owns_profile()) {
 						echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?username=" . $username . "\" method=\"POST\">";
 						if ($isLiked) {
 							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\">Unlike</button>";
@@ -319,7 +294,7 @@
 	</div>
 	<div class="row">
 		<div class="col-lg-7">
-			<p class="text-left" id="bio"><?php echo (!empty($description) ? $description : "This user doesn't have a description...mysterious"); ?></p>
+			<p class="text-left" id="bio"><?php echo (!empty($profile->description) ? $profile->description : "This user doesn't have a description...mysterious"); ?></p>
 		</div>
 	</div>
 	</div>

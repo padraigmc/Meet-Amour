@@ -1,6 +1,7 @@
 <?php
 
     require_once("Database.php");
+    require_once("Hobby.php");
     require_once("Verify.php");
     require_once("UserError.php");
 
@@ -31,16 +32,15 @@
         const DESCRIPTION = "description";
         const LOCATION_ID = "locationID";
         const LOCATION = "location";
+        const HOBBIES = "hobbies";
+        const USER_IMAGE = "userImage";
 
         const USER_IMAGES = "user_images/";
+        const USER_IMAGE_DIR = "user_images/";
         const DEFAULT_USER_IMAGE = "img/blank-profile.png";
 
-        //  ======================================================================================================
-        //                                                  Getters
-        //  ======================================================================================================
 
-
-        public static function get_all_profile_attributes($dbConnection, $uname) {
+        public static function get_all_profile_attributes($dbConnection, $username) {
             $sql = "SELECT p.`userID`, p.`fname`, p.`lname`, p.`dob`, g.`gender`, s.`gender` AS `seeking`, p.`description`, l.`location`
                     FROM `User` AS `u`
                     LEFT JOIN `Profile` AS `p` ON `u`.`userID` = `p`.`userID`
@@ -52,7 +52,7 @@
             $profileAttributes = null;
 
             if ($stmt = $dbConnection->prepare($sql)) {
-                $stmt->bind_param("s", $uname);
+                $stmt->bind_param("s", $username);
                 $stmt->execute();
                 $stmt->bind_result($userID, $firstName, $lastName, $dob, $gender, $seeking, $description, $location);
     
@@ -177,7 +177,8 @@
         }
 
         public static function suggest_matches($dbConnection, $userID) {
-            $sql = "SELECT `Profile`.`userID`, `User`.`username`, concat(`Profile`.`fname`, ' ', `Profile`.`lname`) as `name`, `Profile`.`dob`, `Gender`.`gender`, `Profile`.`description`, `Location`.`location`, `Photo`.`filename`
+            $sql = "SELECT `Profile`.`userID`, `User`.`username`, concat(`Profile`.`fname`, ' ', `Profile`.`lname`) as `name`, 
+                        `Profile`.`dob`, `Gender`.`gender`, `Profile`.`description`, `Location`.`location`, `Photo`.`filename`
                     FROM Profile
                     LEFT JOIN `User` on `Profile`.`userID` = `User`.`userID`
                     LEFT JOIN `Gender` on `Profile`.`genderID` = `Gender`.`genderID`
@@ -211,11 +212,6 @@
             }
             return $profiles;
         }
-
-
-//  ======================================================================================================
-//                                                  Setters
-//  ======================================================================================================
 
         public static function set_profile_attributes($dbConnection, $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID, $newUser = 0) 
         {
@@ -270,11 +266,6 @@
             }
         }
 
-
-//  ======================================================================================================
-//                                                  Methods
-//  ======================================================================================================
-
         public static function register($dbConnection, $email, $username, $password, $passwordConfirm) 
         {
             $verify = new Verify($dbConnection);
@@ -290,46 +281,8 @@
 
                 return $addUserWasSuccessful;
             } else {
-                $_SESSION[User::ERROR] = $verify->get_errors();
+                $_SESSION[User::ERROR] = $verify->get_error();
                 return 0;
-            }
-        }
-
-        public static function profile_set_up($dbConnection, $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID) 
-        {
-            // test user inputted string lengths
-            if (strlen($fname) < 1) $_SESSION[User::ERROR][] = UserError::NAME_SHORT;
-            if (strlen($fname) > 30) $_SESSION[User::ERROR][] = UserError::NAME_LONG;
-            if (strlen($description) > 255) $_SESSION[User::ERROR][] = UserError::DESCRIPTION_LONG;
-            
-            
-            try {
-                // if no errors were found
-                if (empty($_SESSION[User::ERROR])) {
-                    $success = 1;
-
-                    // declare variables
-                    $sql = "INSERT INTO `Profile` (`userID`, `fname`, `lname`, `dob`, `genderID`, `seekingID`, `description`, `locationID`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-                    
-                    // prepare bind and execute prepared statement
-                    if (!$stmt = $dbConnection->prepare($sql))
-                        $success = 0;
-
-                    $stmt->bind_param("ssssssss", $userID, $fname, $lname, $dob, $genderID, $seekingID, $description, $locationID);
-                    if (!$stmt->execute())
-                        $success = 0;
-                    
-                    $stmt->close();
-                    return $success;
-
-                } else {
-                    return 0;
-                }
-            } catch (Throwable $t) {
-                echo $t->getMessage() . " " . $t->getLine();
-                return 0;
-            } finally {
-                $stmt->close();
             }
         }
 
@@ -342,7 +295,7 @@
                 $_SESSION[User::LOGGED_IN] = 1;
                 return 1;
             } else {
-                $_SESSION[User::ERROR] = $verify->get_errors();
+                $_SESSION[User::ERROR] = $verify->get_error();
                 return 0;
             }
         }
@@ -426,14 +379,14 @@
             }
         }
 
-        public static function get_filepath($dbConnection, $userID) 
+        public static function get_user_image_filepath($dbConnection, $userID) 
         {
             if (!isset($userID) || $userID < 1)
                 return 0;
 
             $fileName = null;
-            $sql = "SELECT `fileName` 
-                    FROM `Photo` 
+            $filePath = null;
+            $sql = "SELECT `fileName` FROM `Photo` 
                     WHERE `userID` = ?;";
             
 
@@ -449,15 +402,13 @@
                 // close mysli_stmt object and connection
                 $stmt->close();
 
-                if (isset($fileName) && is_file(User::USER_IMAGES . $fileName)) {
-                    return $fileName;
-                }
+                $filePath = User::USER_IMAGES . $fileName;
             }
 
-            if (isset($fileName) && is_file(User::USER_IMAGES . $fileName)) {
-                return $fileName;
+            if (isset($fileName) && is_file($filePath)) {
+                return $filePath;
             } else {
-                return 0;
+                return User::DEFAULT_USER_IMAGE;
             }
         }
 
@@ -553,35 +504,73 @@
 
         private static function set_session_vars($dbConnection, $username) 
         {
+            if ($userAttributes = User::query_base_attributes($dbConnection, $username)) {
+                $_SESSION[User::USER_ID] = $userAttributes[User::USER_ID];
+                $_SESSION[User::USERNAME] = $userAttributes[User::USERNAME];
+                $_SESSION[User::IS_ADMIN] = $userAttributes[User::IS_ADMIN];
+                $_SESSION[User::IS_BANNED] = $userAttributes[User::IS_BANNED];
+                $_SESSION[User::IS_DEACTIVATED] = $userAttributes[User::IS_DEACTIVATED];
+                $_SESSION[User::IS_VERIFIED] = $userAttributes[User::IS_VERIFIED];
+
+                $_SESSION[User::FIRST_NAME] = $userAttributes[User::FIRST_NAME];
+                $_SESSION[User::LAST_NAME] = $userAttributes[User::LAST_NAME];
+                $_SESSION[User::DATE_OF_BIRTH] = $userAttributes[User::DATE_OF_BIRTH];
+                $_SESSION[User::GENDER_ID] = $userAttributes[User::GENDER_ID];
+                $_SESSION[User::GENDER] = $userAttributes[User::GENDER];
+                $_SESSION[User::SEEKING_ID] = $userAttributes[User::SEEKING_ID];
+                $_SESSION[User::SEEKING] = $userAttributes[User::SEEKING];
+                $_SESSION[User::DESCRIPTION] = $userAttributes[User::DESCRIPTION];
+                $_SESSION[User::LOCATION_ID] = $userAttributes[User::LOCATION_ID];
+                $_SESSION[User::LOCATION] = $userAttributes[User::LOCATION];
+
+                $_SESSION[User::LOGGED_IN] = 1;
+                $_SESSION[User::ERROR] = array();
+                $result = 1;
+            } else {
+                $result = 0;
+            }
+
+            return $result;
+        }
+
+        private static function query_base_attributes($dbConnection, $username) {
             $sql = "SELECT `u`.`userID`, `u`.`username`, `u`.`isAdmin`, `u`.`isBanned`, `u`.`isDeactivated`, `u`.`isVerified`,
-                `p`.`fname`, `p`.`lname`, `p`.`dob`, `p`.`genderID`, `p`.`seekingID`, `p`.`description`, `p`.`locationID`,
-                `gender`.`gender`, `seeking`.`gender`, `location`.`location`
-                FROM `User` AS `u`
-                LEFT JOIN `Profile` AS `p` ON `p`.`userID` = `u`.`userID`
-                LEFT JOIN `Gender` AS `gender` ON `gender`.`genderID` = `p`.`genderID`
-                LEFT JOIN `Gender` AS `seeking` ON `seeking`.`genderID` = `p`.`seekingID`
-                LEFT JOIN `Location` AS `location` ON `location`.`locationID` = `p`.`locationID`
-                WHERE `username` = ?;";
+                        `p`.`fname`, `p`.`lname`, `p`.`dob`, `p`.`genderID`, `p`.`seekingID`, `p`.`description`, `p`.`locationID`,
+                        `gender`.`gender`, `seeking`.`gender`, `location`.`location`
+                    FROM `User` AS `u`
+                    LEFT JOIN `Profile` AS `p` ON `p`.`userID` = `u`.`userID`
+                    LEFT JOIN `Gender` AS `gender` ON `gender`.`genderID` = `p`.`genderID`
+                    LEFT JOIN `Gender` AS `seeking` ON `seeking`.`genderID` = `p`.`seekingID`
+                    LEFT JOIN `Location` AS `location` ON `location`.`locationID` = `p`.`locationID`
+                    WHERE `username` = ?;";
+            $attributes = array();
 
             if ($stmt = $dbConnection->prepare($sql)) {
                 $stmt->bind_param("s", $username);
                 $stmt->execute();
                 
                 $stmt->bind_result(
-                    $_SESSION[User::USER_ID], $_SESSION[User::USERNAME], $_SESSION[User::IS_ADMIN], $_SESSION[User::IS_BANNED], $_SESSION[User::IS_DEACTIVATED], $_SESSION[User::IS_VERIFIED],
-                    $_SESSION[User::FIRST_NAME], $_SESSION[User::LAST_NAME], $_SESSION[User::DATE_OF_BIRTH], $_SESSION[User::GENDER_ID], $_SESSION[User::SEEKING_ID], $_SESSION[User::DESCRIPTION], $_SESSION[User::LOCATION_ID],
-                    $_SESSION[User::GENDER], $_SESSION[User::SEEKING], $_SESSION[User::LOCATION]
+                    $attributes[User::USER_ID], 
+                    $attributes[User::USERNAME], 
+                    $attributes[User::IS_ADMIN], 
+                    $attributes[User::IS_BANNED], 
+                    $attributes[User::IS_DEACTIVATED], 
+                    $attributes[User::IS_VERIFIED],
+                    $attributes[User::FIRST_NAME], 
+                    $attributes[User::LAST_NAME], 
+                    $attributes[User::DATE_OF_BIRTH], 
+                    $attributes[User::GENDER_ID], 
+                    $attributes[User::SEEKING_ID], 
+                    $attributes[User::DESCRIPTION], 
+                    $attributes[User::LOCATION_ID],
+                    $attributes[User::GENDER], 
+                    $attributes[User::SEEKING], 
+                    $attributes[User::LOCATION]
                 );
-
-                $_SESSION[User::LOGGED_IN] = 1;
-                $_SESSION[User::ERROR] = array();
-
-                $result = $stmt->fetch();
-            } else {
-                $result = 0;
+                $stmt->fetch();
+                $stmt->close();
             }
-
-            return $result;
+            return $attributes;
         }
 
 

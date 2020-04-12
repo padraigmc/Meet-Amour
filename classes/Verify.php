@@ -7,13 +7,13 @@ class Verify
     private $databaseConnection;
     private $errorList;
 
-    function __construct($databaseConnection)
+    public function __construct($databaseConnection)
     {
         $this->databaseConnection = $databaseConnection;
         $this->errorList = array();
     }
 
-    public function get_errors() {
+    public function get_error() {
         return $this->errorList;
     }
 
@@ -108,7 +108,7 @@ class Verify
 
     private function verify_password_form($password) {
         // one uppercase letter and one number
-        $password_regex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/"; 
+        $password_regex = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/"; 
 
         if (preg_match($password_regex, $password)) { 
             return 1; 

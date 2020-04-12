@@ -32,7 +32,6 @@
 
 			$_SESSION[User::USERNAME] = $username;
 
-			// if error array is empty i.e. no errors
 			if (User::login($conn, $username, $password)) {
 				header("Location: " . Database::VIEW_PROFILE);
 			} else {
