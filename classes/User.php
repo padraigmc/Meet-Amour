@@ -1,6 +1,8 @@
 <?php
 
     require_once("Database.php");
+    require_once("Profile.php");
+    require_once("Image.php");
     require_once("Hobby.php");
     require_once("Verify.php");
     require_once("UserError.php");
@@ -227,7 +229,7 @@
             }
         }
 
-        public static function update_last_login($dbConnection, $username) {
+        private static function update_last_login($dbConnection, $username) {
             $success = 0;
             $sql = "UPDATE `User` SET `lastLogin` = ?
                     WHERE `username` = ?;";
@@ -280,14 +282,6 @@
             }
         }
 
-        /*
-            *   Returns the relative file path of a user's profile image e.g. "my_profile.png"
-            *
-            *   $userID         -   user id of the user
-            *   $getRelative    -   if 1, the relative path will be returned according to User::USER_IMAGES, otherwise the filename will be returned
-            *
-            *   return      -   filename of the user's profile image on success appended onto 'User::USER_IMAGES', 0 on failure
-            */
         public static function get_user_image_filename($dbConnection, $userID) 
         {
             if (!isset($userID) || $userID < 1)

@@ -57,7 +57,7 @@ class Profile {
             $profile->locationID = $_SESSION[User::LOCATION_ID];
 
             $profile->hobbies = Hobby::get_user_hobbies($profile->databaseConnection, $profile->userID);
-            $profile->imageFilePath = User::get_user_image_filepath($profile->databaseConnection, $profile->userID);
+            $profile->imageFilePath = Image::get_user_image_filepath($profile->databaseConnection, $profile->userID);
 
             $profile->dob = explode(" ", $profile->dob)[0];
 
@@ -103,7 +103,7 @@ class Profile {
 
             $profile->age = Profile::calculate_age($profile->dob);
             $profile->lastLogin = date("d/m/y", strtotime($profile->lastLogin));
-            $profile->imageFilePath = User::get_user_image_filepath($profile->databaseConnection, $profile->userID);
+            $profile->imageFilePath = Image::get_user_image_filepath($profile->databaseConnection, $profile->userID);
             $profile->hobbies = Hobby::get_user_hobbies($profile->databaseConnection, $profile->userID);
         }
 
@@ -284,7 +284,7 @@ class Profile {
         $_SESSION[User::SEEKING_ID] = $this->seekingID;
         $_SESSION[User::DESCRIPTION] = $this->description;
         $_SESSION[User::LOCATION] = $this->location;
-        $_SESSION[User::LOCATION] = $this->locationID;
+        $_SESSION[User::LOCATION_ID] = $this->locationID;
     }
 
 
