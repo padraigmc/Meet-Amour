@@ -217,6 +217,7 @@
             $verify = new Verify($dbConnection);
 
             if ($verify->verify_login($username, $password)) {
+                User::update_last_login($dbConnection, $username);
                 User::set_session_vars($dbConnection, $username);
                 $_SESSION[User::LOGGED_IN] = 1;
                 return 1;
@@ -224,6 +225,19 @@
                 $_SESSION[User::ERROR] = $verify->get_error();
                 return 0;
             }
+        }
+
+        public static function update_last_login($dbConnection, $username) {
+            $success = 0;
+            $sql = "UPDATE `User` SET `lastLogin` = ?
+                    WHERE `username` = ?;";
+
+            if ($stmt = $dbConnection->prepare($sql)) {
+                $current_date = date("Y-m-d H:i:s");
+                $stmt->bind_param("ss", $current_date, $username);
+                $success = $stmt->execute();
+            }
+            return $success;
         }
 
         public static function logout() 
