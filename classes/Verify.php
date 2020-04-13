@@ -118,15 +118,29 @@ class Verify
     }
 
     private function verify_password_hash($username, $password) {
-        $password_hash = User::get_user_attribute($this->databaseConnection, $username, "passwordHash");
+        $password_hash = self::get_password_hash($username);
 
-        if (password_verify($password, $password_hash)) {
+        if ($password_hash != null && password_verify($password, $password_hash)) {
             return 1;
         } else {
             return 0;
         }
-        
     }
+
+    private function get_password_hash($username) 
+        {
+            $hash = null;
+            $sql = "SELECT `passwordHash` FROM `User` 
+                    WHERE `username` = ?;";
+
+            if ($stmt = $this->databaseConnection->prepare($sql)) {
+                $stmt->bind_param("s", $username);
+                $stmt->execute();
+                $stmt->bind_result($hash);
+                $stmt->fetch();
+            }
+            return $hash;
+        }
 
     private function email_exists($email) 
     {
