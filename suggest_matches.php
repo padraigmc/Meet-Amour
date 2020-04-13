@@ -35,6 +35,7 @@
 <body id="page-top">
 	<?php
 		require_once("init.php");
+		require_once("classes/Suggest.php");
 		$conn = Database::connect();
 
 		if (isset($_POST["username"])) {
@@ -48,7 +49,7 @@
 			exit();
 		}
 
-		$profles = User::suggest_matches($conn, $_SESSION[User::USER_ID]);
+		$profles = Suggest::suggest_matches($conn, $_SESSION[User::USER_ID]);
 ?>
 
 	<!-- Navigation -->
