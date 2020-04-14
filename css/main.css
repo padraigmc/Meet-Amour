@@ -359,15 +359,17 @@ color: #f1f1f1;
 /*user-profile & profile-edit buttons*/
 
 #adminlink {
-  color: grey;
-  margin: 0px;
+  color: white;
+  padding: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #adminlink:hover {
   color: white;
   text-decoration: none;
-  border-radius: 3px;
-  padding: 5px;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: #c926a0;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .butn {

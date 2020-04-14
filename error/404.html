@@ -13,6 +13,27 @@
     input[type=button] {
       cursor: pointer;
     }
+
+    .buttons {
+      font-family: Poppins-Regular;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #666666;
+      margin: 0px;
+      transition: all 0.4s;
+      -webkit-transition: all 0.4s;
+      -o-transition: all 0.4s;
+      -moz-transition: all 0.4s;
+    }
+
+    .buttons:focus {
+      outline: none !important;
+    }
+
+    .buttons:hover {
+      text-decoration: none;
+      color: pink;
+    }
   </style>
 </head>
 <body>
@@ -23,13 +44,18 @@
             <div class="col-lg-12">
               <h1 class="font-weight-bold">404</h1>
               <h5 class="font-weight-bold">Page not found</h5>
-              <p>Either you typed something wrong, or someone on our end is in trouble.</p>
+              <p class="font-weight-bold" style="margin-bottom: 20px;">Either you typed something wrong, or someone on our end is in trouble.</p>
               <div class="row">
                 <div class="col-lg-6 text-right">
-                  <input type="button" class="font-weight-bold" id="dropbtn" value="Go Back" onclick="history.back(-1)" />
+                  <a onClick="goBack()" class="font-weight-bold" style="cursor: pointer;" id="adminlink">Go Back</a>
+                    <script>
+                      function goBack() {
+                        window.history.back();
+                      }
+                    </script>
                 </div>
                 <div class="col-lg-6 text-left">
-                  <a href="index.php" class="font-weight-bold" id="dropbtn">Return Home</a>
+                  <a href="index.php" class="font-weight-bold" id="adminlink">Return Home</a>
                 </div>
               </div>
             </div>
