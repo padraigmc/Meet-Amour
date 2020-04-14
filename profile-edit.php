@@ -256,9 +256,17 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col submit">
-					<input class="w-100" type="submit" name="submit" value="Submit">
+					<div class="col-lg-6 submit">
+					<input class="w-100" style="padding-top: 14px;" type="submit" name="submit" value="Submit">
 				</div>
+				<div class="col-lg-6">
+					<a onClick="goBack()" style="cursor: pointer;" class="button w-100">Cancel</a>
+					<script>
+						function goBack() {
+							window.history.back();
+						}
+					</script>
+					</div>
 			</div>
 		</form>
 	</div>
