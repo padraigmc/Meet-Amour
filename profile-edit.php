@@ -164,8 +164,17 @@
 				<div class="col-lg-3">
 					<h3 class="pb-4">Profile Picture</h3>
 					<!--JavaScript upload system to show an image preview-->
-					<img id="picture" alt="" class="py-auto img-fluid" width="300" height="300" src="<?php echo $profile->imageFilePath; ?>" />
-					<input type="file" class="mx-auto" name="userImage" onchange="document.getElementById('image').src = window.URL.createObjectURL(this.files[0])">
+					<img id="output" class="picture py-auto img-fluid" width="350" src="<?php echo $profile->imageFilePath; ?>"/>
+					<script>
+					var loadFile = function(event) {
+						var output = document.getElementById('output');
+						output.src = URL.createObjectURL(event.target.files[0]);
+						output.onload = function() {
+						URL.revokeObjectURL(output.src) // free memory
+						}
+					};
+					</script>
+					<input type="file" accept="image/*" onchange="loadFile(event)">
 				</div>
 				<div class="col-lg-7">
 					<h3>Personal Details</h3>
