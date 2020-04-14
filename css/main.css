@@ -357,7 +357,20 @@ color: #f1f1f1;
 }
 
 /*user-profile & profile-edit buttons*/
-.main a {
+
+#adminlink {
+  color: grey;
+  margin: 0px;
+}
+
+#adminlink:hover {
+  color: white;
+  text-decoration: none;
+  border-radius: 3px;
+  padding: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.butn {
   display: inline-block;
   background-color: #ff70db;
   color: white;
