@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  
+  <style>
+    body {
+      background-color: #1f1f1f;
+    }
+    body, p {
+      color: rgb(243, 243, 243);
+    }
+
+    #adminlink {
+      color: white;
+      background-color: grey;
+      border-radius: 2px;
+      padding: 10px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      transition: all 0.4s;
+      -webkit-transition: all 0.4s;
+      -o-transition: all 0.4s;
+      -moz-transition: all 0.4s;
+    }
+    #adminlink:hover {
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      padding: 15px;
+      background-color: #c926a0;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+  </style>
+</head>
+<body>
+      <div style="margin-top: 60px;" class="container">
+      <div class="row m-auto p-auto">
+        <div class="col-lg-6" data-tilt style="will-change: transform; transform: perspective(300px) rotateX(0deg) rotateY(0deg);">
+          <img src="img/img-01.png" alt="IMG">
+        </div>
+
+        <div style="margin-top: 100px;" class="col-lg-6">
+           <h1><span class="font-weight-bold">403</span> <span class-"font-weight-light">Forbidden.</span></h1>
+           <h4>Seems you're not allowed to access that.</h4>
+           <div style="margin-top: 20px;" class="form-row">
+            <div class="col-lg-3">
+              <a onClick="goBack()" class="font-weight-bold" style="cursor: pointer;" id="adminlink">Go Back</a>
+                <script>
+                  function goBack() {
+                    window.history.back();
+                  }
+                </script>
+            </div>
+            <div class="col-lg-4">
+              <a href="index.php" style="margin-left: -40px;" class="font-weight-bold" id="adminlink">Return Home</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+
+    <!--===============================================================================================-->	
+	<script src="vendor/jquery/jquery.slim.min.js"></script>
+  <!--===============================================================================================-->
+    <script src="vendor/bootstrap/js/bootstrap.bundle.js"></script>
+  <!--===============================================================================================-->
+    <script src="vendor/tilt/tilt.jquery.min.js"></script>
+    <script >
+      $('.js-tilt').tilt({
+        scale: 1.1
+      })
+    </script>
+</body>
+</html>
