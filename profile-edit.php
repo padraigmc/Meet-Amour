@@ -191,12 +191,7 @@
 					<div class="form-row">
 						<div class="col text-left font-weight-bold">
 							<label for="dob">Date of Birth</label>
-							<!--
-								Removed due to suggestion you should not be able to change dob after registration
 								<input type="date" class="form-control" name="dob" id="dob" <?php echo (isset($profile->dob)) ? ("value=\"" . $profile->dob . "\"") : ""; ?> min="<?php echo $date_min;?>" max="<?php echo $date_max; ?>">
-							-->
-							<h4><?php echo $profile->dob?></h4>
-							<a id="adminlink" href="#">Request Change</a> 
 						</div>
 						<div class="col text-left font-weight-bold">
 							<label for="location">Location</label>
@@ -215,11 +210,7 @@
 					<div class="form-row">
 						<div class="col text-left font-weight-bold">
 							<label for="gender">Gender</label>
-							<!--<select class="form-control" id="gender" name="gender">-->
-							<h4><?php echo $profile->gender; ?></h4>
-							<a id="adminlink" href="#">Request Change</a> 	
-							<!--
-								Removed due to suggestion you should not be able to change gender after registration
+							<select class="form-control" id="gender" name="gender">
 								<?php
 								// output dynamically generated dropdown list of all the available genders to choose from
 								$genders = User::get_all_genders($conn);
@@ -230,7 +221,7 @@
 									$id++;
 								}?>
 							</select>
-							-->
+							
 						</div>
 						<div class="col text-left font-weight-bold bottom-div">
 							<label for="seeking">Seeking</label>

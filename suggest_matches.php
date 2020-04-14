@@ -151,7 +151,7 @@
 									<?php
 										echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "\" method=\"POST\">";
 											if ($isLiked) {
-												echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\" value=\"" . $userID . "\">Unlike</button>";
+												echo "<button type=\"submit\" class=\"p-2 fa-heart\" form=\"like_dislike_form\" name=\"unlike\" value=\"" . $userID . "\">Unlike</button>";
 											} else {
 												echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"like\" value=\"" . $userID . "\">Like</button>";
 											}
