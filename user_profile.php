@@ -184,8 +184,6 @@
 			$conn->close();
 			exit();
 		} else {
-
-		var_dump($profile);
 	?>
 
 	<div class="form-row">
@@ -257,13 +255,13 @@
 				<?php if ($profile->user_has_permission_to_edit()) { ?>
 					<div class="btn-group dropright">
 						<button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-						<div class="dropdown-menu">
+						<div class="dropdown-menu text-center p-1">
 							<?php if ($profile->user_owns_profile()) { ?>
 								<a class="dropdown-item button butn w-100" href="<?php echo Database::EDIT_PROFILE; ?>">Edit Profile</a>
 							<?php } else if ($_SESSION[User::IS_ADMIN]) { ?>
 								<a class="dropdown-item button w-100" href="<?php echo Database::EDIT_PROFILE . "?" . User::USERNAME . "=" . $username; ?>">Edit Profile</a>
-								<a class="button w-100" href="<?php echo Database::BAN_USER . "?" . User::USER_ID . "=" . $profile->userID; ?>">Ban User</a>
-								<a class="button w-100" href="<?php echo Database::DELETE_USER . "?" . User::USER_ID . "=" . $profile->userID; ?>">Delete User</a>
+								<a class="dropdown-item button w-100" href="<?php echo Database::BAN_USER . "?" . User::USER_ID . "=" . $profile->userID; ?>">Ban User</a>
+								<a class="dropdown-item button w-100" href="<?php echo Database::DELETE_USER . "?" . User::USER_ID . "=" . $profile->userID; ?>">Delete User</a>
 							<?php } ?>
 						</div>
 					</div>

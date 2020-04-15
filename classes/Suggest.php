@@ -43,7 +43,17 @@ class Suggest
             $stmt->close();
         }
         return $profiles;
-    }  
+    }
+
+    public static function trim_description($user_description) {
+        $max_size = 30;
+        
+        if (strlen($user_description) > $max_size) {
+            $user_description = substr($user_description, 0, $max_size) . "...";
+        }
+
+        return $user_description;
+    }
 }
 
 

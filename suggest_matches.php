@@ -100,10 +100,12 @@
 					$name = $value["name"];
 					$age = Profile::calculate_age($value[User::DATE_OF_BIRTH]);
 					$gender = $value[User::GENDER];
-					$description = $value[User::DESCRIPTION];
+					$description = Suggest::trim_description($value[User::DESCRIPTION]);
 					$location = $value[User::LOCATION];
 					$image_filepath = User::USER_IMAGES . $value["filename"];
 					$isLiked = Like::check_like_status($conn, $_SESSION[User::USER_ID], $userID);
+
+
 
 					// test if the file exists, if not set it to a defualt image
 					if (!is_file($image_filepath)) {
@@ -144,9 +146,6 @@
 									<i class="fa fa-bars"></i>
 								</a>
 								<div class="mc-footer">
-									<h4>
-										Match?
-									</h4>
 									<a class="fa fa-fw fa-heart"></a> 
 									<a class="fa fa-fw fa-times"></a>
 									<?php
