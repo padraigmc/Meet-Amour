@@ -185,6 +185,8 @@
 			$conn->close();
 			exit();
 		} else {
+
+		var_dump($profile);
 	?>
 
 	<div class="form-row">

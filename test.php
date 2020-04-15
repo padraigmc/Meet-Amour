@@ -7,7 +7,8 @@
     $conn = Database::connect();
 
 
-    echo $_SERVER["REQUEST_URI"];
+    $profile = Profile::constuct_with_session_variables($conn);
+    var_dump($profile);
 
 
 

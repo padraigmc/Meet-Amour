@@ -231,13 +231,13 @@
                                 <div class="search_row">
                                     <div class="search_column_2 mb-4">
                                         <select class="form-control" id="gender" name="<?php echo Search::GENDER_ID; ?>">
-                                            <option id="all" value="%" selected>Gender</option>
+                                            <option id="all" value="%" selected>Gender (Any)</option>
                                             <?php // output dynamically generated dropdown list of all the available genders to choose from
                                             $genders = User::get_all_genders($conn);
                                             $id = 0;
                                             while($row = $genders->fetch_assoc()) {
                                                 // populate option with information pulled from database
-                                                ?><option id="<?php echo $id;?>" value="<?php echo $row['genderID'];?>"><?php echo $row['gender'] . "</option>";
+                                                echo "<option id=\"" . $id .  "\" value=\"" . $row['genderID'] . "\"" . (($row['genderID'] == $_GET[Search::GENDER_ID]) ? "selected" : "") . ">" . $row['gender'] . "</option>";
                                                 $id++;
                                             }?>
                                         </select>
@@ -246,13 +246,13 @@
                                 <div class="search_row mb-4">
                                     <div class="search_column_2 mb-4">
                                         <select class="form-control" id="location" name="<?php echo Search::LOCATION_ID; ?>">
-                                            <option id="all" value="%" selected>Location</option>
+                                            <option id="all" value="%" selected>Location (Any)</option>
                                             <?php // output dynamically generated dropdown list of all the available genders to choose from
                                             $loactions = User::get_all_locations($conn);
                                             $id = 0;
                                             while($row = $loactions->fetch_assoc()) {
                                                 // populate option with information pulled from database
-                                                ?><option id="<?php echo $id;?>" value="<?php echo $row['locationID'];?>"><?php echo $row['location'] . "</option>";
+                                                echo "<option id=\"" . $id .  "\" value=\"" . $row['locationID'] . "\"" . (($row['locationID'] == $_GET[Search::LOCATION_ID]) ? "selected" : "") . ">" . $row['location'] . "</option>";
                                                 $id++;
                                             }?>
                                         </select>
@@ -264,7 +264,7 @@
                                         <p style="text-align:center;">Min age</p>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="number" name="<?php echo Search::MIN_AGE; ?>" id="min_age" min="18" max="100" size="3" value="<?php echo (isset($min_age)) ? $min_age : "18"; ?>" class="form-control">
+                                        <input type="number" name="<?php echo Search::MIN_AGE; ?>" id="min_age" min="18" max="120" size="3" value="<?php echo (isset($min_age)) ? $min_age : "18"; ?>" class="form-control">
                                     </div>
                                 </div>
 
@@ -273,7 +273,7 @@
                                         <p style="text-align:center;">Max age</p>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="number" name="<?php echo Search::MAX_AGE; ?>" id="max_age" min="18" max="100" size="3" value="<?php echo (isset($max_age)) ? $max_age : "100"; ?>"" class="form-control">
+                                        <input type="number" name="<?php echo Search::MAX_AGE; ?>" id="max_age" min="18" max="120" size="3" value="<?php echo (isset($max_age)) ? $max_age : "120"; ?>"" class="form-control">
                                     </div>
                                 </div>
                             </fieldset>
@@ -389,14 +389,6 @@
         slider_max.oninput = function() {
             output_max.innerHTML = this.value;
         }
-    </script>
-
-    <!-- js for auto selecting drop downs as search params -->
-    <script>
-        function selectElement(id, valueToSelect) {    
-            document.getElementById(id).value = valueToSelect;
-        }
-        document.getElementById("gender").value = "1";
     </script>
 
     <!-- Bootstrap core JavaScript -->

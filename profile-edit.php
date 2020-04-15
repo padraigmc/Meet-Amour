@@ -201,7 +201,7 @@
 							$id = 0;
 							while($row = $locations->fetch_assoc()) {
 								// populate option with information pulled from database
-								?><option id="<?php echo $id;?>" value="<?php echo $row['locationID'];?>"><?php echo $row['location'] . "</option>";
+								echo "<option id=\"" . $id .  "\" value=\"" . $row['locationID'] . "\"" . (($row['locationID'] == $profile->locationID) ? "selected" : "") . ">" . $row['location'] . "</option>";
 								$id++;
 							}?>
 							</select>
@@ -217,7 +217,7 @@
 								$id = 0;
 								while($row = $genders->fetch_assoc()) {
 									// populate option with information pulled from database
-									?><option id="<?php echo $id;?>" value="<?php echo $row['genderID'];?>"><?php echo $row['gender'];?></option><?php
+									echo "<option id=\"" . $id .  "\" value=\"" . $row['genderID'] . "\"" . (($row['genderID'] == $profile->genderID) ? "selected" : "") . ">" . $row['gender'] . "</option>";
 									$id++;
 								}?>
 							</select>
@@ -231,7 +231,7 @@
 								$id = 0;
 								while($row = $genders->fetch_assoc()) {
 									// populate option with information pulled from database
-									?><option id="<?php echo $id;?>" value="<?php echo $row['genderID'];?>"><?php echo $row['gender'];?></option><?php
+									echo "<option id=\"" . $id .  "\" value=\"" . $row['genderID'] . "\"" . (($row['genderID'] == $profile->seekingID) ? "selected" : "") . ">" . $row['gender'] . "</option>";
 									$id++;
 								}?>
 							</select>
