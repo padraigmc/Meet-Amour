@@ -72,8 +72,9 @@
 			}
 
 			// upload image if one use submitted
-			if (isset($_FILES['userImage']['tmp_name']) && $_FILES['userImage']['name'] != "") {
-				User::upload_user_image($conn, $profile->userID, 'userImage');
+			$uploaded_file = $_FILES['userImage'];
+			if (isset($uploaded_file['tmp_name']) && $uploaded_file['name'] != "") {
+				Image::upload_user_image($conn, $profile->userID, $uploaded_file);
 			}
 
             if(!empty($_POST['selected_hobbies'])){

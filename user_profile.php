@@ -32,7 +32,6 @@
 
 	<body id="page-top">
 		<?php
-
 			require_once("init.php");
 			require_once("classes/Hobby.php");
 			$conn = Database::connect();
@@ -40,7 +39,7 @@
 			if (isset($_GET[User::USERNAME])) {
 				$username = $_GET[User::USERNAME];
 				$profile = Profile::constuct_with_username($conn, $username);
-				$profile->is_profile_initialized();
+				var_dump($profile->is_profile_initialized());
 				if ($profile && $profile->is_profile_initialized()) {
 					
 					if (isset($_POST["like"])) {
@@ -196,6 +195,7 @@
 		<div class="col-lg-4">
 			<div class="profile-head text-left font-weight-bold">
 				<h4 class="font-weight-bold"><?php echo $profile->fname . " " . $profile->lname . ","; ?> <span class="text-weight-bold text-primary"><?php echo $profile->age; ?></span></h4>
+				<?php if (isset($profile->lastLogin)) echo "<h6>Last login: " . $profile->lastLogin . "</h6>"; ?>
 				</br>
 				</br>
 

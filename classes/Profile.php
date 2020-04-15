@@ -19,6 +19,7 @@ class Profile {
     public $locationID;
     public $imageFilePath;
     public $hobbies;
+    public $lastLogin;
 
     private $databaseConnection;
     private $errorList;
@@ -71,7 +72,7 @@ class Profile {
         $profile = new Profile($databaseConnection);
 
         $sql = "SELECT p.`userID`, p.`fname`, p.`lname`, p.`dob`, p.`genderID`, g.`gender`, 
-                p.`seekingID`, s.`gender` AS `seeking`, p.`description`, p.`locationID`, l.`location`
+                p.`seekingID`, s.`gender` AS `seeking`, p.`description`, p.`locationID`, l.`location`, `u`.`lastLogin`
             FROM `User` AS `u`
             LEFT JOIN `Profile` AS `p` ON `u`.`userID` = `p`.`userID`
             LEFT JOIN `Gender` AS `g` ON `p`.`genderID` = g.`genderID`
@@ -93,7 +94,8 @@ class Profile {
                 $profile->seeking, 
                 $profile->description, 
                 $profile->locationID, 
-                $profile->location
+                $profile->location,
+                $profile->lastLogin
             );
 
             $stmt->fetch();
@@ -102,7 +104,8 @@ class Profile {
             $profile->dob = explode(" ", $profile->dob)[0];
 
             $profile->age = Profile::calculate_age($profile->dob);
-            $profile->imageFilePath = User::get_user_image_filepath($profile->databaseConnection, $profile->userID);
+            $profile->lastLogin = date("d/m/y", strtotime($profile->lastLogin));
+            $profile->imageFilePath = Image::get_user_image_filepath($profile->databaseConnection, $profile->userID);
             $profile->hobbies = Hobby::get_user_hobbies($profile->databaseConnection, $profile->userID);
         }
 
