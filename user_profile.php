@@ -36,9 +36,9 @@
 			require_once("classes/Hobby.php");
 			$conn = Database::connect();
 
-			if (isset($_GET[User::USERNAME])) {
-				$username = $_GET[User::USERNAME];
-				$profile = Profile::constuct_with_username($conn, $username);
+			if (isset($_GET[User::USER_ID])) {
+				$userID = $_GET[User::USER_ID];
+				$profile = Profile::constuct_with_userid($conn, $userID);
 				var_dump($profile->is_profile_initialized());
 				if ($profile && $profile->is_profile_initialized()) {
 					
@@ -122,7 +122,7 @@
 											<div class="offset-lg-1"></div>
 											<div class="col-lg-8">
 												<strong class="text-primary">
-													<a href="<?php echo Database::VIEW_PROFILE . "?username=" . $value[Notification::FROM_USERNAME] ; ?>"><?php echo $value[User::NAME]; ?></a>
+													<a href="<?php echo Database::VIEW_PROFILE . "?" . User::USER_ID . "=" . $value[Notification::FROM_USER_ID] ; ?>"><?php echo $value[User::NAME]; ?></a>
 												</strong>
 												<div>
 													<?php echo $value[Notification::MESSAGE]; ?>
@@ -259,7 +259,7 @@
 							<?php if ($profile->user_owns_profile()) { ?>
 								<a class="dropdown-item button butn w-100" href="<?php echo Database::EDIT_PROFILE; ?>">Edit Profile</a>
 							<?php } else if ($_SESSION[User::IS_ADMIN]) { ?>
-								<a class="dropdown-item button w-100" href="<?php echo Database::EDIT_PROFILE . "?" . User::USERNAME . "=" . $username; ?>">Edit Profile</a>
+								<a class="dropdown-item button w-100" href="<?php echo Database::EDIT_PROFILE . "?" . User::USER_ID . "=" . $profile->userID; ?>">Edit Profile</a>
 								<a class="dropdown-item button w-100" href="<?php echo Database::BAN_USER . "?" . User::USER_ID . "=" . $profile->userID; ?>">Ban User</a>
 								<a class="dropdown-item button w-100" href="<?php echo Database::DELETE_USER . "?" . User::USER_ID . "=" . $profile->userID; ?>">Delete User</a>
 							<?php } ?>
@@ -270,7 +270,7 @@
 			<div class="row mt-auto">
 				<?php 
 					if (!$profile->user_owns_profile()) {
-						echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?username=" . $username . "\" method=\"POST\">";
+						echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "?" . User::USER_ID . "=" . $profile->userID . "\" method=\"POST\">";
 						if ($isLiked) {
 							echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"unlike\">Unlike</button>";
 						} else {
@@ -301,7 +301,7 @@
 		}
 	?>
 		
-	<footer>
+	<footer >
 		<div class="container">
 		<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
 		<ul class="list-inline">

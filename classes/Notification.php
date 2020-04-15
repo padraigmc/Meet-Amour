@@ -31,10 +31,10 @@ class Notification
 
     public static function get_all_notifications($dbConnection, $maxNumberOfNotifications = 10)
     {
-        $sql = "SELECT `Notification`.`fromUserID`, `User`.`username` AS `fromUsername`, concat(`Profile`.`fname`, `Profile`.`lname`) AS `name`, `Notification`.`toUserID`, `Notification`.`message`, `Notification`.`dateSent`, `Notification`.`seen`
+        $sql = "SELECT `Notification`.`fromUserID`, `User`.`username` AS `fromUsername`, concat(`Profile`.`fname`, ' ', `Profile`.`lname`) AS `name`, `Notification`.`toUserID`, `Notification`.`message`, `Notification`.`dateSent`, `Notification`.`seen`
                     FROM `Notification`
                     LEFT JOIN `User` ON `User`.`userID` = `Notification`.`fromUserID`
-                    LEFT JOIN `Profile` ON `Profile`.`userID` = `Notification`.`toUserID`
+                    LEFT JOIN `Profile` ON `Profile`.`userID` = `Notification`.`fromUserID`
                     WHERE  `toUserID` = ?
                     ORDER BY `Notification`.`seen` = 0 DESC, `Notification`.`dateSent` DESC
                     LIMIT ?;";
@@ -47,6 +47,8 @@ class Notification
             $result = $stmt->get_result();
 
             while($row = $result->fetch_assoc()) {
+                $dateSent = $row[Notification::DATE_SENT];
+                $row[Notification::DATE_SENT] = Notification::format_datetime($dateSent);
                 $notifications[] = $row;
             }
         }
@@ -71,6 +73,8 @@ class Notification
             $result = $stmt->get_result();
 
             while($row = $result->fetch_assoc()) {
+                $dateSent = $row[Notification::DATE_SENT];
+                $row[Notification::DATE_SENT] = Notification::format_datetime($dateSent);
                 $notifications[] = $row;
             }
         }
@@ -102,6 +106,10 @@ class Notification
         } else {
             return 0;
         }
+    }
+
+    private static function format_datetime($datetime) {
+        return date("d/m/y H:m", strtotime($datetime));
     }
 
 

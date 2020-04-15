@@ -38,12 +38,8 @@
 		require_once("classes/Suggest.php");
 		$conn = Database::connect();
 
-		if (isset($_POST["username"])) {
-			if (isset($_POST["like"])) {
-				Like::like_user($conn, $_POST["like"], $_POST["username"]);
-			} elseif (isset($_POST["unlike"])) {
-				Like::unlike_user($conn, $_SESSION[User::USER_ID], $_POST["unlike"]);
-			}
+		if (isset($_POST["like"])) {
+			Like::like_user($conn, $_POST["like"]);
 			header("Location: suggest_matches.php");
 			$conn->close();
 			exit();
@@ -128,7 +124,7 @@
 								</h2>
 								<div class="mc-content">
 									<div class="img-container">
-										<a href="<?php echo Database::VIEW_PROFILE . "?username=" . $username ?>">
+										<a href="<?php echo Database::VIEW_PROFILE . "?" . User::USER_ID . "=" . $userID ?>">
 											<img class="img-fluid" src="<?php echo $image_filepath; ?>" width="300" height="300">
 										</a>
 									</div>
@@ -148,15 +144,9 @@
 								<div class="mc-footer">
 									<a class="fa fa-fw fa-heart"></a> 
 									<a class="fa fa-fw fa-times"></a>
-									<?php
-										echo "<form id=\"like_dislike_form\" action=\"" . htmlspecialchars($_SERVER["PHP_SELF"]) . "\" method=\"POST\">";
-											if ($isLiked) {
-												echo "<button type=\"submit\" class=\"p-2 fa-heart\" form=\"like_dislike_form\" name=\"unlike\" value=\"" . $userID . "\">Unlike</button>";
-											} else {
-												echo "<button type=\"submit\" class=\"p-2\" form=\"like_dislike_form\" name=\"like\" value=\"" . $userID . "\">Like</button>";
-											}
-										echo "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">";
-									?>
+									<form id="like_dislike_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+										<button type="submit" class="p-2" form="like_dislike_form" name="like" value="<?php echo $userID; ?>">Like</button>
+									</form>
 								</div>
 							</article>
 						</div>

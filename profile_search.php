@@ -200,19 +200,20 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto"> 
-                <li class="nav-item">
-                    <a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
+                    </li>
+                    
                 </ul>
             </div>
             </div>
@@ -294,6 +295,7 @@
                             <?php
                                 if (!empty($results)) {
                                     foreach ($results as $profile) { 
+                                        $userID = $profile["userID"];
                                         $username = $profile["username"];
                                         $name = $profile["name"];
                                         $age = Profile::calculate_age($profile["dob"]);
@@ -306,7 +308,7 @@
                                         <div class="row bg-primary border border-dark mb-4 p-3">
                                             <!-- user image -->
                                             <div class="col-md-3">
-                                                <a href="user_profile.php?username=<?php echo $username; ?>">
+                                                <a href="<?php echo "user_profile.php?" . User::USER_ID . "=" . $userID; ?>">
                                                     <img class="fit-image img-thumbnail border-dark" src="<?php echo ($fileName) ? User::USER_IMAGES . $fileName : User::DEFAULT_USER_IMAGE ?>" alt="profile picture">
                                                 </a>
                                             </div>

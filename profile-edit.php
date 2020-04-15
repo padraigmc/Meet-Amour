@@ -37,9 +37,9 @@
 		require_once("classes/Hobby.php");
 		$conn = Database::connect();
 
-		if (isset($_GET[User::USERNAME])) {
-			$username = $_GET[User::USERNAME];
-			$profile = Profile::constuct_with_username($conn, $username);
+		if (isset($_GET[User::USER_ID])) {
+			$userID = $_GET[User::USER_ID];
+			$profile = Profile::constuct_with_userid($conn, $userID);
 			if (!$profile->user_has_permission_to_edit()) {
 				unset($profile);
 				$conn->close();
@@ -47,7 +47,7 @@
 				exit();
 			}
 
-			$redirect_on_successful_edit = Database::VIEW_PROFILE . "?" . User::USERNAME . "=" . $username;
+			$redirect_on_successful_edit = Database::VIEW_PROFILE . "?" . User::USER_ID . "=" . $userID;
 		} else {
 			$profile = Profile::constuct_with_session_variables($conn);
 			$redirect_on_successful_edit = Database::VIEW_PROFILE;
@@ -74,7 +74,7 @@
 			// upload image if one use submitted
 			$uploaded_file = $_FILES['userImage'];
 			if (isset($uploaded_file['tmp_name']) && $uploaded_file['name'] != "") {
-				Image::upload_user_image($conn, $profile->userID, $uploaded_file);
+				echo Image::upload_user_image($conn, $profile->userID, $uploaded_file);
 			}
 
             if(!empty($_POST['selected_hobbies'])){
@@ -126,7 +126,7 @@
 			</li>
 
 			<li class="nav-item">
-			<a class="nav-link js-scroll-trigger" href="<?php echo Database::ABOUT_US; ?>">Find Matches</a>
+			<a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
 			</li>
 
 			<li class="nav-item">
@@ -175,7 +175,7 @@
 						}
 					};
 					</script>
-					<input type="file" style="border-radius: 4px;" accept="image/*" onchange="loadFile(event)">
+					<input type="file" name="userImage" style="border-radius: 4px;" accept="image/*" onchange="loadFile(event)">
 				</div>
 				<div class="col-lg-7">
 					<h3>Personal Details</h3>

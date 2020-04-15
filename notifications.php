@@ -51,8 +51,8 @@
             
             $allNotifications = Notification::get_all_notifications($conn, 10);
 
-			if ($unseenNotifications = Notification::get_unseen_user_notifications($conn, 3)) {
-				$numUnseenNotifications = sizeof($unseenNotifications);
+			if ($notifications = Notification::get_unseen_user_notifications($conn, 3)) {
+				$numUnseenNotifications = sizeof($notifications);
 			} else {
 				$numUnseenNotifications = 0;
 			}
@@ -87,9 +87,9 @@
 				</li>
 				<li class="nav-item dropdown">
 					<a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="fa fa-bell"><?php echo ($unseenNotifications) ? $numUnseenNotifications : ""; ?></i>
+						<i class="fa fa-bell"><?php echo ($notifications) ? $numUnseenNotifications : ""; ?></i>
 					</a>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu" id="notification">
 						<li class="head text-light bg-primary">
 							<div class="row">
 								<div class="col-lg-12">
@@ -98,8 +98,8 @@
 							</div>
 						</li>
 						<?php
-							if ($unseenNotifications) {
-								foreach ($unseenNotifications as $key => $value) {
+							if ($notifications) {
+								foreach ($notifications as $key => $value) {
 									$mark_as_seen_path = Database::MARK_NOTIFICATION_AS_SEEN;
 									$mark_as_seen_path .=  "?" . Notification::FROM_USER_ID . "=" . $value[Notification::FROM_USER_ID];
 									$mark_as_seen_path .=  "&" . Notification::REDIRECT_PAGE . "=" . $_SERVER['PHP_SELF'];
@@ -109,7 +109,7 @@
 											<div class="offset-lg-1"></div>
 											<div class="col-lg-8">
 												<strong class="text-primary">
-													<a href="<?php echo Database::VIEW_PROFILE . "?username=" . $value[Notification::FROM_USERNAME] ; ?>"><?php echo $value[User::NAME]; ?></a>
+													<a href="<?php echo Database::VIEW_PROFILE . "?" . User::USER_ID . "=" . $value[Notification::FROM_USER_ID] ; ?>"><?php echo $value[User::NAME]; ?></a>
 												</strong>
 												<div>
 													<?php echo $value[Notification::MESSAGE]; ?>
@@ -134,7 +134,7 @@
 							}
 						?>
 						<li class="footer bg-primary text-center">
-							<a href="#" class="text-light">View All</a>
+							<a href="<?php echo Database::NOTIFICATIONS; ?>" class="text-light">View All</a>
 						</li>
 					</ul>
 				</li>
@@ -149,7 +149,7 @@
 	</br>
 	</br>
 
-	<div class="container">
+	<div class="container mb-5">
 
         <?php
             // if an error was found, display it and nothing else
@@ -176,7 +176,7 @@
                         <div class="row <?php echo ($key % 2 == 1) ? "bg-gray" : "bg-white"; ?>"> 
                             <div class="col-lg-10">
                                 <strong class="text-primary">
-                                    <a href="<?php echo Database::VIEW_PROFILE . "?username=" . $value[Notification::FROM_USERNAME] ; ?>"><?php echo $value[User::NAME]; ?></a>
+									<a href="<?php echo Database::VIEW_PROFILE . "?" . User::USER_ID . "=" . $value[Notification::FROM_USER_ID] ; ?>"><?php echo $value[User::NAME]; ?></a>
                                 </strong>
                                 <div>
                                     <h6><?php echo $value[Notification::MESSAGE]; ?></h6>
@@ -204,24 +204,24 @@
             ?>
     </div>
 
-	<footer id="footer">
-        <p>&copy; MeetAmour 2020. All Rights Reserved.</p>
-        <ul class="list-inline">
-            <li class="list-inline-item">
-            <a href="#">Privacy</a>
-            </li>
-            <li class="list-inline-item">
-            <a href="#">Terms</a>
-            </li>
-            <li class="list-inline-item">
-            <a href="#">FAQ</a>
-            </li>
-            <li class="list-inline-item">
+	<footer class="">
+		<div class="container">
+		<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
+		<ul class="list-inline">
+			<li class="list-inline-item">
+			<a href="#">Privacy</a>
+			</li>
+			<li class="list-inline-item">
+			<a href="#">Terms</a>
+			</li>
+			<li class="list-inline-item">
+			<a href="#">FAQ</a>
+			<li class="list-inline-item">
 			<a href="<?php echo Database::ABOUT_US; ?>">About us</a>
 			</li>
-        </ul>
-        </div>
-    </footer>
+		</ul>
+		</div>
+	</footer>
 
 		<!-- Bootstrap core JavaScript -->
 	<script src="vendor/jquery/jquery.min.js"></script>

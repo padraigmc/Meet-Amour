@@ -68,7 +68,7 @@ class Profile {
     }
 
 
-    public static function constuct_with_username($databaseConnection, $username) {
+    public static function constuct_with_userid($databaseConnection, $userID) {
         $profile = new Profile($databaseConnection);
 
         $sql = "SELECT p.`userID`, p.`fname`, p.`lname`, p.`dob`, p.`genderID`, g.`gender`, 
@@ -78,10 +78,10 @@ class Profile {
             LEFT JOIN `Gender` AS `g` ON `p`.`genderID` = g.`genderID`
             LEFT JOIN `Gender` AS `s` ON `p`.`seekingID` = s.`genderID`
             LEFT JOIN `Location` AS `l` ON `p`.`locationID` = l.`locationID`
-            WHERE u.`username` = ?;";
+            WHERE u.`userID` = ?;";
 
         if ($stmt = $profile->databaseConnection->prepare($sql)) {
-            $stmt->bind_param("s", $username);
+            $stmt->bind_param("s", $userID);
             $stmt->execute();
             $stmt->bind_result(
                 $profile->userID, 
