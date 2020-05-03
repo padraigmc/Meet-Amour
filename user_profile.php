@@ -39,8 +39,7 @@
 			if (isset($_GET[User::USER_ID])) {
 				$userID = $_GET[User::USER_ID];
 				$profile = Profile::constuct_with_userid($conn, $userID);
-				var_dump($profile->is_profile_initialized());
-				if ($profile && $profile->is_profile_initialized()) {
+				if ($profile && $profile->exists_in_database()) {
 					
 					if (isset($_POST["like"])) {
 						$isLiked = Like::like_user($conn, $profile->userID);
@@ -57,7 +56,7 @@
 			} else {
 				
 				$profile = Profile::constuct_with_session_variables($conn);
-				if (!$profile->is_profile_initialized()) {
+				if (!$profile->exists_in_database()) {
 					$conn->close();
 					header("Location: " . Database::EDIT_PROFILE);
 					exit();

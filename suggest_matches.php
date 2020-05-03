@@ -45,7 +45,7 @@
 			exit();
 		}
 
-		$profles = Suggest::suggest_matches($conn, $_SESSION[User::USER_ID]);
+		$profiles = Suggest::suggest_matches($conn, $_SESSION[User::USER_ID]);
 ?>
 
 	<!-- Navigation -->
@@ -90,7 +90,7 @@
 			$row_open = 0;
 			
 			echo "<div class=\"container\">";
-				foreach ($profles as $value) {
+				foreach ($profiles as $value) {
 					$userID = $value[User::USER_ID];
 					$username = $value[User::USERNAME];
 					$name = $value["name"];

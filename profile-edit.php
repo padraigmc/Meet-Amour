@@ -31,12 +31,12 @@
 </head>
 <body id="page-top">
 	<?php
-
+		
 		// session start, include User.php and declare error session var
 		require_once("init.php");
 		require_once("classes/Hobby.php");
 		$conn = Database::connect();
-
+		
 		if (isset($_GET[User::USER_ID])) {
 			$userID = $_GET[User::USER_ID];
 			$profile = Profile::constuct_with_userid($conn, $userID);
@@ -53,8 +53,9 @@
 			$redirect_on_successful_edit = Database::VIEW_PROFILE;
 		}
 
+
 		if (isset($_POST["submit"])) {
-			$success = 1;
+			$success = 1;		
 
 			// set variables to be insterted
 			$profile->fname = htmlspecialchars($_POST["fname"]);
@@ -65,16 +66,15 @@
 			$profile->description = htmlspecialchars($_POST["description"]);
 			$profile->locationID = $_POST["location"];
 
-
-			// update or insert new profile data - dependent on value of $newUser
 			if (!$profile->store_profile_attributes()) {
 				$success = 0;
+				exit();
 			}
 
 			// upload image if one use submitted
 			$uploaded_file = $_FILES['userImage'];
 			if (isset($uploaded_file['tmp_name']) && $uploaded_file['name'] != "") {
-				echo Image::upload_user_image($conn, $profile->userID, $uploaded_file);
+				Image::upload_user_image($conn, $profile->userID, $uploaded_file);
 			}
 
             if(!empty($_POST['selected_hobbies'])){
@@ -87,9 +87,8 @@
 					if ($profile->user_owns_profile()) {
 						$_SESSION[User::HOBBIES] = $selected_hobbies;
 					}
-					
 				}
-            }		
+			}		
 
 			if ($success) {
 				header("Location: " . $redirect_on_successful_edit);
@@ -97,6 +96,9 @@
 				$_SESSION[User::ERROR][] = UserError::GENERAL_ERROR;
 				header("Location: " . Database::EDIT_PROFILE .  " ?edit_error");
 			}
+
+			echo "success = " . $success;
+
 			$conn->close();
 			exit();
 		}
@@ -108,6 +110,8 @@
 		$all_hobbies = Hobby::get_all_hobbies($conn);
 
 	?>
+
+
 
 	<!-- Navigation -->
 	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
@@ -259,7 +263,7 @@
 				</div>
 			</div>
 			<div class="row">
-					<div class="col-lg-6 submit">
+				<div class="col-lg-6 submit">
 					<input class="w-100" style="padding-top: 14px;" type="submit" name="submit" value="Submit">
 				</div>
 				<div class="col-lg-6">
@@ -269,7 +273,7 @@
 							window.history.back();
 						}
 					</script>
-					</div>
+				</div>
 			</div>
 		</form>
 	</div>

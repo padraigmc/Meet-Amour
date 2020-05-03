@@ -163,11 +163,26 @@ class Profile {
         return ($this->userID == $_SESSION[User::USER_ID]);
     }
 
+    public function exists_in_database() {
+        $sql = "SELECT `p`.`userID`
+            FROM `Profile` AS `p`
+            WHERE `p`.`userID` = ?;";
+        $result = 0;
+
+        if ($stmt = $this->databaseConnection->prepare($sql)) {
+            $stmt->bind_param("s", $this->userID);
+            $stmt->execute();
+            $stmt->store_result();
+            $result = $stmt->num_rows;
+            $stmt->close();
+        }
+        return $result;
+    }
+
     private function commit_attributes_to_database() {
         if ($this->user_has_permission_to_edit()) {
-            if ($this->is_profile_initialized()) {
+            if ($this->exists_in_database()) {
                 $returnValue = $this->update_existing_profile_in_database();   
-
             } else {
                 $returnValue = $this->add_new_profile_to_database();
             }
@@ -222,6 +237,7 @@ class Profile {
 
         $stmt->execute();
         $ret = $stmt->affected_rows;
+
         $stmt->close();
         return $ret;
     }

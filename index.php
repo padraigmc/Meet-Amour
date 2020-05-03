@@ -34,7 +34,11 @@
     require_once("init.php");
 
     if (isset($_SESSION[User::LOGGED_IN]) && $_SESSION[User::LOGGED_IN] == 1) {
-      header("Location: user_profile.php");
+      if ($_SESSION[User::IS_ADMIN] == 1) {
+        header("Location: " . Database::ADMIN_DASHBOARD);
+      } else {
+        header("Location: " . Database::VIEW_PROFILE);
+      }
       exit();
     }
 
