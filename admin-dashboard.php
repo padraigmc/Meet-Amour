@@ -28,6 +28,15 @@
   <link href="css/new-age.min.css" rel="stylesheet">
   <link href="css/main.css" rel="stylesheet">
 
+  <style>
+    .button {
+      color: white;
+      background-color: #ff70db;
+      font-family: Poppins-Regular, sans-serif;
+    }
+
+  </style>
+
 </head>
 <?php
 
@@ -37,7 +46,6 @@
   $databaseConnection = Database::connect();
 
   $bannedUsers = Admin::get_banned_users($databaseConnection);
-  $adminUsers = Admin::get_admin_users($databaseConnection);
 
 
 ?>
@@ -47,114 +55,43 @@
   include_once("snippets/navbar.php");
 ?>
 
-</br>
-</br>
-</br>
-
 <section class="admin-top bg-primary" id="admin-top">
-    <div class="container-fluid w-100 main">
-    <div class="row">
-      <div class="col-lg-1" id="button-col">
-        <a type="button" class="dropdown-toggle" data-toggle="dropdown">Manage Users</a>
-        <div class="dropdown-menu mx-auto text-center">
-          <a href="#" class="button w-100">View All Users</a>
-          <a href="#" class="button w-100">Banned Users</a>
-          <a href="#" class="button w-100">Reported Users</a>
-      </div>
-        <a href="#" class="button w-100">Search Users</a>
-        <a href="#" class="button w-100">Ban Appeals</a>
-        <a href="#" class="button w-100">Manage Users</a>
-      </div>
-      <div class="col-lg-11">
-        <div class="form-row" id="top-1">
-          <h3 class="text-primary table-striped font-weight-bold">Banned Users</h3>
-          <table class="table" id="user-table">
-            <thead>
-                <tr>
+    <div class="container-fluid main">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="form-row" id="top-1">
+            <h3 class="text-primary table-striped font-weight-bold">Banned Users</h3>
+            <table class="table" id="user-table">
+              <thead>
+                  <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Date of Birth</th>
                     <th scope="col">Email</th>
                     <th scope="col">Location</th>
                     <th></th>
-                </tr>
-            </thead>
-            <tbody>
-              <?php
-              if (empty($bannedUsers)) {
-                echo "<tr><td colspan=\"5\">No banned users</td></tr>";
-              } else {
-                foreach ($bannedUsers as $bannedUser) { ?>
-                  <tr>
-                    <td><?php echo $bannedUser[User::USER_ID]; ?></td>
-                    <td><?php echo $bannedUser[User::NAME]; ?></td>
-                    <td><?php echo $bannedUser[User::DATE_OF_BIRTH]; ?></td>
-                    <td><?php echo $bannedUser[User::EMAIL]; ?></td>
-                    <td><?php echo $bannedUser[User::LOCATION]; ?></td>
-                    <td class="text-center"><a class="dropdown-item button w-100" href="<?php echo Database::UNBAN_USER . "?" . User::USER_ID . "=" . $bannedUser[User::USER_ID]; ?>">Unban User</a></td>
                   </tr>
-                <?php 
+              </thead>
+              <tbody>
+                <?php
+                if (empty($bannedUsers)) {
+                  echo "<tr><td colspan=\"5\">No banned users</td></tr>";
+                } else {
+                  foreach ($bannedUsers as $bannedUser) { ?>
+                    <tr>
+                      <td><?php echo $bannedUser[User::USER_ID]; ?></td>
+                      <td><?php echo $bannedUser[User::NAME]; ?></td>
+                      <td><?php echo $bannedUser[User::DATE_OF_BIRTH]; ?></td>
+                      <td><?php echo $bannedUser[User::EMAIL]; ?></td>
+                      <td><?php echo $bannedUser[User::LOCATION]; ?></td>
+                      <td class="text-center"><a class="dropdown-item button w-100" href="<?php echo Database::UNBAN_USER . "?" . User::USER_ID . "=" . $bannedUser[User::USER_ID]; ?>">Unban User</a></td>
+                    </tr>
+                  <?php 
+                  }
                 }
-              }
-              ?>
-            </tbody>
-          </table>
-        </div>
-        <div class="form-row" id="top-1">
-          <h3 class="text-primary table-striped font-weight-bold">Admin Users</h3>
-          <table class="table" id="user-table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">DOB</th>
-                    <th scope="col">Location</th>
-                </tr>
-            </thead>
-            <tbody>
-              <?php
-                  foreach ($adminUsers as $adminUser) { ?>
-                    <tr>
-                      <td><?php echo $adminUser[User::USER_ID]; ?></td>
-                      <td><?php echo $adminUser[User::NAME]; ?></td>
-                      <td><?php echo $adminUser[User::DATE_OF_BIRTH]; ?></td>
-                      <td><?php echo $adminUser[User::LOCATION]; ?></td>
-                    </tr>
-                <?php } ?>
-            </tbody>
-          </table>
-        </div>
-          <div class="form-row">
-            <div class="col-lg-5 mx-auto" id="top-1">
-                <h3 class="text-primary font-weight-bold">Active Users</h3>
-                <table class="table" id="user-table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
-                        <th scope="col">Location</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Damian </td>
-                        <td>Larkin</td>
-                        <td>Kerry</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Padraig</td>
-                        <td>McCarthy</td>
-                        <td>Limerick</td>
-                    </tr>
-                </tbody>
-                </table>
-            </div>
-            <div class="col-lg-5 mx-auto" id="top-1">
-              <h1>Side 2</h1>
-            </div>
+                ?>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
