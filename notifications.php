@@ -49,99 +49,15 @@
             $mark_all_as_seen_path = Database::MARK_ALL_NOTIFICATIONS_AS_SEEN;
             $mark_all_as_seen_path .=  "?" . Notification::REDIRECT_PAGE . "=" . $_SERVER['PHP_SELF'];
             
-            $allNotifications = Notification::get_all_notifications($conn, 10);
-
-			if ($notifications = Notification::get_unseen_user_notifications($conn, 3)) {
-				$numUnseenNotifications = sizeof($notifications);
-			} else {
-				$numUnseenNotifications = 0;
-			}
+            $allNotifications = Notification::get_all_notifications($conn);
+			
+			include("snippets/navbar.php");
 
 		?>
 
-	<!-- Navigation -->
-	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-		<div class="container">
-		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>"><img src="img/logo.png" alt="">  </a>
-		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>">MeetAmour</a> 
-		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-			Menu
-			<i class="fas fa-bars"></i>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarResponsive">
-			<ul class="navbar-nav ml-auto">
-				<li class="nav-item">
-					<a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
-				</li>
-
-				<li class="nav-item">
-					<a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
-				</li>
-
-				<li class="nav-item">
-					<a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
-				</li>
-
-				<li class="nav-item">
-					<a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="fa fa-bell"><?php echo ($notifications) ? $numUnseenNotifications : ""; ?></i>
-					</a>
-					<ul class="dropdown-menu" id="notification">
-						<li class="head text-light bg-primary">
-							<div class="row">
-								<div class="col-lg-12">
-									<span>Notifications (<?php echo $numUnseenNotifications; ?>)</span>
-								</div>
-							</div>
-						</li>
-						<?php
-							if ($notifications) {
-								foreach ($notifications as $key => $value) {
-									$mark_as_seen_path = Database::MARK_NOTIFICATION_AS_SEEN;
-									$mark_as_seen_path .=  "?" . Notification::FROM_USER_ID . "=" . $value[Notification::FROM_USER_ID];
-									$mark_as_seen_path .=  "&" . Notification::REDIRECT_PAGE . "=" . $_SERVER['PHP_SELF'];
-						?>
-									<li class="notification-box <?php echo ($key % 2 == 1) ? "bg-gray" : ""; ?>">
-										<div class="row"> 
-											<div class="offset-lg-1"></div>
-											<div class="col-lg-8">
-												<strong class="text-primary">
-													<a href="<?php echo Database::VIEW_PROFILE . "?" . User::USER_ID . "=" . $value[Notification::FROM_USER_ID] ; ?>"><?php echo $value[User::NAME]; ?></a>
-												</strong>
-												<div>
-													<?php echo $value[Notification::MESSAGE]; ?>
-												</div>
-												<small class="text-info"><?php echo $value[Notification::DATE_SENT]; ?></small>
-											</div>
-											<div class="col-lg-3">
-												<a href="<?php echo $mark_as_seen_path; ?>">Mark as read</a>
-											</div>     
-										</div>
-									</li>
-						<?php
-								}
-							} else {
-								?>
-								<li class="notification-box">
-									<div class="row"> 
-										<h6 class="mx-auto">Nothing to see here...</h6>
-									</div>
-								</li>
-								<?php
-							}
-						?>
-						<li class="footer bg-primary text-center">
-							<a href="<?php echo Database::NOTIFICATIONS; ?>" class="text-light">View All</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-		</div>
-	</nav>
+<?php
+    
+?>
 
 	</br>
 	</br>

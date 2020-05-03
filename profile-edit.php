@@ -32,7 +32,6 @@
 <body id="page-top">
 	<?php
 		
-		// session start, include User.php and declare error session var
 		require_once("init.php");
 		require_once("classes/Hobby.php");
 		$conn = Database::connect();
@@ -66,38 +65,29 @@
 			$profile->description = htmlspecialchars($_POST["description"]);
 			$profile->locationID = $_POST["location"];
 
-			if (!$profile->store_profile_attributes()) {
-				$success = 0;
-				exit();
-			}
+			if ($profile->store_profile_attributes()) {
+				// upload image if one use submitted
+				$uploaded_file = $_FILES['userImage'];
+				if (isset($uploaded_file['tmp_name']) && $uploaded_file['name'] != "") {
+					Image::upload_user_image($conn, $profile->userID, $uploaded_file);
+				}
 
-			// upload image if one use submitted
-			$uploaded_file = $_FILES['userImage'];
-			if (isset($uploaded_file['tmp_name']) && $uploaded_file['name'] != "") {
-				Image::upload_user_image($conn, $profile->userID, $uploaded_file);
-			}
+				if(!empty($_POST['selected_hobbies'])){
+					$selected_hobbies = $_POST['selected_hobbies'];
 
-            if(!empty($_POST['selected_hobbies'])){
-				$selected_hobbies = $_POST['selected_hobbies'];
+					$success = Hobby::set_user_hobbies($conn, $profile->userID, $profile->hobbies, $selected_hobbies);
 
-				$success = Hobby::set_user_hobbies($conn, $profile->userID, $profile->hobbies, $selected_hobbies);
-
-				if ($success) {
-					$profile->hobbies = $selected_hobbies;
-					if ($profile->user_owns_profile()) {
-						$_SESSION[User::HOBBIES] = $selected_hobbies;
+					if ($success) {
+						$profile->hobbies = $selected_hobbies;
+						if ($profile->user_owns_profile()) {
+							$_SESSION[User::HOBBIES] = $selected_hobbies;
+						}
 					}
 				}
-			}		
-
-			if ($success) {
 				header("Location: " . $redirect_on_successful_edit);
 			} else {
-				$_SESSION[User::ERROR][] = UserError::GENERAL_ERROR;
-				header("Location: " . Database::EDIT_PROFILE .  " ?edit_error");
+				header("Location: " . Database::EDIT_PROFILE .  "?" . User::ERROR);
 			}
-
-			echo "success = " . $success;
 
 			$conn->close();
 			exit();
@@ -109,41 +99,8 @@
 		$date_min = date("Y-m-d", strtotime("-120 year", time()));
 		$all_hobbies = Hobby::get_all_hobbies($conn);
 
+        include("snippets/navbar.php");
 	?>
-
-
-
-	<!-- Navigation -->
-	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-	<div class="container">
-		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>"><img src="img/logo.png" alt="">  </a>
-		<a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>">MeetAmour</a> 
-		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-		Menu
-		<i class="fas fa-bars"></i>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarResponsive">
-		<ul class="navbar-nav ml-auto">
-
-			<li class="nav-item">
-			<a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
-			</li>
-
-			<li class="nav-item">
-			<a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
-			</li>
-
-			<li class="nav-item">
-			<a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
-			</li>
-
-			<li class="nav-item">
-			<a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Logout</a>
-			</li>
-		</ul>
-		</div>
-	</div>
-	</nav>
 
 	</br>
 	</br>
@@ -262,6 +219,16 @@
 					?>
 				</div>
 			</div>
+			<?php
+				if (isset($_GET[User::ERROR]) && !empty($_SESSION[User::ERROR])) {
+					foreach ($_SESSION[User::ERROR] as $error) {
+						echo "<div class=\"row p-3\">";
+							echo "<p class=\"text-danger\">" . $error . "</p>";
+						echo "</div>";
+					}
+					$_SESSION[User::ERROR] = array();
+				}
+			?>
 			<div class="row">
 				<div class="col-lg-6 submit">
 					<input class="w-100" style="padding-top: 14px;" type="submit" name="submit" value="Submit">

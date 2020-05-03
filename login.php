@@ -40,7 +40,10 @@
 			$conn->close();
 			exit();
 		}
-	  	?>
+
+		// Navigation 
+		include("snippets/navbar.php");
+	?>
 		
 		<div class="limiter">
 			<div class="container-login100">
@@ -107,8 +110,8 @@
 								echo "<p class=\"text-danger\">" . $value . "</p>";
 							}
 							echo "<div>";
+							unset($_SESSION[User::ERROR]);
 						}
-
 					?>
 					</div>
 				</div>

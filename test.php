@@ -7,9 +7,7 @@
 
     $conn = Database::connect();
 
-
-    $profile = Profile::constuct_with_userid($conn, 16);
-    echo $profile->exists_in_database();
+    include("snippets/navbar.php");
 
 
     $conn->close();

@@ -10,7 +10,9 @@
         const SUGGEST_MATCH = "suggest_matches.php";
         const VIEW_PROFILE = "user_profile.php";
         const EDIT_PROFILE = "profile-edit.php";
-        const ABOUT_US = "about-us.html";
+        const ABOUT_US = "about-us.php";
+        const CONTACT_US = "index.php#contact";
+        const FAQ = "faq.php";
         const ADMIN_DASHBOARD = "admin-dashboard.php";
         const NOTIFICATIONS = "notifications.php";
         const MARK_NOTIFICATION_AS_SEEN = "php_scripts\mark_navbar_notifications_read.php";

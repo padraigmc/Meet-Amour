@@ -170,10 +170,7 @@
             $name_search = $_GET[Search::SEARCH_TEXT];
             
             $gender = $_GET[Search::GENDER_ID];
-            echo "<script>selectElement(\"gender\", \"" . $gender . "\")</script>";
-
             $location = $_GET[Search::LOCATION_ID];
-            echo "<script>selectElement('location', '" . $location . "')</script>";
 
             $min_age = $_GET[Search::MIN_AGE];
             $max_age = $_GET[Search::MAX_AGE];
@@ -184,42 +181,11 @@
             $nextPageURL = $search->get_next_page_url();
             $previousPageURL = $search->get_previous_page_url();
         }
+
+        include("snippets/navbar.php");
     ?>
 
     <div id="page-container">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-            <div class="container">
-            <a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>"><img src="img/logo.png" alt="">  </a>
-            <a class="navbar-brand js-scroll-trigger" href="<?php echo Database::INDEX; ?>">MeetAmour</a> 
-
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                Menu
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto"> 
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="<?php echo Database::SEARCH_PROFILE; ?>">Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="<?php echo Database::SUGGEST_MATCH; ?>">Find Matches</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="<?php echo Database::VIEW_PROFILE; ?>">My Profile</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="<?php echo Database::LOGOUT; ?>">Log Out</a>
-                    </li>
-                    
-                </ul>
-            </div>
-            </div>
-        </nav>
-
-
         <section class="features" id="features">
             <div class="container-fluid">
                 <div class="row">
