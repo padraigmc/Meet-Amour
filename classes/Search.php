@@ -36,7 +36,8 @@
                             concat(`p`.`fname`, `p`.`lname`) LIKE ? AND
                             `g`.`genderID` LIKE ? AND
                             `l`.`locationID` LIKE ? AND
-                            `p`.`dob` >= ? AND `p`.`dob` <= ?
+                            `p`.`dob` >= ? AND `p`.`dob` <= ? AND
+                            `u`.`isBanned` = 0 
                     ORDER BY `u`.`lastLogin` DESC
                     LIMIT ? OFFSET ?;";
             $profiles = NULL;

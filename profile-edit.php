@@ -34,6 +34,7 @@
 		
 		require_once("init.php");
 		require_once("classes/Hobby.php");
+		Verify::redirect_not_logged_in();
 		$conn = Database::connect();
 		
 		if (isset($_GET[User::USER_ID])) {

@@ -42,6 +42,8 @@
 
   require_once("init.php");
   require_once("classes/Admin.php");
+
+  Verify::redirect_not_admin();
   
   $databaseConnection = Database::connect();
 

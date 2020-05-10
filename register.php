@@ -20,6 +20,7 @@
 
 	<?php
 		require_once("init.php");
+		Verify::redirect_logged_in();
 		$nameOfErrorGETVariable = "loginError";
 
 		if (isset($_POST["submit_user"])) {

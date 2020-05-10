@@ -34,13 +34,13 @@
 		<?php
 			require_once("init.php");
 			require_once("classes/Hobby.php");
+			Verify::redirect_not_logged_in();
 			$conn = Database::connect();
 
 			if (isset($_GET[User::USER_ID])) {
 				$userID = $_GET[User::USER_ID];
 				$profile = Profile::constuct_with_userid($conn, $userID);
 				if ($profile && $profile->exists_in_database()) {
-					
 					if (isset($_POST["like"])) {
 						$isLiked = Like::like_user($conn, $profile->userID);
 					} elseif (isset($_POST["unlike"])) {
@@ -50,6 +50,9 @@
 						$isLiked = Like::check_like_status($conn, $profile->userID);
 					}
 
+					if (User::is_banned($conn, $profile->userID)) {
+						$_SESSION[User::ERROR][] = UserError::PROFILE_UNAVAILABLE;
+					}
 				} else {
 					$_SESSION[User::ERROR][] = UserError::PROFILE_UNAVAILABLE;
 				}			

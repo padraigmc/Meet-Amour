@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="img/logoalt.png">
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -156,6 +157,7 @@
     <?php
         require_once("init.php");
         require_once("classes/Search.php");
+        Verify::redirect_not_logged_in();
         $conn = Database::connect();
         $results = array();
             

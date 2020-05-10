@@ -31,11 +31,11 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script><script  src="./js/script.js"></script>
 
 </head>
-
 <body id="page-top">
 	<?php
 		require_once("init.php");
 		require_once("classes/Suggest.php");
+		Verify::redirect_not_logged_in();
 		$conn = Database::connect();
 
 		if (isset($_POST["like"])) {

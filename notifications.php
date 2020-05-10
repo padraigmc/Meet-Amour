@@ -43,7 +43,8 @@
 <body id="page-top">
 		<?php
 
-			require_once("init.php");
+            require_once("init.php");
+            Verify::redirect_not_logged_in();
             $conn = Database::connect();
 
             $mark_all_as_seen_path = Database::MARK_ALL_NOTIFICATIONS_AS_SEEN;
