@@ -1,9 +1,15 @@
+<?php
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="img/logoalt.png">
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -156,6 +162,7 @@
     <?php
         require_once("init.php");
         require_once("classes/Search.php");
+        Verify::redirect_not_logged_in();
         $conn = Database::connect();
         $results = array();
             
@@ -280,15 +287,12 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <div class="row">
-                                                    <div class="col-md-10">
+                                                    <div class="col-md-12">
                                                         <h2 class="m-0 mt-2"><?php echo $name . ", " . $age; ?></h2>
                                                         <div class="pl-3">
                                                             <p class="m-0"><?php echo $location; ?></p>
                                                             <p class="m-0"><?php echo $gender; ?></p>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-2 m-auto text-center">
-                                                        like button
                                                     </div>
                                                 </div>
                                                 <hr class="border-dark my-3">

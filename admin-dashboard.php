@@ -1,3 +1,8 @@
+<?php
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,6 +47,8 @@
 
   require_once("init.php");
   require_once("classes/Admin.php");
+
+  Verify::redirect_not_admin();
   
   $databaseConnection = Database::connect();
 

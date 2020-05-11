@@ -1,6 +1,6 @@
 <?php
 
-require_once("UserError.php");
+include_once("classes/UserError.php");
 
 class Verify
 {
@@ -28,20 +28,18 @@ class Verify
         *   return      -   1 on success, 0 (zero) on failure
         */
     public function verify_login($username, $password) {
-        $errorFlag = 0;
+        $verifySuccess = 1;
 
-        if (!self::verify_username_form($username) || !self::username_exists($username) || 
-            !self::verify_password_form($password) || !self::verify_password_hash($username, $password) || 
-            self::is_banned($username)) {
-            $errorFlag = 1;
-        }
-
-        if ($errorFlag) {
+        if (!self::verify_username_form($username) || !self::username_exists($username) || !self::verify_password_form($password) || !self::verify_password_hash($username, $password)) {
             $this->errorList[] = UserError::LOGIN_ERROR;
-            return 0;
-        } else {
-            return 1;
+            $verifySuccess = 0;
         }
+
+        if (self::is_banned($username)) {
+            $this->errorList[] = UserError::ACCOUNT_BANNED;
+            $verifySuccess = 0;
+        }
+        return $verifySuccess;
     }
 
     public function verify_register($email, $username, $password, $passwordConfirm)
@@ -96,6 +94,35 @@ class Verify
         }
 
         return $isBanned;
+    }
+
+    public static function redirect_not_logged_in() {
+        if (!Verify::is_logged_in()) {
+            header("Location: " . Database::INDEX);
+            exit();
+        }
+    }
+
+    public static function redirect_logged_in() {
+        if (Verify::is_logged_in()) {
+            header("Location: " . Database::INDEX);
+            exit();
+        }
+    }
+
+    public static function redirect_not_admin() {
+        if (!Verify::is_logged_in() || !$_SESSION[User::IS_ADMIN]) {
+            header("Location: " . Database::INDEX);
+            exit();
+        }
+    }
+
+    private static function is_logged_in() {
+        if (isset($_SESSION[User::LOGGED_IN]) && $_SESSION[User::LOGGED_IN] == 1) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     private function verify_username_form($username) {

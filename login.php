@@ -1,3 +1,8 @@
+<?php
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +11,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="img/logoalt.png">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="img/logoalt.png"/>
+	<link rel="icon" href="img/logoalt.png"/>
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.css">
 <!--===============================================================================================-->
@@ -20,6 +25,7 @@
 <body>
 	<?php
 		require_once("init.php");
+		Verify::redirect_logged_in();
 		$nameOfErrorGETVariable = "loginError";
 
 		if (isset($_POST["submit"])) {
@@ -33,7 +39,11 @@
 			$_SESSION[User::USERNAME] = $username;
 
 			if (User::login($conn, $username, $password)) {
-				header("Location: " . Database::VIEW_PROFILE);
+				if ($_SESSION[User::IS_ADMIN]) {
+					header("Location: " . Database::ADMIN_DASHBOARD);
+				} else {
+					header("Location: " . Database::VIEW_PROFILE);
+				}
 			} else {
 				header("Location: " . Database::LOGIN . "?" . $nameOfErrorGETVariable);
 			}

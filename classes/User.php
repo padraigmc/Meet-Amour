@@ -192,6 +192,21 @@
             }
         }
 
+        public static function is_banned($dbConnection, $userID) {
+            $isBanned = null;
+            $sql = "SELECT `isBanned`
+                    FROM `User`
+                    WHERE `userID` = ?;";
+
+            $stmt = $dbConnection->prepare($sql);
+            $stmt->bind_param("s", $userID);
+
+            $stmt->execute();
+            $stmt->bind_result($isBanned);
+            $stmt->fetch();
+            return $isBanned;
+        }
+
         private static function update_last_login($dbConnection, $username) {
             $success = 0;
             $sql = "UPDATE `User` SET `lastLogin` = ?
@@ -217,15 +232,6 @@
             header("Location: index.php");
             exit();
         }
-
-        public static function isLoggedIn() {
-            if (isset($_SESSION[User::LOGGED_IN]) && $_SESSION[User::LOGGED_IN] == 1) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
 
         /*
             *   Used to display variable value in an form input element if it is NOT null

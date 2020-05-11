@@ -8,7 +8,7 @@ class Image
     public static function upload_user_image($dbConnection, $userID, $http_file_upload_array) 
     {
         $epoch_milli = round(microtime(true) * 1000);
-        $target_dir = User::USER_IMAGES;
+        $target_dir = dirname(__DIR__) . "/" . User::USER_IMAGES;
         $supported_formats = array("jpg", "png", "jpeg", "gif");
 
         // if the user already has an image, delete it

@@ -1,3 +1,8 @@
+<?php
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,6 +25,7 @@
 
 	<?php
 		require_once("init.php");
+		Verify::redirect_logged_in();
 		$nameOfErrorGETVariable = "loginError";
 
 		if (isset($_POST["submit_user"])) {

@@ -66,5 +66,13 @@
             }
             return $success;
         }
+
+        public static function is_current_page($page) {
+            if (strpos($_SERVER['REQUEST_URI'], $page) === true) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     }
 ?>

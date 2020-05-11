@@ -1,8 +1,5 @@
 <?php
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
-    
+    require_once("classes/Verify.php");
     require_once("classes/User.php");
     require_once("classes/Profile.php");
     require_once("classes/Database.php");
