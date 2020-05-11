@@ -66,7 +66,7 @@
     <div class="container-fluid main">
       <div class="row">
         <div class="col-lg-12">
-          <div class="form-row" id="top-1">
+          <div class="row" id="top-1">
             <h3 class="text-primary table-striped font-weight-bold">Banned Users</h3>
             <table class="table" id="user-table">
               <thead>
@@ -106,7 +106,7 @@
 </section>
 
 
-<footer>
+<footer class="fixed-bottom">
     <div class="container">
       <p>&copy; MeetAmour 2020. All Rights Reserved.</p>
       <ul class="list-inline">
