@@ -1,6 +1,6 @@
 <?php
 
-require_once("UserError.php");
+include_once("classes/UserError.php");
 
 class Verify
 {
@@ -98,7 +98,6 @@ class Verify
 
     public static function redirect_not_logged_in() {
         if (!Verify::is_logged_in()) {
-            var_dump($_SESSION);
             header("Location: " . Database::INDEX);
             exit();
         }

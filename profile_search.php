@@ -1,3 +1,8 @@
+<?php
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -282,15 +287,12 @@
                                             </div>
                                             <div class="col-md-9">
                                                 <div class="row">
-                                                    <div class="col-md-10">
+                                                    <div class="col-md-12">
                                                         <h2 class="m-0 mt-2"><?php echo $name . ", " . $age; ?></h2>
                                                         <div class="pl-3">
                                                             <p class="m-0"><?php echo $location; ?></p>
                                                             <p class="m-0"><?php echo $gender; ?></p>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-md-2 m-auto text-center">
-                                                        like button
                                                     </div>
                                                 </div>
                                                 <hr class="border-dark my-3">
