@@ -228,10 +228,11 @@
 		<div class="container">
 		<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
 		<ul class="list-inline">
+		<li class="list-inline-item">
+                <a href="<?php echo Database::FAQ ?>">FAQ</a>
+            </li>
 			<li class="list-inline-item">
-			<a href="#">FAQ</a>
-			<li class="list-inline-item">
-			<a href="<?php echo Database::ABOUT_US; ?>">About us</a>
+			    <a href="<?php echo Database::ABOUT_US; ?>">About us</a>
 			</li>
 		</ul>
 		</div>
