@@ -120,7 +120,7 @@
             ?>
     </div>
 
-	<footer class="">
+	<footer class="fixed-bottom">
 		<div class="container">
 		<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
 		<ul class="list-inline">
