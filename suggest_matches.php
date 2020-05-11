@@ -120,10 +120,8 @@
 									<i class="fa fa-bars"></i>
 								</a>
 								<div class="mc-footer">
-									<a class="fa fa-fw fa-heart"></a> 
-									<a class="fa fa-fw fa-times"></a>
 									<form id="like_dislike_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-										<button type="submit" class="p-2" form="like_dislike_form" name="like" value="<?php echo $userID; ?>">Like</button>
+										<button style="border-radius: 4px;" type="submit" class="p-2 w-25" form="like_dislike_form" name="like" value="<?php echo $userID; ?>">Like</button>
 									</form>
 								</div>
 							</article>
