@@ -196,14 +196,14 @@ iframe {
   font-family: Poppins-Regular;
   font-size: 13px;
   line-height: 1.5;
-  color: rgb(51, 51, 51);
+  color: rgb(255, 255, 255);
 }
 
 .txt2 {
   font-family: Poppins-Regular;
   font-size: 13px;
   line-height: 1.5;
-  color: rgb(51, 51, 51)
+  color: rgb(255, 255, 255)
 }
 
 
@@ -436,8 +436,8 @@ input[type=submit]:hover {
 
 .wrap-login100 {
   width: 960px;
-  background: rgb(255, 255, 255);
-  color: rgb(51, 51, 51);
+  background: rgb(51, 51, 51);
+  color: rgb(255, 255, 255);
   border-radius: 10px;
   overflow: hidden;
 
@@ -472,7 +472,7 @@ input[type=submit]:hover {
 .login100-form-title {
   font-family: Poppins-Bold;
   font-size: 24px;
-  color: rgb(51, 51, 51);
+  color: white;
   line-height: 1.2;
   text-align: center;
 
@@ -494,7 +494,7 @@ input[type=submit]:hover {
   font-family: Poppins-Medium;
   font-size: 15px;
   line-height: 1.5;
-  color: rgb(51, 51, 51);
+  color: white;
 
   display: block;
   width: 100%;
