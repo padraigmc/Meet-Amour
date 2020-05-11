@@ -220,7 +220,6 @@
 </div>
 </div>
 
-<<<<<<< HEAD
 	<?php
 		}
 	?>
@@ -237,30 +236,6 @@
 		</ul>
 		</div>
 	</footer>
-=======
-<?php
-	}
-?>
-	
-<footer >
-	<div class="container">
-	<p>&copy; MeetAmour 2020. All Rights Reserved.</p>
-	<ul class="list-inline">
-		<li class="list-inline-item">
-		<a href="#">Privacy</a>
-		</li>
-		<li class="list-inline-item">
-		<a href="#">Terms</a>
-		</li>
-		<li class="list-inline-item">
-		<a href="#">FAQ</a>
-		<li class="list-inline-item">
-		<a href="<?php echo Database::ABOUT_US; ?>">About us</a>
-		</li>
-	</ul>
-	</div>
-</footer>
->>>>>>> d1e748f28b50635e1a0d6b0b5f863341828e082d
 
 	<!-- Bootstrap core JavaScript -->
 <script src="vendor/jquery/jquery.min.js"></script>
